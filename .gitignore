@@ -1,0 +1,6 @@
+# Ignore automatically generated R files for project, history etc.
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+tb_profiles.Rproj
