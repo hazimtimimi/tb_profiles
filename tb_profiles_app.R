@@ -18,7 +18,7 @@ library(jsonlite)
 # Make sure to specify the data being read are UTF-8 encoded
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-json_url <- "https://extranet-uat.who.int/tme/generateJSON.asp"
+json_url <- "https://extranet.who.int/tme/generateJSON.asp"
 year_countries <- fromJSON(readLines(paste0(json_url, "?ds=countries"), warn = FALSE, encoding = "UTF-8"))
 
 dcyear <- year_countries$dcyear
@@ -32,6 +32,38 @@ rm(year_countries)
 ltxt <- function(df, tag){
 
     df[ df$label_tag==tag , "label_text"]
+
+}
+
+# Simple rounding function that returns a string rounded to the nearest integer and
+# uses a space as the thousands separator as per WHO standard.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+rounder <- function(x) {
+
+    ifelse(is.na(x), NA,
+           formatC(round(x,0), big.mark=" ", format="d")
+           )
+}
+
+# Non-reactive functions to build estimate strings
+# as best (lo-hi)
+format_estimate <- function(best, lo, hi, style="n"){
+
+    if (style=="k"){
+        # format number using spaces for thousands separator
+
+        return(paste0(rounder(best), " (", rounder(lo), "-", rounder(hi), ")"))
+
+    } else if (style=="%") {
+        # append percent sign to best
+        return(paste0(best, "% (", lo, "-", hi, ")"))
+
+    } else {
+        # keep numbers as they are
+
+        return(paste0(best, " (", lo, "-", hi, ")"))
+    }
 
 }
 
@@ -72,8 +104,19 @@ ui <- function(request) {
                 textOutput(outputId = "heading_estimates", container = h2),
 
                 tableOutput(outputId = "estimates_table"),
-               #htmlTemplate(filename = "estimates_table.html"),
-                plotOutput(outputId = "inc_chart")
+
+                textOutput(outputId = "heading_drestimates", container = h2),
+                tableOutput(outputId = "drestimates_table"),
+
+                plotOutput(outputId = "inc_chart"),
+
+                # add some space
+                tags$div(style="margin:5em;",
+                         HTML("&nbsp;")
+                        ),
+
+
+                plotOutput(outputId = "mort_chart")
             )
         )
     )

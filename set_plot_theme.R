@@ -1,35 +1,61 @@
 # Graph theme components ----
+# Based on the BBC ggplot2 theme at https://github.com/bbc/bbplot/blob/master/R/bbc_style.R
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-profile_theme <- function(base_size=10, base_family="") {
+profile_theme <- function(base_size=14, base_family="") {
 
-  gray <- "#4D4D4D"
-  black <- "#000000"
+  gray <- "#BCBCBC"
+  charcoal <- "#222222"
 
 
-  theme_bw(base_size=base_size, base_family=base_family) +
-    theme(
-      line = element_line(colour = gray),
-      rect = element_rect(fill = "white", colour = NA),
-      text = element_text(colour = black),
-      axis.ticks.x = element_line(colour = gray),
-      axis.ticks.y = element_blank(),
-      legend.key = element_rect(colour = NA),
-      ## Examples do not use grid lines
-      panel.border = element_rect(colour = gray),
-      panel.grid.major.x = element_blank(),
-      panel.grid.minor = element_blank(),
-      strip.background = element_rect(fill="white", colour=NA),
-      strip.text = element_text(hjust=0),
-      strip.text.x = element_text(size=10),
-      plot.title = element_text(hjust=0)
-    )
+  theme(
+
+  #Text format:
+  plot.title = element_text(family=base_family,
+                            size=28,
+                            face="bold",
+                            color=charcoal),
+  plot.subtitle = element_text(family=base_family,
+                               size=22,
+                               margin=ggplot2::margin(9,0,9,0)),
+
+  #Legend format
+  legend.position = "top",
+  legend.text.align = 0,
+  legend.background = element_blank(),
+  legend.title = element_blank(),
+  legend.key = element_blank(),
+  legend.text = element_text(family=base_family,
+                             size=14,
+                             color=charcoal),
+
+  #Axis format
+  axis.title = element_blank(),
+  axis.text = element_text(family=base_family,
+                           size=18,
+                           color=charcoal),
+  axis.text.x = ggplot2::element_text(margin=ggplot2::margin(5, b = 10)),
+  axis.ticks = ggplot2::element_blank(),
+  axis.line = ggplot2::element_blank(),
+
+  #Grid lines
+  #This removes all minor gridlines and adds major y gridlines.
+  panel.grid.minor = ggplot2::element_blank(),
+  panel.grid.major.y = ggplot2::element_line(color=gray,
+                                             size = 0.25),
+  panel.grid.major.x = ggplot2::element_blank(),
+
+  #Blank background
+  panel.background = ggplot2::element_blank(),
+
+  )
+
 }
 
 
-
-# Standard colours used by Sue
-
+# Standard colours used in the Global TB Report
+# - - - - - - - - - - - - - - - - - - - - - - -
+#
 standard_palette <- function(type){
 
   switch(type,
