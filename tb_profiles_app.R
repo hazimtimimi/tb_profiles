@@ -101,22 +101,30 @@ ui <- function(request) {
             # Display result
             mainPanel(
                 textOutput(outputId = "heading_main", container = h1),
-                textOutput(outputId = "heading_estimates", container = h2),
+                tabsetPanel(
+                    tabPanel("Tables",
+                             textOutput(outputId = "heading_estimates", container = h2),
+                             tableOutput(outputId = "estimates_table"),
 
-                tableOutput(outputId = "estimates_table"),
+                             textOutput(outputId = "heading_drestimates", container = h2),
+                             tableOutput(outputId = "drestimates_table")
+                             ),
 
-                textOutput(outputId = "heading_drestimates", container = h2),
-                tableOutput(outputId = "drestimates_table"),
+                    tabPanel("Charts",
 
-                plotOutput(outputId = "inc_chart"),
+                             plotOutput(outputId = "inc_chart"),
 
-                # add some space
-                tags$div(style="margin:5em;",
-                         HTML("&nbsp;")
-                        ),
+                             # add some space
+                             tags$div(style="margin:2em;",
+                                      HTML("&nbsp;")
+                                     ),
+
+                             plotOutput(outputId = "mort_chart")
+                             )
 
 
-                plotOutput(outputId = "mort_chart")
+                )
+
             )
         )
     )
