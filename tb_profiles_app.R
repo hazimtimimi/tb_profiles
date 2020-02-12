@@ -169,11 +169,17 @@ server <- function(input, output, session) {
     })
 
 
-    # Build the output objects to display in the application
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Build all the output objects to display in the application
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    source("build_output.R", local = TRUE)
 
+    output$heading_main <- renderText({ ltxt(plabs(), "head") })
+
+
+    source("build_tab1_estimates_tables.R", local = TRUE)
+
+    source("build_tab2_estimates_charts.R", local = TRUE)
 
 }
 
