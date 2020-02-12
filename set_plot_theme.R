@@ -16,8 +16,10 @@ profile_theme <- function(base_size=14, base_family="") {
                             face="bold",
                             color=charcoal),
   plot.subtitle = element_text(family=base_family,
-                               size=22,
+                               size=18,
                                margin=ggplot2::margin(9,0,9,0)),
+
+  plot.margin = margin(30,0,30,0,),
 
   #Legend format
   legend.position = "top",

@@ -115,7 +115,7 @@ ui <- function(request) {
                              plotOutput(outputId = "inc_chart"),
 
                              # add some space
-                             tags$div(style="margin:2em;",
+                             tags$div(style="margin:1em;",
                                       HTML("&nbsp;")
                                      ),
 
