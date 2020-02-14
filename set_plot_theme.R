@@ -68,3 +68,13 @@ standard_palette <- function(type){
   )
 
 }
+
+budget_palette <- function(){
+
+  c("a_domestic"      =  "#7DAAD4",  # funded domaestically (blue)
+    "b_international" =  "#E9C04F",  # Funded internationally (orange)
+    "c_gap"           =  "#D84D3F"   # Unfunded (red)
+    )
+
+
+}

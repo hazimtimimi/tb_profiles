@@ -98,6 +98,22 @@ ui <- function(request) {
                             textOutput(outputId = "drtb_heading", container = h2),
                             tableOutput(outputId = "drtb_table")
 
+                            ),
+
+                    tabPanel(title = HTML("Notifcations<br />(charts)")
+
+
+                            ),
+
+                    tabPanel(title = HTML("Outcomes<br />(tables & charts)")
+
+
+                            ),
+
+                    tabPanel(title = HTML("Financing<br />(tables & charts)"),
+                            plotOutput(outputId = "budget_chart")
+
+
                             )
 
                 )
@@ -160,7 +176,9 @@ server <- function(input, output, session) {
 
     source("build_tab3_notifs_tables.R", local = TRUE)
 
-}
+    source("build_tab6_finance.R", local = TRUE)
+
+    }
 
 # Run the application
 shinyApp(ui = ui, server = server, enableBookmarking = "url")
