@@ -3,7 +3,7 @@
 # Build output for the first tab (estimates table)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$heading_estimates <- renderText({ paste0(ltxt(plabs(), "estimates"), ", ", dcyear-1)  })
+output$estimates_heading <- renderText({ paste0(ltxt(plabs(), "estimates"), ", ", dcyear-1)  })
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -91,7 +91,7 @@ output$estimates_table <- renderTable({ estimates_table_content() },
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-output$heading_drestimates <- renderText({ paste0(ltxt(plabs(), "rrmdr_est_pct"), ", ", dcyear-1)  })
+output$drestimates_heading <- renderText({ paste0(ltxt(plabs(), "rrmdr_est_pct"), ", ", dcyear-1)  })
 
 
 drestimates_table_content <- reactive({
@@ -129,7 +129,7 @@ output$drestimates_table <- renderTable({ drestimates_table_content() },
 # 3. UHC and social protection table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$heading_uhc <- renderText({ ltxt(plabs(), "uhc")  })
+output$uhc_heading <- renderText({ ltxt(plabs(), "uhc")  })
 
 
 uhc_data <- reactive({

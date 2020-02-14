@@ -3,7 +3,7 @@
 # Build output for the third tab (notifications tables)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$heading_notifs <- renderText({ paste0(ltxt(plabs(), "notifs"), ", ", dcyear-1)  })
+output$notifs_heading <- renderText({ paste0(ltxt(plabs(), "notifs"), ", ", dcyear-1)  })
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,7 +101,7 @@ output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
 # 2. TB/HIV table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$heading_tbhiv <- renderText({ paste0(ltxt(plabs(), "newrel_tbhiv_care"), ", ", dcyear-1)  })
+output$tbhiv_heading <- renderText({ paste0(ltxt(plabs(), "newrel_tbhiv_care"), ", ", dcyear-1)  })
 
 
 tbhiv_data <- reactive({
@@ -140,7 +140,7 @@ output$tbhiv_table <- renderTable({ tbhiv_data()  },
 # 3. DR-TB table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$heading_drtb <- renderText({ paste0(ltxt(plabs(), "drtb_care"), ", ", dcyear-1)  })
+output$drtb_heading <- renderText({ paste0(ltxt(plabs(), "drtb_care"), ", ", dcyear-1)  })
 
 drtb_data <- reactive({
 

@@ -62,16 +62,16 @@ ui <- function(request) {
 
             # Display result
             mainPanel(
-                textOutput(outputId = "heading_main", container = h1),
+                textOutput(outputId = "main_heading", container = h1),
                 tabsetPanel(
                     tabPanel(title = HTML("Estimates<br />(tables)"),
-                             textOutput(outputId = "heading_estimates", container = h2),
+                             textOutput(outputId = "estimates_heading", container = h2),
                              tableOutput(outputId = "estimates_table"),
 
-                             textOutput(outputId = "heading_drestimates", container = h2),
+                             textOutput(outputId = "drestimates_heading", container = h2),
                              tableOutput(outputId = "drestimates_table"),
 
-                             textOutput(outputId = "heading_uhc", container = h2),
+                             textOutput(outputId = "uhc_heading", container = h2),
                              tableOutput(outputId = "uhc_table")
                              ),
 
@@ -89,13 +89,13 @@ ui <- function(request) {
 
                     tabPanel(title = HTML("Notifications<br />(tables)"),
 
-                            textOutput(outputId = "heading_notifs", container = h2),
+                            textOutput(outputId = "notifs_heading", container = h2),
                             tableOutput(outputId = "notifs_table"),
 
-                            textOutput(outputId = "heading_tbhiv", container = h2),
+                            textOutput(outputId = "tbhiv_heading", container = h2),
                             tableOutput(outputId = "tbhiv_table"),
 
-                            textOutput(outputId = "heading_drtb", container = h2),
+                            textOutput(outputId = "drtb_heading", container = h2),
                             tableOutput(outputId = "drtb_table")
 
                             )
@@ -151,7 +151,7 @@ server <- function(input, output, session) {
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-    output$heading_main <- renderText({ ltxt(plabs(), "head") })
+    output$main_heading <- renderText({ ltxt(plabs(), "head") })
 
 
     source("build_tab1_estimates_tables.R", local = TRUE)
