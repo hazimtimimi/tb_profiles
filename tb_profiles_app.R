@@ -46,6 +46,30 @@ rounder <- function(x) {
            )
 }
 
+
+# Calculate % using numerator and denominator, format the output and cap at 100%
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+display_cap_pct <- function(numerator, denominator) {
+
+  pct <- ifelse(is.na(numerator) | is.na(denominator) | denominator == 0, "",
+         ifelse(numerator > denominator, ">100%", paste0(signif(numerator * 100 / denominator, 2), "%")))
+
+  return(pct)
+}
+
+# Calculate % using numerator and denominator, cap at 100, no formating
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+get_cap_pct <- function(numerator, denominator) {
+
+  pct <- ifelse(is.na(numerator) | is.na(denominator) | denominator == 0, "",
+         ifelse(numerator > denominator, 100, signif(numerator * 100 / denominator, 2)))
+
+  return(pct)
+}
+
+
 # Non-reactive functions to build estimate strings
 # as best (lo-hi)
 format_estimate <- function(best, lo, hi, style="n"){
@@ -102,7 +126,7 @@ ui <- function(request) {
             mainPanel(
                 textOutput(outputId = "heading_main", container = h1),
                 tabsetPanel(
-                    tabPanel("Tables",
+                    tabPanel(title = HTML("Estimates<br />(tables)"),
                              textOutput(outputId = "heading_estimates", container = h2),
                              tableOutput(outputId = "estimates_table"),
 
@@ -110,7 +134,7 @@ ui <- function(request) {
                              tableOutput(outputId = "drestimates_table")
                              ),
 
-                    tabPanel("Charts",
+                    tabPanel(title = HTML("Estimates<br />(charts)"),
 
                              plotOutput(outputId = "inc_chart"),
 
@@ -120,8 +144,14 @@ ui <- function(request) {
                                      ),
 
                              plotOutput(outputId = "mort_chart")
-                             )
+                             ),
 
+                   tabPanel(title = HTML("Notifications<br />(tables)"),
+
+                             textOutput(outputId = "heading_notifs", container = h2),
+                             tableOutput(outputId = "notifs_table")
+
+                             )
 
                 )
 
@@ -180,6 +210,8 @@ server <- function(input, output, session) {
     source("build_tab1_estimates_tables.R", local = TRUE)
 
     source("build_tab2_estimates_charts.R", local = TRUE)
+
+    source("build_tab3_notifs_tables.R", local = TRUE)
 
 }
 
