@@ -95,3 +95,44 @@ output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
                                       colnames = FALSE,
                                       na="")
 
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 1. TB/HIV table
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$heading_tbhiv <- renderText({ paste0(ltxt(plabs(), "newrel_tbhiv_care"), ", ", dcyear-1)  })
+
+
+tbhiv_data <- reactive({
+
+  # numbers
+  num_data <- c(rounder(pdata()$profile_data[, "newrel_hivpos"]),
+                rounder(pdata()$profile_data[, "newrel_art"]))
+
+
+  pct_data <- c( # calculate pct_hivtestpositive
+                 display_cap_pct(pdata()$profile_data[, "newrel_hivpos"],
+                                 pdata()$profile_data[, "newrel_hivtest"]),
+
+                 # calculate pct_pulmonary
+                 display_cap_pct(pdata()$profile_data[, "newrel_art"],
+                                 pdata()$profile_data[, "newrel_hivpos"]) )
+
+  df <- data.frame(c(ltxt(plabs(), "hivtest_pos"),
+                     paste(" - ",ltxt(plabs(), "art")) ),
+                   num_data, pct_data)
+
+  # add the column names
+  names(df) <- c("", ltxt(plabs(), "number"), "(%)")
+  return(df)
+
+})
+
+# Combine the data with the row headers manually and render for output
+output$tbhiv_table <- renderTable({ tbhiv_data()  },
+                                      striped = TRUE,
+                                      hover = TRUE,
+                                      width = "100%",
+                                      na="")
