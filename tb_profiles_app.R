@@ -74,22 +74,29 @@ ui <- function(request) {
 
                     tabPanel(title = HTML("Estimates<br />(charts)"),
 
-                             plotOutput(outputId = "inc_chart"),
+                            plotOutput(outputId = "inc_chart"),
 
-                             # add some space
-                             tags$div(style="margin:1em;",
-                                      HTML("&nbsp;")
-                                     ),
+                            # add some space
+                            tags$div(style="margin:1em;",
+                                  HTML("&nbsp;")
+                                 ),
 
-                             plotOutput(outputId = "mort_chart")
+                            plotOutput(outputId = "mort_chart")
                              ),
 
-                   tabPanel(title = HTML("Notifications<br />(tables)"),
+                    tabPanel(title = HTML("Notifications<br />(tables)"),
 
-                             textOutput(outputId = "heading_notifs", container = h2),
-                             tableOutput(outputId = "notifs_table")
+                            textOutput(outputId = "heading_notifs", container = h2),
+                            tableOutput(outputId = "notifs_table"),
 
-                             )
+                            textOutput(outputId = "heading_tbhiv", container = h2),
+                            tableOutput(outputId = "tbhiv_table"),
+
+                            textOutput(outputId = "heading_drtb", container = h2),
+                            tableOutput(outputId = "drtb_table")
+
+
+                            )
 
                 )
 

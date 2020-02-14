@@ -95,3 +95,91 @@ output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
                                       colnames = FALSE,
                                       na="")
 
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 2. TB/HIV table
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$heading_tbhiv <- renderText({ paste0(ltxt(plabs(), "newrel_tbhiv_care"), ", ", dcyear-1)  })
+
+
+tbhiv_data <- reactive({
+
+  # numbers
+  num_data <- c(rounder(pdata()$profile_data[, "newrel_hivpos"]),
+                rounder(pdata()$profile_data[, "newrel_art"]))
+
+
+  pct_data <- c( # calculate pct_hivtestpositive
+                 display_cap_pct(pdata()$profile_data[, "newrel_hivpos"],
+                                 pdata()$profile_data[, "newrel_hivtest"]),
+
+                 # calculate pct_pulmonary
+                 display_cap_pct(pdata()$profile_data[, "newrel_art"],
+                                 pdata()$profile_data[, "newrel_hivpos"]) )
+
+  df <- data.frame(c(ltxt(plabs(), "hivtest_pos"),
+                     paste(" - ",ltxt(plabs(), "art")) ),
+                   num_data, pct_data)
+
+  # add the column names
+  names(df) <- c("", ltxt(plabs(), "number"), "(%)")
+  return(df)
+
+})
+
+# Combine the data with the row headers manually and render for output
+output$tbhiv_table <- renderTable({ tbhiv_data()  },
+                                      striped = TRUE,
+                                      hover = TRUE,
+                                      width = "100%",
+                                      na="")
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 3. DR-TB table
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$heading_drtb <- renderText({ paste0(ltxt(plabs(), "drtb_care"), ", ", dcyear-1)  })
+
+drtb_data <- reactive({
+
+  c(# calculate dst_pct for new pulmonary bac-confirmed cases
+    display_cap_pct(pdata()$profile_data[, "r_rlt_new"],
+                    pdata()$profile_data[, "pulm_labconf_new"]),
+
+    # calculate dst_pct for previously treated pulmonary bac-confirmed cases
+    display_cap_pct(pdata()$profile_data[, "r_rlt_ret"],
+                    pdata()$profile_data[, "pulm_labconf_ret"]),
+
+
+    rounder(pdata()$profile_data[, "conf_rrmdr"]),
+    rounder(pdata()$profile_data[, "mdr_tx"]),
+    rounder(pdata()$profile_data[, "all_conf_xdr"]),
+    rounder(pdata()$profile_data[, "conf_xdr_tx"]),
+    rounder(pdata()$profile_data[, "rr_sldst"])
+
+  )
+
+
+})
+
+
+output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "new")),
+                                                 paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "ret")),
+                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_rr_mdr")),
+                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_rr_mdr")),
+                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_xdr_short")),
+                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_xdr_short")),
+                                                 ltxt(plabs(), "rr_sldst")
+                                                  ),
+                                               drtb_data()
+                                              )  },
+                                      striped = TRUE,
+                                      hover = TRUE,
+                                      width = "100%",
+                                      # suppress column headers
+                                      colnames = FALSE,
+                                      na="")
+
