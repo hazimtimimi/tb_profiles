@@ -14,11 +14,9 @@ notifs_data <- reactive({
 
 
   # Calculate total numner of pulmonary new and relapse cases
-  #
-  #  TBD -- make this foolproof -- eg when some of the columns are missing !!!!!
-  #
-  pulmonary <- pdata()$profile_data[, "new_labconf"] + pdata()$profile_data[, "new_clindx"] +
-               pdata()$profile_data[, "ret_rel_labconf"] + pdata()$profile_data[, "ret_rel_clindx"]
+  # Convert any missing values to zero
+  pulmonary <- NZ(pdata()$profile_data, "new_labconf") + NZ(pdata()$profile_data, "new_clindx") +
+               NZ(pdata()$profile_data, "ret_rel_labconf") + NZ(pdata()$profile_data, "ret_rel_clindx")
 
   # calculate percent of men, women and children in new and relapse
   # in 2019 instead of c_newinc used c_tot_agesex as the denominator,

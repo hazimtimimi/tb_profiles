@@ -62,3 +62,12 @@ format_estimate <- function(best, lo, hi, style="n"){
     }
 
 }
+
+
+# Replace a missing data column with zero
+NZ <- function(df, cname){
+
+      ifelse(cname %in% colnames(df),
+             df[, cname],
+             0)
+}
