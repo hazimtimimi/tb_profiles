@@ -69,7 +69,10 @@ ui <- function(request) {
                              tableOutput(outputId = "estimates_table"),
 
                              textOutput(outputId = "heading_drestimates", container = h2),
-                             tableOutput(outputId = "drestimates_table")
+                             tableOutput(outputId = "drestimates_table"),
+
+                             textOutput(outputId = "heading_uhc", container = h2),
+                             tableOutput(outputId = "uhc_table")
                              ),
 
                     tabPanel(title = HTML("Estimates<br />(charts)"),

@@ -124,3 +124,61 @@ output$drestimates_table <- renderTable({ drestimates_table_content() },
                                       # suppress column headers
                                       colnames = FALSE,
                                       na="")
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 3. UHC and social protection table
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$heading_uhc <- renderText({ ltxt(plabs(), "uhc")  })
+
+
+uhc_data <- reactive({
+
+  c(# treatment coverage
+    format_estimate(pdata()$profile_estimates[, "c_cdr"],
+                    pdata()$profile_estimates[, "c_cdr_lo"],
+                    pdata()$profile_estimates[, "c_cdr_hi"],
+                    style="%"),
+
+    # catastrophic costs -- only a few countries have this data
+    # so need first to check whether the data exist
+    ifelse("catast_pct" %in% colnames(pdata()$profile_data),
+            format_estimate(pdata()$profile_data[, "catast_pct"],
+                            pdata()$profile_data[, "catast_pct_lo"],
+                            pdata()$profile_data[, "catast_pct_hi"],
+                            style="%"),
+           ""
+           ),
+
+
+    # case fatality ratio -- convert from a raio to percent
+    format_estimate(pdata()$profile_estimates[, "cfr"] * 100,
+                    pdata()$profile_estimates[, "cfr_lo"] * 100,
+                    pdata()$profile_estimates[, "cfr_hi"] * 100,
+                    style="%")
+
+
+    )
+
+
+})
+
+
+output$uhc_table <- renderTable({ data.frame( c(paste0(ltxt(plabs(), "tx_coverage"), ", ", dcyear - 1),
+
+
+                                                ifelse("catast_survey_year" %in% colnames(pdata()$profile_data),
+                                                       paste0(ltxt(plabs(), "catastrophic_costs"), ", ",
+                                                              pdata()$profile_data[, "catast_survey_year"]),
+                                                       ltxt(plabs(), "catastrophic_costs")),
+
+                                                paste0(ltxt(plabs(), "cfr"), ", ", dcyear - 1)),
+                                              uhc_data()
+                                             )  },
+                                      striped = TRUE,
+                                      hover = TRUE,
+                                      width = "100%",
+                                      # suppress column headers
+                                      colnames = FALSE,
+                                      na="")
+

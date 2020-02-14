@@ -14,6 +14,9 @@ notifs_data <- reactive({
 
 
   # Calculate total numner of pulmonary new and relapse cases
+  #
+  #  TBD -- make this foolproof -- eg when some of the columns are missing !!!!!
+  #
   pulmonary <- pdata()$profile_data[, "new_labconf"] + pdata()$profile_data[, "new_clindx"] +
                pdata()$profile_data[, "ret_rel_labconf"] + pdata()$profile_data[, "ret_rel_clindx"]
 
