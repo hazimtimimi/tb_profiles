@@ -96,8 +96,6 @@ output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
                                       na="")
 
 
-
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # 2. TB/HIV table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -182,4 +180,5 @@ output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"),
                                       # suppress column headers
                                       colnames = FALSE,
                                       na="")
+
 

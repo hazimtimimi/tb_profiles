@@ -95,7 +95,6 @@ ui <- function(request) {
                             textOutput(outputId = "heading_drtb", container = h2),
                             tableOutput(outputId = "drtb_table")
 
-
                             )
 
                 )
