@@ -76,5 +76,14 @@ budget_palette <- function(){
     "c_gap"           =  "#D84D3F"   # Unfunded (red)
     )
 
+}
+
+
+agesex_palette <- function() {
+
+ c("inc" = "#EEEEEE", # incidence (almost whute)
+   "f" = "#EE1D23",  # Females (red used by Sue in 2017)
+   "m" = "#00AAAD"   # Males   (turquoise used by Sue in 2017)
+ )
 
 }

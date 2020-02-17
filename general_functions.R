@@ -64,10 +64,7 @@ format_estimate <- function(best, lo, hi, style="n"){
 }
 
 
-# Replace a missing data column with zero
-NZ <- function(df, cname){
-
-      ifelse(cname %in% colnames(df),
-             df[, cname],
-             0)
+# Replace a null value with zero
+NZ <- function(x){
+  ifelse(is.na(x), 0, x)
 }

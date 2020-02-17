@@ -142,7 +142,7 @@ uhc_data <- reactive({
 
     # catastrophic costs -- only a few countries have this data
     # so need first to check whether the data exist
-    ifelse("catast_pct" %in% colnames(pdata()$profile_data),
+    ifelse(!is.na(pdata()$profile_data[, "catast_pct"]),
             format_estimate(pdata()$profile_data[, "catast_pct"],
                             pdata()$profile_data[, "catast_pct_lo"],
                             pdata()$profile_data[, "catast_pct_hi"],
@@ -167,7 +167,7 @@ uhc_data <- reactive({
 output$uhc_table <- renderTable({ data.frame( c(paste0(ltxt(plabs(), "tx_coverage"), ", ", dcyear - 1),
 
 
-                                                ifelse("catast_survey_year" %in% colnames(pdata()$profile_data),
+                                                ifelse(!is.na(pdata()$profile_data[, "catast_survey_year"]),
                                                        paste0(ltxt(plabs(), "catastrophic_costs"), ", ",
                                                               pdata()$profile_data[, "catast_survey_year"]),
                                                        ltxt(plabs(), "catastrophic_costs")),

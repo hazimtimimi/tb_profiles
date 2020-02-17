@@ -4,11 +4,12 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
+app_version <- "Alpha test version 0.1"
 
 library(shiny)
 library(dplyr)
 library(stringr)
+library(tidyr)
 library(ggplot2)
 library(jsonlite)
 
@@ -57,7 +58,9 @@ ui <- function(request) {
                                         "Español" = "ES",
                                         "Français" = "FR",
                                         "Русский" = "RU"),
-                            selectize = FALSE)
+                            selectize = FALSE),
+
+                tags$p(tags$i(app_version))
             ),
 
             # Display result
@@ -100,15 +103,16 @@ ui <- function(request) {
 
                             ),
 
-                    tabPanel(title = HTML("Notifcations<br />(charts)")
+                    tabPanel(title = HTML("Notifcations<br />(chart)"),
 
-
-                            ),
-
-                    tabPanel(title = HTML("Outcomes<br />(tables & charts)")
-
+                            plotOutput(outputId = "agesex_chart")
 
                             ),
+
+                    # tabPanel(title = HTML("Outcomes<br />(tables & charts)")
+                    #
+                    #
+                    #         ),
 
                     tabPanel(title = HTML("Financing<br />(tables & charts)"),
                             plotOutput(outputId = "budget_chart")
@@ -175,6 +179,8 @@ server <- function(input, output, session) {
     source("build_tab_estimates_charts.R", local = TRUE)
 
     source("build_tab_notifs_tables.R", local = TRUE)
+
+    source("build_tab_notifs_charts.R", local = TRUE)
 
     source("build_tab_finance.R", local = TRUE)
 
