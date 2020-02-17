@@ -170,13 +170,13 @@ server <- function(input, output, session) {
     output$main_heading <- renderText({ ltxt(plabs(), "head") })
 
 
-    source("build_tab1_estimates_tables.R", local = TRUE)
+    source("build_tab_estimates_tables.R", local = TRUE)
 
-    source("build_tab2_estimates_charts.R", local = TRUE)
+    source("build_tab_estimates_charts.R", local = TRUE)
 
-    source("build_tab3_notifs_tables.R", local = TRUE)
+    source("build_tab_notifs_tables.R", local = TRUE)
 
-    source("build_tab6_finance.R", local = TRUE)
+    source("build_tab_finance.R", local = TRUE)
 
     }
 
