@@ -16,6 +16,13 @@ output$inc_chart <-  renderPlot({
   #  Legend code here is based on https://aosmith.rbind.io/2018/07/19/manual-legends-ggplot2/
 
   pdata()$epi_timeseries %>%
+
+     # quick fix if TB/HIV estimates are all NAs, make sure
+     # data type is numeric (problem with Andorra etc)
+     mutate(e_inc_tbhiv_100k = as.numeric(e_inc_tbhiv_100k),
+            e_inc_tbhiv_100k_lo = as.numeric(e_inc_tbhiv_100k_lo),
+            e_inc_tbhiv_100k_hi = as.numeric(e_inc_tbhiv_100k_hi)) %>%
+
      ggplot(aes(x=year, y=c_newinc_100k, ymin=0)) +
      geom_line(size=1, aes(colour="notifs")) +
 

@@ -46,9 +46,18 @@ get_cap_pct <- function(numerator, denominator) {
 # as best (lo-hi)
 format_estimate <- function(best, lo, hi, style="n"){
 
-    if (style=="k"){
-        # format number using spaces for thousands separator
+    # Need this very first line so as not to trigger an error when
+    # the application first loads ... annoying
+    if (length(best) == 0 ){
+        # return an empty string
+        return("")
 
+    } else if (is.na(best)){
+        # return an empty string
+        return("")
+
+    } else if (style=="k"){
+        # format number using spaces for thousands separator
         return(paste0(rounder(best), " (", rounder(lo), "-", rounder(hi), ")"))
 
     } else if (style=="%") {
@@ -57,7 +66,6 @@ format_estimate <- function(best, lo, hi, style="n"){
 
     } else {
         # keep numbers as they are
-
         return(paste0(best, " (", lo, "-", hi, ")"))
     }
 
