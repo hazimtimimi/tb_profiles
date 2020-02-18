@@ -65,7 +65,12 @@ ui <- function(request) {
 
             # Display result
             mainPanel(
-                textOutput(outputId = "main_heading", container = h1),
+                textOutput(outputId = "country", container = h1),
+                tags$p(
+                    tags$i(
+                        textOutput(outputId = "population", inline = TRUE))),
+                textOutput(outputId = "main_heading", container = h2),
+
                 tabsetPanel(id = "main_tabs",
                     tabPanel(title = HTML("Estimates<br />(tables)"),
                              textOutput(outputId = "estimates_heading", container = h2),
@@ -172,7 +177,7 @@ server <- function(input, output, session) {
     pdata <- reactive({
 
        url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
-       json <- fromJSON(readLines(url, warn = FALSE))
+       json <- fromJSON(readLines(url, warn = FALSE, encoding = 'UTF-8'))
        return(json)
     })
 
@@ -195,9 +200,7 @@ server <- function(input, output, session) {
     # Build all the output objects to display in the application
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
-    output$main_heading <- renderText({ ltxt(plabs(), "head") })
-
+    source("build_header.R", local = TRUE)
 
     source("build_tab_estimates_tables.R", local = TRUE)
 

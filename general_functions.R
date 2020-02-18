@@ -26,6 +26,16 @@ rounder_pct <- function(x) {
            )
 }
 
+# display millions
+rounder_mil <- function(x) {
+
+    ifelse(is.na(x), "",
+           ifelse(x > 0 & x < 10,
+                  signif(x, 2),
+                  rounder(x)))
+}
+
+
 # Calculate % using numerator and denominator, format the output and cap at 100%
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
