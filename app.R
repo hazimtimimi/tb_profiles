@@ -109,10 +109,14 @@ ui <- function(request) {
 
                             ),
 
-                    # tabPanel(title = HTML("Outcomes<br />(tables & charts)")
-                    #
-                    #
-                    #         ),
+                    tabPanel(title = HTML("Outcomes<br />(table)"),
+
+                             textOutput(outputId = "outcomes_heading", container = h2),
+
+                             tableOutput(outputId = "oucomes_table")
+
+
+                            ),
 
 
                     # The financing tab should only be shown if publish_finance_profile is set to TRUE
@@ -202,6 +206,8 @@ server <- function(input, output, session) {
     source("build_tab_notifs_tables.R", local = TRUE)
 
     source("build_tab_notifs_charts.R", local = TRUE)
+
+    source("build_tab_outcomes.R", local = TRUE)
 
     source("build_tab_finance.R", local = TRUE)
 

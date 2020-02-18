@@ -18,6 +18,13 @@ rounder <- function(x) {
            )
 }
 
+# display a percentage to 2 sig figs
+rounder_pct <- function(x) {
+
+    ifelse(is.na(x), "",
+           paste0(signif(x, 2), "%")
+           )
+}
 
 # Calculate % using numerator and denominator, format the output and cap at 100%
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
