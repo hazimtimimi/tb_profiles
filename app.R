@@ -66,7 +66,7 @@ ui <- function(request) {
             # Display result
             mainPanel(
                 textOutput(outputId = "main_heading", container = h1),
-                tabsetPanel(
+                tabsetPanel(id = "main_tabs",
                     tabPanel(title = HTML("Estimates<br />(tables)"),
                              textOutput(outputId = "estimates_heading", container = h2),
                              tableOutput(outputId = "estimates_table"),
@@ -114,9 +114,16 @@ ui <- function(request) {
                     #
                     #         ),
 
-                    tabPanel(title = HTML("Financing<br />(tables & charts)"),
-                            plotOutput(outputId = "budget_chart")
 
+                    # The financing tab should only be shown if publish_finance_profile is set to TRUE
+
+                    tabPanel(title = HTML("Financing<br />(tables & charts)"), value = "fin_tab",
+
+                            textOutput(outputId = "finance_heading", container = h2),
+
+                            tableOutput(outputId = "budget_table"),
+
+                            plotOutput(outputId = "budget_chart")
 
                             )
 
@@ -163,6 +170,20 @@ server <- function(input, output, session) {
        url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
        json <- fromJSON(readLines(url, warn = FALSE))
        return(json)
+    })
+
+
+    # Show or hide the finance tab depending on the country selected
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    observeEvent(input$iso2, ignoreNULL = TRUE, ignoreInit = TRUE, {
+
+        if (isTRUE(pdata()$profile_properties[, "publish_finance_profile"])){
+            showTab(inputId = "main_tabs", target = "fin_tab")
+        } else {
+            hideTab(inputId = "main_tabs", target = "fin_tab")
+        }
+
     })
 
 
