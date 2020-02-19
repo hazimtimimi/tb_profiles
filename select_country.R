@@ -11,7 +11,9 @@ countrylist <- reactive({
         )
 
     countrylist <- countries %>%
-        select(iso2, name = country_name_lan) %>%
+        # Needed to use all_of() otherwise get a warning about "using an external
+        # vector in selections is ambiguous"
+        select(iso2, name = all_of(country_name_lan)) %>%
         arrange(name)
 
     # Return a named list not a dataframe because that is what selectInput() needs
@@ -26,7 +28,8 @@ output$countries <- renderUI({
     selectInput(inputId = "iso2",
                 label = "",
                 choices = countrylist(),
-                selected = "AF",
+                # next line needed to avoid losing the selected country when the language is changed
+                selected = input$iso2,
                 selectize = FALSE)
 })
 
