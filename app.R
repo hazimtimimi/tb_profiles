@@ -51,16 +51,20 @@ ui <- function(request) {
                 # If the code below also doesn't work when running on shinyapps.io
                 # then try the workaround suggested at https://stackoverflow.com/questions/59832593/how-to-render-inequalities-in-r-shiny-selectinput-dropdown-list
 
-                uiOutput(outputId = "countries"),
-                selectInput(inputId = "lan",
+                radioButtons(inputId = "lan",
                             label = "",
                             choices = c("English" = "EN",
                                         "Español" = "ES",
                                         "Français" = "FR",
                                         "Русский" = "RU"),
-                            selectize = FALSE),
-
-                tags$p(tags$i(app_version))
+                            ),
+ 
+                uiOutput(outputId = "countries"),
+ 
+                tags$p(tags$i(app_version)),
+                
+                HTML("<p><i>Code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a></i></p>")
+                
             ),
 
             # Display result
