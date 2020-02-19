@@ -37,12 +37,14 @@ notifs_data <- reactive({
                     get_cap_pct(pdata()$profile_data[, "c_newrel_women"], pdata()$profile_data[, "c_tot_agesex"]) -
                     get_cap_pct(pdata()$profile_data[, "c_newrel_men"], pdata()$profile_data[, "c_tot_agesex"]) )
 
-  # now format pct_014 as a string
-  pct_014 <- ifelse((pct_014 == 0 & pdata()$profile_data[, "c_newrel_014"] > 0),
-                    # show this to avoid a false 0%
-                    "<1%",
-                    paste0(signif(pct_014, 2), "%"))
-
+  if (pct_014 != "") {
+    
+    # now format pct_014 as a string
+    pct_014 <- ifelse((pct_014 == 0 & pdata()$profile_data[, "c_newrel_014"] > 0),
+                      # show this to avoid a false 0%
+                      "<1%",
+                      paste0(signif(pct_014, 2), "%"))
+  }
 
 
   data_column <- c(rounder(pdata()$profile_data[, "c_newinc"]),
