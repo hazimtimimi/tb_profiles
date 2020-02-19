@@ -76,7 +76,7 @@ ui <- function(request) {
                 textOutput(outputId = "main_heading", container = h2),
 
                 tabsetPanel(id = "main_tabs",
-                    tabPanel(title = HTML("Estimates<br />(tables)"),
+                    tabPanel(title = HTML("Estimates<br />(tables)"), value = "estt_tab",
                              textOutput(outputId = "estimates_heading", container = h2),
                              tableOutput(outputId = "estimates_table"),
 
@@ -87,7 +87,7 @@ ui <- function(request) {
                              tableOutput(outputId = "uhc_table")
                              ),
 
-                    tabPanel(title = HTML("Estimates<br />(charts)"),
+                    tabPanel(title = HTML("Estimates<br />(charts)"), value = "estc_tab",
 
                             plotOutput(outputId = "inc_chart"),
 
@@ -99,7 +99,7 @@ ui <- function(request) {
                             plotOutput(outputId = "mort_chart")
                              ),
 
-                    tabPanel(title = HTML("Notifications<br />(tables)"),
+                    tabPanel(title = HTML("Notifications<br />(tables)"), value = "nott_tab",
 
                             textOutput(outputId = "notifs_heading", container = h2),
                             tableOutput(outputId = "notifs_table"),
@@ -112,13 +112,13 @@ ui <- function(request) {
 
                             ),
 
-                    tabPanel(title = HTML("Notifcations<br />(chart)"),
+                    tabPanel(title = HTML("Notifcations<br />(chart)"), value = "notc_tab",
 
                             plotOutput(outputId = "agesex_chart")
 
                             ),
 
-                    tabPanel(title = HTML("Outcomes<br />(table)"),
+                    tabPanel(title = HTML("Outcomes<br />(table)"), value = "out_tab",
 
                              textOutput(outputId = "outcomes_heading", container = h2),
 
