@@ -51,5 +51,7 @@ output$oucomes_table <- renderTable({ outcomes_table_content() },
             striped = TRUE,
             hover = TRUE,
             width = "100%",
+            # right-align the cohort column
+            align = "llr",
             na="")
 

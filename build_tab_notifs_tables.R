@@ -38,7 +38,7 @@ notifs_data <- reactive({
                     get_cap_pct(pdata()$profile_data[, "c_newrel_men"], pdata()$profile_data[, "c_tot_agesex"]) )
 
   if (pct_014 != "") {
-    
+
     # now format pct_014 as a string
     pct_014 <- ifelse((pct_014 == 0 & pdata()$profile_data[, "c_newrel_014"] > 0),
                       # show this to avoid a false 0%
@@ -94,6 +94,8 @@ output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
                                       striped = TRUE,
                                       hover = TRUE,
                                       width = "100%",
+                                      # right-align the data column
+                                      align = "lr",
                                       # suppress column headers
                                       colnames = FALSE,
                                       na="")
@@ -136,6 +138,8 @@ output$tbhiv_table <- renderTable({ tbhiv_data()  },
                                       striped = TRUE,
                                       hover = TRUE,
                                       width = "100%",
+                                      # right-align the data columns
+                                      align = "lrr",
                                       na="")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -180,6 +184,8 @@ output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"),
                                       striped = TRUE,
                                       hover = TRUE,
                                       width = "100%",
+                                      # right-align the data column
+                                      align = "lr",
                                       # suppress column headers
                                       colnames = FALSE,
                                       na="")

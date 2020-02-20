@@ -37,6 +37,8 @@ output$budget_table <- renderTable({
             striped = TRUE,
             hover = TRUE,
             width = "100%",
+            # right-align the data column
+            align = "lr",
             # suppress column headers
             colnames = FALSE,
             na="")
