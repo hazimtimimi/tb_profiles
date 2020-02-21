@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Alpha test version 0.1"
+app_version <- "Alpha test version 0.2"
 
 library(shiny)
 library(dplyr)
@@ -61,9 +61,14 @@ ui <- function(request) {
 
                 uiOutput(outputId = "countries"),
 
+                HTML("<p>&nbsp;</p><hr /><p>Data also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
+                      <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
+                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a></p>"),
+
+
                 tags$p(tags$i(app_version)),
 
-                HTML("<p><i>Code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a></i></p>")
+                HTML("<p><i>Source code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a></i></p>")
 
             ),
 
@@ -118,12 +123,13 @@ ui <- function(request) {
 
                             ),
 
-                    tabPanel(title = HTML("Outcomes<br />(table)"), value = "out_tab",
+                    tabPanel(title = HTML("Outcomes"), value = "out_tab",
 
                              textOutput(outputId = "outcomes_heading", container = h2),
 
-                             tableOutput(outputId = "oucomes_table")
+                             tableOutput(outputId = "oucomes_table"),
 
+                             plotOutput(outputId = "tsr_chart")
 
                             ),
 

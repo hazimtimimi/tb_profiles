@@ -13,7 +13,7 @@ profile_theme <- function(base_size=14, base_family="") {
   #Text format:
   plot.title = element_text(family=base_family,
                             size=28,
-                            face="bold",
+                            #face="bold",
                             color=charcoal),
   plot.subtitle = element_text(family=base_family,
                                size=18,
