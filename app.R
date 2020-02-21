@@ -127,9 +127,18 @@ ui <- function(request) {
 
                             ),
 
+                    tabPanel(title = HTML("Preventive<br />Treatment"), value = "out_tab",
+
+                             textOutput(outputId = "prevtx_heading", container = h2),
+
+                             tableOutput(outputId = "prevtx_table")
+
+
+                            ),
+
 
                     # The financing tab should only be shown if dc_form_description is set to 'TRUE'Long form'
-                    tabPanel(title = HTML("Financing<br />(tables & charts)"), value = "fin_tab",
+                    tabPanel(title = HTML("Financing"), value = "fin_tab",
 
                             textOutput(outputId = "finance_heading", container = h2),
 
@@ -215,6 +224,8 @@ server <- function(input, output, session) {
     source("build_tab_notifs_charts.R", local = TRUE)
 
     source("build_tab_outcomes.R", local = TRUE)
+
+    source("build_tab_prevtx.R", local = TRUE)
 
     source("build_tab_finance.R", local = TRUE)
 
