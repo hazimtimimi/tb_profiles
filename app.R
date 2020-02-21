@@ -58,13 +58,13 @@ ui <- function(request) {
                                         "Français" = "FR",
                                         "Русский" = "RU"),
                             ),
- 
+
                 uiOutput(outputId = "countries"),
- 
+
                 tags$p(tags$i(app_version)),
-                
+
                 HTML("<p><i>Code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a></i></p>")
-                
+
             ),
 
             # Display result
@@ -128,8 +128,7 @@ ui <- function(request) {
                             ),
 
 
-                    # The financing tab should only be shown if publish_finance_profile is set to TRUE
-
+                    # The financing tab should only be shown if dc_form_description is set to 'TRUE'Long form'
                     tabPanel(title = HTML("Financing<br />(tables & charts)"), value = "fin_tab",
 
                             textOutput(outputId = "finance_heading", container = h2),
@@ -187,11 +186,12 @@ server <- function(input, output, session) {
 
 
     # Show or hide the finance tab depending on the country selected
+    # The financing tab should only be shown if dc_form_description is set to 'Long form'
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     observeEvent(input$iso2, ignoreNULL = TRUE, ignoreInit = TRUE, {
 
-        if (isTRUE(pdata()$profile_properties[, "publish_finance_profile"])){
+        if (pdata()$profile_properties[, "dc_form_description"] == "Long form"){
             showTab(inputId = "main_tabs", target = "fin_tab")
         } else {
             hideTab(inputId = "main_tabs", target = "fin_tab")
