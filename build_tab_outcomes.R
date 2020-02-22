@@ -73,23 +73,38 @@ output$tsr_chart <-  renderPlot({
 
     geom_line(aes(y=c_new_tsr,
                   colour="c_new_tsr"),
-              size=2) +
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE) +
 
     geom_line(aes(y=c_ret_tsr,
                   colour="c_ret_tsr"),
-              size=2) +
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE) +
 
     geom_line(aes(y=c_tbhiv_tsr,
                   colour="c_tbhiv_tsr"),
-              size=2) +
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE) +
 
     geom_line(aes(y=c_mdr_tsr,
                   colour="c_mdr_tsr"),
-              size=2) +
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE) +
 
     geom_line(aes(y=c_xdr_tsr,
                   colour="c_xdr_tsr"),
-              size=2) +
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE) +
 
     profile_theme() +
 

@@ -61,7 +61,10 @@ output$budget_chart <-  renderPlot({
       plotobj <- pdata()$profile_finance %>%
     
         ggplot(aes(x=year, y=b_tot, fill = budget)) +
-        geom_col(position = position_stack(reverse = TRUE)) +
+        geom_col(position = position_stack(reverse = TRUE), 
+                 # The next option suppresses warnings about missing values 
+                 # from appearing in the console
+                 na.rm = TRUE) +
         profile_theme()  +
         scale_fill_manual("",
                           values = budget_palette(),

@@ -38,7 +38,10 @@ output$inc_chart <-  renderPlot({
                  alpha=0.4) +
 
      geom_line(aes(y=e_inc_tbhiv_100k, colour="tbhivinc"),
-               size=1) +
+               size=1, 
+               # The next option suppresses warnings about missing values 
+               # from appearing in the console
+               na.rm = TRUE) +
 
      scale_x_continuous(name="", breaks = c(2000, 2005, 2010, 2015, dcyear-1)) +
 
