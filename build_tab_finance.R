@@ -51,19 +51,31 @@ output$budget_table <- renderTable({
 
 output$budget_chart <-  renderPlot({
 
-  #  Added a legend resulting in more complicated code
+  # First make sure there are some data to display
+  nyears <- pdata()$profile_finance %>% filter(!is.na(b_tot)) %>% nrow()
+  
+  # Only plot the data if have at least one year with data
+  
+  if (nyears > 0){
 
-  pdata()$profile_finance %>%
-
-    ggplot(aes(x=year, y=b_tot, fill = budget)) +
-    geom_col(position = position_stack(reverse = TRUE)) +
-    profile_theme()  +
-    scale_fill_manual("",
-                      values = budget_palette(),
-                      labels = c("a_domestic" = ltxt(plabs(), "source_domestic"),
-                                 "b_international" = ltxt(plabs(), "source_international"),
-                                 "c_gap" = ltxt(plabs(), "source_unfunded"))) +
-
-     ggtitle(ltxt(plabs(), "budget"),
-             subtitle = ltxt(plabs(), "usd_millions") )
+      plotobj <- pdata()$profile_finance %>%
+    
+        ggplot(aes(x=year, y=b_tot, fill = budget)) +
+        geom_col(position = position_stack(reverse = TRUE)) +
+        profile_theme()  +
+        scale_fill_manual("",
+                          values = budget_palette(),
+                          labels = c("a_domestic" = ltxt(plabs(), "source_domestic"),
+                                     "b_international" = ltxt(plabs(), "source_international"),
+                                     "c_gap" = ltxt(plabs(), "source_unfunded"))) +
+    
+         ggtitle(ltxt(plabs(), "budget"),
+                 subtitle = ltxt(plabs(), "usd_millions") )
+  } else {
+    
+      plotobj <- NA
+  }
+  
+  return(plotobj)
+  
 })
