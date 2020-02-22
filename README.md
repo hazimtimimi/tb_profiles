@@ -9,7 +9,7 @@ Show a selecton of important indicators concerning tuberculosis (TB) in a chosen
 
 ## Components and data source
 
-This is an app built using [Shiny](https://shiny.rstudio.com/). It uses data published by the World Health Organization's [Globsl Tuberculosis Programme](https://www.who.int/tb/data).
+This is an app built using [Shiny](https://shiny.rstudio.com/). It uses data published by the World Health Organization's [Global Tuberculosis Programme](https://www.who.int/tb/data).
 
 The app pulls data directly from the global TB database. Unfortunately there is no standard api with which to interogate the database, so I built a script and some queries to return JSON files specifically for this app.
 
