@@ -70,41 +70,49 @@ output$tsr_chart <-  renderPlot({
     mutate_at(vars(-year), as.numeric) %>%
 
     ggplot(aes(x=year, ymin=0, ymax=100)) +
-
-    geom_line(aes(y=c_new_tsr,
-                  colour="c_new_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
-              # from appearing in the console
-              na.rm = TRUE) +
-
-    geom_line(aes(y=c_ret_tsr,
-                  colour="c_ret_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
-              # from appearing in the console
-              na.rm = TRUE) +
-
-    geom_line(aes(y=c_tbhiv_tsr,
-                  colour="c_tbhiv_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
-              # from appearing in the console
-              na.rm = TRUE) +
-
-    geom_line(aes(y=c_mdr_tsr,
-                  colour="c_mdr_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
-              # from appearing in the console
-              na.rm = TRUE) +
-
+    
+    # add the layers in reverse order so that the tsr for new and relapse
+    # ends up on top and has the most visibility
+    
     geom_line(aes(y=c_xdr_tsr,
                   colour="c_xdr_tsr"),
               size=2, 
               # The next option suppresses warnings about missing values 
               # from appearing in the console
-              na.rm = TRUE) +
+              na.rm = TRUE,
+              alpha=0.6) +
+    
+    geom_line(aes(y=c_mdr_tsr,
+                  colour="c_mdr_tsr"),
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE,
+              alpha=0.6) +
+    
+    geom_line(aes(y=c_tbhiv_tsr,
+                  colour="c_tbhiv_tsr"),
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE,
+              alpha=0.6) +
+    
+    geom_line(aes(y=c_ret_tsr,
+                  colour="c_ret_tsr"),
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE,
+              alpha=0.6) +
+    
+    geom_line(aes(y=c_new_tsr,
+                  colour="c_new_tsr"),
+              size=2, 
+              # The next option suppresses warnings about missing values 
+              # from appearing in the console
+              na.rm = TRUE,
+              alpha=0.6) +
 
     profile_theme() +
 
@@ -122,7 +130,7 @@ output$tsr_chart <-  renderPlot({
                                    "c_ret_tsr"="green",
                                    "c_tbhiv_tsr"="red",
                                    "c_mdr_tsr"="orange",
-                                   "c_xdr_tsr"="black")) +
+                                   "c_xdr_tsr"="gray")) +
 
     # Use guide_legend() to force the legends into two columns only. This prevented
     # long text from being truncated in the output
