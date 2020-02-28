@@ -82,14 +82,19 @@ ui <- function(request) {
 
                 tabsetPanel(id = "main_tabs",
                     tabPanel(title = HTML("Estimates<br />(tables)"), value = "estt_tab",
-                             textOutput(outputId = "estimates_heading", container = h2),
+
+                             # Use htmloutput so can use HTML superscript tags for callouts to footnotes
+                             htmlOutput(outputId = "estimates_heading", container = h2),
                              tableOutput(outputId = "estimates_table"),
 
-                             textOutput(outputId = "drestimates_heading", container = h2),
+                             htmlOutput(outputId = "drestimates_heading", container = h2),
                              tableOutput(outputId = "drestimates_table"),
 
-                             textOutput(outputId = "uhc_heading", container = h2),
-                             tableOutput(outputId = "uhc_table")
+                             htmlOutput(outputId = "uhc_heading", container = h2),
+                             tableOutput(outputId = "uhc_table"),
+
+                             htmlOutput(outputId = "foot_range"),
+                             htmlOutput(outputId = "foot_mdr_defn")
                              ),
 
                     tabPanel(title = HTML("Estimates<br />(charts)"), value = "estc_tab",
@@ -106,15 +111,18 @@ ui <- function(request) {
 
                     tabPanel(title = HTML("Notifications<br />(tables)"), value = "nott_tab",
 
-                            textOutput(outputId = "notifs_heading", container = h2),
-                            tableOutput(outputId = "notifs_table"),
+                             textOutput(outputId = "notifs_heading", container = h2),
+                             tableOutput(outputId = "notifs_table"),
 
-                            textOutput(outputId = "tbhiv_heading", container = h2),
-                            tableOutput(outputId = "tbhiv_table"),
+                             textOutput(outputId = "tbhiv_heading", container = h2),
+                             tableOutput(outputId = "tbhiv_table"),
 
-                            textOutput(outputId = "drtb_heading", container = h2),
-                            tableOutput(outputId = "drtb_table")
+                             textOutput(outputId = "drtb_heading", container = h2),
+                             tableOutput(outputId = "drtb_table"),
 
+                             htmlOutput(outputId = "foot_pulm"),
+                             htmlOutput(outputId = "foot_newunk"),
+                             htmlOutput(outputId = "foot_rrmdr")
                             ),
 
                     tabPanel(title = HTML("Notifcations<br />(chart)"), value = "notc_tab",
