@@ -68,59 +68,25 @@ output$tsr_chart <-  renderPlot({
 
     pdata()$profile_outcomes %>%
 
-    # Make sure all columns are numeric
-    # (if the whole series for a column is NA then the column is not numeric!)
-    mutate_at(vars(-year), as.numeric) %>%
+    # Convert to long format
+    pivot_longer(cols = starts_with("c_"),
+                 names_to = "case_type",
+                 values_to = "tsr",
+                 # drop empty values
+                 values_drop_na = TRUE) %>%
 
-    ggplot(aes(x=year, ymin=0, ymax=100)) +
 
-    # add the layers in reverse order so that the tsr for new and relapse
-    # ends up on top and has the most visibility
+    ggplot(aes(x=year, y=tsr, xmin=2000, xmax=dcyear-2, ymin=0, ymax=100)) +
 
-    geom_line(aes(y=c_xdr_tsr,
-                  colour="c_xdr_tsr"),
-              size=2,
-              # The next option suppresses warnings about missing values
-              # from appearing in the console
-              na.rm = TRUE,
-              alpha=0.6) +
-
-    geom_line(aes(y=c_mdr_tsr,
-                  colour="c_mdr_tsr"),
-              size=2,
-              # The next option suppresses warnings about missing values
-              # from appearing in the console
-              na.rm = TRUE,
-              alpha=0.6) +
-
-    geom_line(aes(y=c_tbhiv_tsr,
-                  colour="c_tbhiv_tsr"),
-              size=2,
-              # The next option suppresses warnings about missing values
-              # from appearing in the console
-              na.rm = TRUE,
-              alpha=0.6) +
-
-    geom_line(aes(y=c_ret_tsr,
-                  colour="c_ret_tsr"),
-              size=2,
-              # The next option suppresses warnings about missing values
-              # from appearing in the console
-              na.rm = TRUE,
-              alpha=0.6) +
-
-    geom_line(aes(y=c_new_tsr,
-                  colour="c_new_tsr"),
-              size=2,
-              # The next option suppresses warnings about missing values
-              # from appearing in the console
-              na.rm = TRUE,
-              alpha=0.6) +
+    geom_line(aes(colour = case_type,
+                  group = case_type),
+              size = 2,
+              alpha = 0.5) +
 
     profile_theme() +
 
-     ggtitle(ltxt(plabs(), "tsr"),
-             subtitle = "(%)" ) +
+    ggtitle(ltxt(plabs(), "tsr"),
+            subtitle = "(%)" ) +
 
     scale_colour_manual("",
                         breaks = c("c_new_tsr", "c_ret_tsr", "c_tbhiv_tsr", "c_mdr_tsr", "c_xdr_tsr" ),
