@@ -55,19 +55,25 @@ output$budget_chart <-  renderPlot({
   req(pdata()$profile_finance)
 
   # First make sure there are some data to display
-  nyears <- pdata()$profile_finance %>% filter(!is.na(b_tot)) %>% nrow()
+  # There will only be the year column if no data, so check number of columns
+
+  ndata_cols <- ncol(pdata()$profile_finance) - 1
 
   # Only plot the data if have at least one year with data
 
-  if (nyears > 0){
+  if (ndata_cols > 0){
 
       plotobj <- pdata()$profile_finance %>%
 
+        # Convert to long format
+        pivot_longer(cols = -year,
+                     names_to = "budget",
+                     values_to = "b_tot",
+                     # drop empty values
+                     values_drop_na = TRUE) %>%
+
         ggplot(aes(x=year, y=b_tot, fill = budget)) +
-        geom_col(position = position_stack(reverse = TRUE),
-                 # The next option suppresses warnings about missing values
-                 # from appearing in the console
-                 na.rm = TRUE) +
+        geom_col(position = position_stack(reverse = TRUE)) +
         profile_theme()  +
         scale_fill_manual("",
                           values = budget_palette(),
