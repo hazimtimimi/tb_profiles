@@ -12,6 +12,8 @@ output$notifs_heading <- renderText({ paste0(ltxt(plabs(), "notifs"), ", ", dcye
 
 notifs_data <- reactive({
 
+  # make sure there are data to display
+  req(pdata()$profile_data)
 
   # Calculate total numner of pulmonary new and relapse cases
   # Convert any missing values to zero
@@ -111,6 +113,9 @@ output$tbhiv_heading <- renderText({ paste0(ltxt(plabs(), "newrel_tbhiv_care"), 
 
 tbhiv_data <- reactive({
 
+  # make sure there are data to display
+  req(pdata()$profile_data)
+
   # numbers
   num_data <- c(rounder(pdata()$profile_data[, "newrel_hivpos"]),
                 rounder(pdata()$profile_data[, "newrel_art"]))
@@ -150,6 +155,9 @@ output$tbhiv_table <- renderTable({ tbhiv_data()  },
 output$drtb_heading <- renderText({ paste0(ltxt(plabs(), "drtb_care"), ", ", dcyear-1)  })
 
 drtb_data <- reactive({
+
+  # make sure there are data to display
+  req(pdata()$profile_data)
 
   c(# calculate dst_pct for new pulmonary bac-confirmed cases
     display_cap_pct(pdata()$profile_data[, "r_rlt_new"],

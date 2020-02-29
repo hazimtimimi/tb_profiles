@@ -13,6 +13,8 @@ output$finance_heading <- renderText({ ltxt(plabs(), "finance") })
 # Combine the data with the row headers manually and render for output
 output$budget_table <- renderTable({
 
+  # Make sure there are data to display
+  req(pdata()$profile_properties)
 
   # build the data frame manually
   # There are two versions depending on whether this is a long or short form country
