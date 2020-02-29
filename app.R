@@ -205,14 +205,22 @@ server <- function(input, output, session) {
 
     # Show or hide the finance tab depending on the country selected
     # The financing tab should only be shown if dc_form_description is set to 'Long form'
+    # Or of it is 'Short form' and the total budget has been reported and is greater than 0
+    # when rounded to the nearest million
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     observeEvent(input$iso2, ignoreNULL = TRUE, ignoreInit = TRUE, {
 
         if (pdata()$profile_properties[, "dc_form_description"] == "Long form"){
             showTab(inputId = "main_tabs", target = "fin_tab")
+
+        } else if (pdata()$profile_properties[, "dc_form_description"] == "Short form" &
+                   rounder(NZ(pdata()$profile_data[, "tot_req"])) > 0) {
+            showTab(inputId = "main_tabs", target = "fin_tab")
+
         } else {
             hideTab(inputId = "main_tabs", target = "fin_tab")
+
         }
 
     })

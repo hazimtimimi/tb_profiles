@@ -15,33 +15,45 @@ output$budget_table <- renderTable({
 
 
   # build the data frame manually
-  data.frame(c(paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
-               paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
-               paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
-               paste0("- ", ltxt(plabs(), "source_unfunded"))),
+  # There are two versions depending on whether this is a long or short form country
+  if (pdata()$profile_properties[, "dc_form_description"] == "Long form"){
 
-             c(rounder(pdata()$profile_data[, "tot_req"]),
+        data.frame(c(paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
+                     paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
+                     paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
+                     paste0("- ", ltxt(plabs(), "source_unfunded"))),
 
-              # calculate pct_domestic, international and unfunded
-              display_cap_pct(pdata()$profile_data[, "tot_domestic"],
-                              pdata()$profile_data[, "tot_req"]),
+                   c(rounder(pdata()$profile_data[, "tot_req"]),
 
-              display_cap_pct(pdata()$profile_data[, "tot_international"],
-                              pdata()$profile_data[, "tot_req"]),
+                    # calculate pct_domestic, international and unfunded
+                    display_cap_pct(pdata()$profile_data[, "tot_domestic"],
+                                    pdata()$profile_data[, "tot_req"]),
 
-              display_cap_pct(pdata()$profile_data[, "tot_gap"],
-                              pdata()$profile_data[, "tot_req"]))
-            ) },
+                    display_cap_pct(pdata()$profile_data[, "tot_international"],
+                                    pdata()$profile_data[, "tot_req"]),
 
+                    display_cap_pct(pdata()$profile_data[, "tot_gap"],
+                                    pdata()$profile_data[, "tot_req"]))
+                  )
 
-            striped = TRUE,
-            hover = TRUE,
-            width = "100%",
-            # right-align the data column
-            align = "lr",
-            # suppress column headers
-            colnames = FALSE,
-            na="")
+  } else {
+
+        data.frame(paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
+                   rounder(pdata()$profile_data[, "tot_req"])
+                  )
+
+  }
+
+    },
+
+    striped = TRUE,
+    hover = TRUE,
+    width = "100%",
+    # right-align the data column
+    align = "lr",
+    # suppress column headers
+    colnames = FALSE,
+    na="")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
