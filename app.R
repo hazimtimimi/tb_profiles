@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Alpha test version 0.2"
+app_version <- "Alpha test version 0.3"
 
 library(shiny)
 library(dplyr)
@@ -41,8 +41,16 @@ ui <- function(request) {
 
     fluidPage(
 
-        # Application title
-        #titlePanel("Country profile test"),
+        # Add CSS so that the sidebar is not rendered upon printing
+        # The Sidebar has HTML class of "col-sm-4"
+        tags$head(
+            tags$style(HTML("
+                            @media only print {
+                                .col-sm-4 {display:none;}
+                            }")
+                       )
+                 ),
+
 
         # Sidebar with a slider input for number of bins
         sidebarLayout(
@@ -102,7 +110,7 @@ ui <- function(request) {
                              htmlOutput(outputId = "uhc_heading", container = h2),
                              tableOutput(outputId = "uhc_table"),
 
-                             htmlOutput(outputId = "foot_range"),
+                             htmlOutput(outputId = "foot_est"),
                              htmlOutput(outputId = "foot_mdr_defn")
 
                              ),
@@ -157,7 +165,11 @@ ui <- function(request) {
 
                             )
 
-                )
+                ),
+
+                # Add the footer that goes on every page
+                htmlOutput(outputId = "foot_main", inline = TRUE)
+
 
             )
         )
@@ -245,6 +257,14 @@ server <- function(input, output, session) {
     source("build_tab_prevtx.R", local = TRUE)
 
     source("build_tab_finance.R", local = TRUE)
+
+    # Add the footer that goes on every page
+    output$foot_main <- renderText({  HTML(paste("<br /><hr />",
+                                                 ltxt(plabs(), "generated"),
+                                                 format(Sys.Date(), "%Y-%m-%d"),
+                                                 ltxt(plabs(), "by_who")
+                                                 )
+                                           ) })
 
     }
 

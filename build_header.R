@@ -31,7 +31,7 @@ output$country <- renderText({
 output$population <- renderText({
 
     paste0(ltxt(plabs(), "pop"),
-           ", ",
+           " ",
            dcyear - 1,
            ": ",
            rounder_mil(pdata()$profile_estimates[, "e_pop_num"]/1e6),

@@ -188,6 +188,6 @@ output$uhc_table <- renderTable({ data.frame( c(paste0(ltxt(plabs(), "tx_coverag
 # 4. Add footnotes
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$foot_range <- renderText({  HTML(paste("&sup1;<i>", ltxt(plabs(), "foot_range"), "</i>")) })
+output$foot_est <- renderText({  HTML(paste("&sup1;<i>", ltxt(plabs(), "foot_est"),"</i>")) })
 output$foot_mdr_defn <- renderText({ HTML(paste("&sup2;<i>", ltxt(plabs(), "mdr_definition"), "</i>")) })
 
