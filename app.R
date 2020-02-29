@@ -81,11 +81,20 @@ ui <- function(request) {
                 textOutput(outputId = "main_heading", container = h2),
 
                 tabsetPanel(id = "main_tabs",
-                    tabPanel(title = HTML("Estimates<br />(tables)"), value = "estt_tab",
+                    tabPanel(title = HTML("Estimates"), value = "est_tab",
 
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
                              htmlOutput(outputId = "estimates_heading", container = h2),
                              tableOutput(outputId = "estimates_table"),
+
+                             plotOutput(outputId = "inc_chart"),
+
+                            # add some space
+                             tags$div(style="margin:1em;",
+                                  HTML("&nbsp;")
+                                 ),
+
+                             plotOutput(outputId = "mort_chart"),
 
                              htmlOutput(outputId = "drestimates_heading", container = h2),
                              tableOutput(outputId = "drestimates_table"),
@@ -95,24 +104,15 @@ ui <- function(request) {
 
                              htmlOutput(outputId = "foot_range"),
                              htmlOutput(outputId = "foot_mdr_defn")
+
                              ),
 
-                    tabPanel(title = HTML("Estimates<br />(charts)"), value = "estc_tab",
-
-                            plotOutput(outputId = "inc_chart"),
-
-                            # add some space
-                            tags$div(style="margin:1em;",
-                                  HTML("&nbsp;")
-                                 ),
-
-                            plotOutput(outputId = "mort_chart")
-                             ),
-
-                    tabPanel(title = HTML("Notifications<br />(tables)"), value = "nott_tab",
+                    tabPanel(title = HTML("Notifications"), value = "not_tab",
 
                              textOutput(outputId = "notifs_heading", container = h2),
                              tableOutput(outputId = "notifs_table"),
+
+                             plotOutput(outputId = "agesex_chart"),
 
                              textOutput(outputId = "tbhiv_heading", container = h2),
                              tableOutput(outputId = "tbhiv_table"),
@@ -123,11 +123,6 @@ ui <- function(request) {
                              htmlOutput(outputId = "foot_pulm"),
                              htmlOutput(outputId = "foot_newunk"),
                              htmlOutput(outputId = "foot_rrmdr")
-                            ),
-
-                    tabPanel(title = HTML("Notifcations<br />(chart)"), value = "notc_tab",
-
-                            plotOutput(outputId = "agesex_chart")
 
                             ),
 
@@ -141,7 +136,7 @@ ui <- function(request) {
 
                             ),
 
-                    tabPanel(title = HTML("Preventive<br />Treatment"), value = "out_tab",
+                    tabPanel(title = HTML("Preventive<br />Treatment"), value = "tpt_tab",
 
                              textOutput(outputId = "prevtx_heading", container = h2),
 

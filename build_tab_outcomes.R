@@ -63,6 +63,9 @@ output$oucomes_table <- renderTable({ outcomes_table_content() },
 
 output$tsr_chart <-  renderPlot({
 
+    # Make sure there are data to plot
+    req(pdata()$profile_outcomes)
+
     pdata()$profile_outcomes %>%
 
     # Make sure all columns are numeric
@@ -70,46 +73,46 @@ output$tsr_chart <-  renderPlot({
     mutate_at(vars(-year), as.numeric) %>%
 
     ggplot(aes(x=year, ymin=0, ymax=100)) +
-    
+
     # add the layers in reverse order so that the tsr for new and relapse
     # ends up on top and has the most visibility
-    
+
     geom_line(aes(y=c_xdr_tsr,
                   colour="c_xdr_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
+              size=2,
+              # The next option suppresses warnings about missing values
               # from appearing in the console
               na.rm = TRUE,
               alpha=0.6) +
-    
+
     geom_line(aes(y=c_mdr_tsr,
                   colour="c_mdr_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
+              size=2,
+              # The next option suppresses warnings about missing values
               # from appearing in the console
               na.rm = TRUE,
               alpha=0.6) +
-    
+
     geom_line(aes(y=c_tbhiv_tsr,
                   colour="c_tbhiv_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
+              size=2,
+              # The next option suppresses warnings about missing values
               # from appearing in the console
               na.rm = TRUE,
               alpha=0.6) +
-    
+
     geom_line(aes(y=c_ret_tsr,
                   colour="c_ret_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
+              size=2,
+              # The next option suppresses warnings about missing values
               # from appearing in the console
               na.rm = TRUE,
               alpha=0.6) +
-    
+
     geom_line(aes(y=c_new_tsr,
                   colour="c_new_tsr"),
-              size=2, 
-              # The next option suppresses warnings about missing values 
+              size=2,
+              # The next option suppresses warnings about missing values
               # from appearing in the console
               na.rm = TRUE,
               alpha=0.6) +

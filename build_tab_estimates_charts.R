@@ -10,6 +10,9 @@
 
 output$inc_chart <-  renderPlot({
 
+  # Make sure there are data to plot
+  req(pdata()$epi_timeseries)
+
   #  Added a legend resulting in more complicated code
   #  The alternative is to dispense with ggtitle() and
   #  instead use Shiny textoutput and styles to render a multi-coloured heading
@@ -38,8 +41,8 @@ output$inc_chart <-  renderPlot({
                  alpha=0.4) +
 
      geom_line(aes(y=e_inc_tbhiv_100k, colour="tbhivinc"),
-               size=1, 
-               # The next option suppresses warnings about missing values 
+               size=1,
+               # The next option suppresses warnings about missing values
                # from appearing in the console
                na.rm = TRUE) +
 
@@ -74,6 +77,8 @@ output$inc_chart <-  renderPlot({
 
 output$mort_chart <-  renderPlot({
 
+  # Make sure there are data to plot
+  req(pdata()$epi_timeseries)
 
   pdata()$epi_timeseries %>%
     ggplot(aes(x=year, y=e_mort_exc_tbhiv_100k, ymin=0)) +

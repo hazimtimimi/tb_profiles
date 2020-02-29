@@ -9,6 +9,9 @@
 
 agesex_data <- reactive({
 
+  # Make sure there are data to plot
+  req(pdata()$profile_incnum_agesex)
+
   # Get the age/sex disaggregated estimates and notifications
   agesex <- pdata()$profile_incnum_agesex
   notifs_agesex <- pdata()$profile_data %>%
