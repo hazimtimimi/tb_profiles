@@ -14,11 +14,21 @@ output$outcomes_heading <- renderText({ ltxt(plabs(), "tsr_cohort") })
 
 outcomes_table_content <- reactive({
 
+  # don't do anything until country profile data are available
+  req(pdata()$profile_data)
+
   # build the data frame manually
   df <- data.frame(
 
-            c(paste(ltxt(plabs(), "tsr_newrel"), dcyear - 2),
-               paste(ltxt(plabs(), "tsr_ret_nrel"), dcyear - 2),
+            c(#labels depend on whether or not the country includes relapses with new
+               ifelse(pdata()$profile_data[, "rel_with_new_flg"] == 1,
+                      paste(ltxt(plabs(), "tsr_newrel"), dcyear - 2),
+                      paste(ltxt(plabs(), "tsr_new"), dcyear - 2)),
+
+               ifelse(pdata()$profile_data[, "rel_with_new_flg"] == 1,
+                      paste(ltxt(plabs(), "tsr_ret_nrel"), dcyear - 2),
+                      paste(ltxt(plabs(), "tsr_allret"), dcyear - 2)),
+
                paste(ltxt(plabs(), "tsr_tbhiv"), dcyear - 2),
                paste(ltxt(plabs(), "tsr_mdr"), dcyear - 3),
                paste(ltxt(plabs(), "tsr_xdr"), dcyear - 3)),
@@ -90,8 +100,13 @@ output$tsr_chart <-  renderPlot({
 
     scale_colour_manual("",
                         breaks = c("c_new_tsr", "c_ret_tsr", "c_tbhiv_tsr", "c_mdr_tsr", "c_xdr_tsr" ),
-                        labels = c(ltxt(plabs(), "tsr_newrel_short"),
-                                   ltxt(plabs(), "tsr_ret_nrel_short"),
+                        labels = c(#labels depend on whether or not the country includes relapses with new
+                                   ifelse(pdata()$profile_data[, "rel_with_new_flg"] == 1,
+                                          ltxt(plabs(), "tsr_newrel_short"),
+                                          ltxt(plabs(), "new")),
+                                   ifelse(pdata()$profile_data[, "rel_with_new_flg"] == 1,
+                                          ltxt(plabs(), "tsr_ret_nrel_short"),
+                                          ltxt(plabs(), "ret")),
                                    ltxt(plabs(), "tsr_hiv_pos"),
                                    ltxt(plabs(), "tsr_rr_mdr"),
                                    ltxt(plabs(), "tsr_xdr_short")),
