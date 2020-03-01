@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Alpha test version 0.3"
+app_version <- "Beta test version 0.4"
 
 library(shiny)
 library(dplyr)
@@ -42,19 +42,20 @@ ui <- function(request) {
     fluidPage(
 
         # Add CSS so that the sidebar is not rendered upon printing
-        # The Sidebar has HTML class of "col-sm-4"
+        # Use the id I defined for it in code below ("side_bar")
+        # And same for the tabset, id of "main_tabs"
         tags$head(
             tags$style(HTML("
                             @media only print {
-                                .col-sm-4 {display:none;}
+                                #side_bar, #main_tabs {display:none;}
                             }")
                        )
                  ),
 
 
-        # Sidebar with a slider input for number of bins
         sidebarLayout(
-            sidebarPanel(
+            sidebarPanel(id="side_bar",
+
                 # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
                 # If the code below also doesn't work when running on shinyapps.io
                 # then try the workaround suggested at https://stackoverflow.com/questions/59832593/how-to-render-inequalities-in-r-shiny-selectinput-dropdown-list
@@ -69,7 +70,7 @@ ui <- function(request) {
 
                 uiOutput(outputId = "countries"),
 
-                HTML("<p>&nbsp;</p><hr /><p>Data also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
+                HTML("<p style='margin-top:10em;'>&nbsp;</p><hr /><p>Data also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
                       <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
                       and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a></p>"),
 
@@ -80,29 +81,31 @@ ui <- function(request) {
 
             ),
 
-            # Display result
+
             mainPanel(
-                textOutput(outputId = "country", container = h1),
+
+                textOutput(outputId = "main_heading", container = h1),
+
                 tags$p(
                     tags$i(
                         textOutput(outputId = "population", inline = TRUE))),
-                textOutput(outputId = "main_heading", container = h2),
 
                 tabsetPanel(id = "main_tabs",
-                    tabPanel(title = HTML("Estimates"), value = "est_tab",
+                    tabPanel(title = htmlOutput(outputId = "est_tab_name", inline = TRUE), value = "est_tab",
 
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
                              htmlOutput(outputId = "estimates_heading", container = h2),
                              tableOutput(outputId = "estimates_table"),
 
-                             plotOutput(outputId = "inc_chart"),
+                             # Plot the two charts side by side
+                             fluidRow(column(width = 6,
+                                             plotOutput(outputId = "inc_chart")
+                                             ),
+                                      column(width = 6,
+                                             plotOutput(outputId = "mort_chart")
+                                             )
+                                     ),
 
-                            # add some space
-                             tags$div(style="margin:1em;",
-                                  HTML("&nbsp;")
-                                 ),
-
-                             plotOutput(outputId = "mort_chart"),
 
                              htmlOutput(outputId = "drestimates_heading", container = h2),
                              tableOutput(outputId = "drestimates_table"),
@@ -115,7 +118,7 @@ ui <- function(request) {
 
                              ),
 
-                    tabPanel(title = HTML("Notifications"), value = "not_tab",
+                    tabPanel(title = htmlOutput(outputId = "not_tab_name", inline = TRUE), value = "not_tab",
 
                              textOutput(outputId = "notifs_heading", container = h2),
                              tableOutput(outputId = "notifs_table"),
@@ -134,7 +137,7 @@ ui <- function(request) {
 
                             ),
 
-                    tabPanel(title = HTML("Outcomes"), value = "out_tab",
+                    tabPanel(title = htmlOutput(outputId = "out_tab_name", inline = TRUE), value = "out_tab",
 
                              textOutput(outputId = "outcomes_heading", container = h2),
 
@@ -144,7 +147,7 @@ ui <- function(request) {
 
                             ),
 
-                    tabPanel(title = HTML("Preventive<br />Treatment"), value = "tpt_tab",
+                    tabPanel(title = htmlOutput(outputId = "tpt_tab_name", inline = TRUE), value = "tpt_tab",
 
                              textOutput(outputId = "prevtx_heading", container = h2),
 
@@ -155,7 +158,7 @@ ui <- function(request) {
 
 
                     # The financing tab should only be shown if dc_form_description is set to 'TRUE'Long form'
-                    tabPanel(title = HTML("Financing"), value = "fin_tab",
+                    tabPanel(title = htmlOutput(outputId = "fin_tab_name", inline = TRUE), value = "fin_tab",
 
                             textOutput(outputId = "finance_heading", container = h2),
 
