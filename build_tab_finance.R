@@ -62,6 +62,11 @@ output$budget_table <- renderTable({
 # 2. Budget chart
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Move heading and subheading out of ggplot2
+# because ggplot2 headings don't wrap when space is restricted
+
+output$budget_chart_head <- renderText({ ltxt(plabs(), "budget") })
+output$budget_chart_subhead <- renderText({ ltxt(plabs(), "usd_millions") })
 
 output$budget_chart <-  renderPlot({
 
@@ -93,10 +98,7 @@ output$budget_chart <-  renderPlot({
                           values = budget_palette(),
                           labels = c("a_domestic" = ltxt(plabs(), "source_domestic"),
                                      "b_international" = ltxt(plabs(), "source_international"),
-                                     "c_gap" = ltxt(plabs(), "source_unfunded"))) +
-
-         ggtitle(ltxt(plabs(), "budget"),
-                 subtitle = ltxt(plabs(), "usd_millions") )
+                                     "c_gap" = ltxt(plabs(), "source_unfunded")))
   } else {
 
       plotobj <- NA

@@ -70,6 +70,12 @@ output$oucomes_table <- renderTable({ outcomes_table_content() },
 # 2. treatment success rate chart
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Move heading and subheading out of ggplot2
+# because ggplot2 headings don't wrap when space is restricted
+
+output$tsr_chart_head <- renderText({ ltxt(plabs(), "tsr") })
+output$tsr_chart_subhead <- renderText({ "(%)" })
+
 
 output$tsr_chart <-  renderPlot({
 
@@ -94,9 +100,6 @@ output$tsr_chart <-  renderPlot({
               alpha = 0.5) +
 
     profile_theme() +
-
-    ggtitle(ltxt(plabs(), "tsr"),
-            subtitle = "(%)" ) +
 
     scale_colour_manual("",
                         breaks = c("c_new_tsr", "c_ret_tsr", "c_tbhiv_tsr", "c_mdr_tsr", "c_xdr_tsr" ),

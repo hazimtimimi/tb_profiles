@@ -7,6 +7,7 @@
 # 1. Notifications by age and sex chart
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
 agesex_data <- reactive({
 
   # Make sure there are data to plot
@@ -121,6 +122,20 @@ agesex_data <- reactive({
 
 })
 
+
+# Move heading and subheading out of ggplot2
+# because ggplot2 headings don't wrap when space is restricted
+
+output$agesex_chart_head <- renderText({ paste0(ltxt(plabs(), "inc"),
+                                                ", ",
+                                                ltxt(plabs(), "age_sex_notifs"),
+                                                ", ",
+                                                dcyear - 1)  })
+
+output$agesex_chart_subhead <- renderText({ paste0("(", ltxt(plabs(), "number"), ")") })
+
+
+
 output$agesex_chart <-  renderPlot({
 
 
@@ -131,17 +146,19 @@ output$agesex_chart <-  renderPlot({
   }
 
 
-
   agesex_data() %>%
     # Multiply all the female numbers by -1
     mutate(best = ifelse(sex=="f", best * -1, best ),
            notifs = ifelse(sex=="f", notifs * -1, notifs )) %>%
+
     ggplot() +
+
     geom_bar(aes(x=age_group, y=best, fill="inc"),
              stat="identity",
              size=.3,
              colour="black",
              position="identity") +
+
     # USe space separators to label large numbers and ignore minus sign
     scale_y_continuous(labels = abs_rounder) +
     scale_fill_manual(breaks = c("f", "m", "inc"),
@@ -149,16 +166,15 @@ output$agesex_chart <-  renderPlot({
                       labels = c("f" = ltxt(plabs(), "female"),
                                  "m" = ltxt(plabs(), "male"),
                                  "inc" = ltxt(plabs(), "inc"))) +
+
     geom_bar(aes(x=age_group, y=notifs,fill=sex),
              stat="identity",
              size=.3,
              position="identity") +
+
     coord_flip() +
-    profile_theme() +
 
-    ggtitle(ltxt(plabs(), "age_sex_notifs"),
-             subtitle = paste0("(", ltxt(plabs(), "number"), ")") )
-
+    profile_theme()
 
 
 })

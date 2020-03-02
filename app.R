@@ -68,17 +68,7 @@ ui <- function(request) {
                                         "Русский" = "RU"),
                             ),
 
-                uiOutput(outputId = "countries"),
-
-                HTML("<p style='margin-top:10em;'>&nbsp;</p><hr /><p>Data also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
-                      <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
-                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a></p>"),
-
-
-                tags$p(tags$i(app_version)),
-
-                HTML("<p><i>Source code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a></i></p>")
-
+                uiOutput(outputId = "countries")
             ),
 
 
@@ -99,9 +89,13 @@ ui <- function(request) {
 
                              # Plot the two charts side by side
                              fluidRow(column(width = 6,
+                                             htmlOutput(outputId = "inc_chart_head", container = h2),
+                                             textOutput(outputId = "inc_chart_subhead", container = h4),
                                              plotOutput(outputId = "inc_chart")
                                              ),
                                       column(width = 6,
+                                             htmlOutput(outputId = "mort_chart_head", container = h2),
+                                             textOutput(outputId = "mort_chart_subhead", container = h4),
                                              plotOutput(outputId = "mort_chart")
                                              )
                                      ),
@@ -123,6 +117,8 @@ ui <- function(request) {
                              textOutput(outputId = "notifs_heading", container = h2),
                              tableOutput(outputId = "notifs_table"),
 
+                             textOutput(outputId = "agesex_chart_head", container = h2),
+                             textOutput(outputId = "agesex_chart_subhead", container = h4),
                              plotOutput(outputId = "agesex_chart"),
 
                              textOutput(outputId = "tbhiv_heading", container = h2),
@@ -143,6 +139,8 @@ ui <- function(request) {
 
                              tableOutput(outputId = "oucomes_table"),
 
+                             textOutput(outputId = "tsr_chart_head", container = h2),
+                             textOutput(outputId = "tsr_chart_subhead", container = h4),
                              plotOutput(outputId = "tsr_chart")
 
                             ),
@@ -160,18 +158,30 @@ ui <- function(request) {
                     # The financing tab should only be shown if dc_form_description is set to 'TRUE'Long form'
                     tabPanel(title = htmlOutput(outputId = "fin_tab_name", inline = TRUE), value = "fin_tab",
 
-                            textOutput(outputId = "finance_heading", container = h2),
+                             textOutput(outputId = "finance_heading", container = h2),
 
-                            tableOutput(outputId = "budget_table"),
+                             tableOutput(outputId = "budget_table"),
 
-                            plotOutput(outputId = "budget_chart")
+                             textOutput(outputId = "budget_chart_head", container = h2),
+                             textOutput(outputId = "budget_chart_subhead", container = h4),
+                             plotOutput(outputId = "budget_chart")
 
                             )
 
                 ),
 
                 # Add the footer that goes on every page
-                htmlOutput(outputId = "foot_main", inline = TRUE)
+                htmlOutput(outputId = "foot_main", inline = TRUE),
+
+
+                HTML(paste0("<hr />",
+                            "<p><i>Data also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
+                      <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
+                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a></i></p>",
+                            "<p><i>",
+                            app_version,
+                            ", Source code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a></i></p>"))
+
 
 
             )

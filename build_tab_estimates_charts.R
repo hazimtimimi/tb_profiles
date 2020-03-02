@@ -7,6 +7,17 @@
 # 1. Incidence chart
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Move heading and subheading out of ggplot2
+# because ggplot2 headings don't wrap when space is restricted
+
+output$inc_chart_head <- renderText({ paste0("<span style='color: ",  standard_palette("incidence"), ";'>",
+                                             ltxt(plabs(), "inc"),
+                                             "</span>, <span style='color: black;'>",
+                                             ltxt(plabs(), "notifs_totnewrel"),
+                                             "</span>, <span style='color: ",  standard_palette("tbhiv_incidence"), ";'>",
+                                             ltxt(plabs(), "incidence_tbhiv"),
+                                             "</span>") })
+output$inc_chart_subhead <- renderText({ ltxt(plabs(), "rate_100k_yr") })
 
 output$inc_chart <-  renderPlot({
 
@@ -50,30 +61,36 @@ output$inc_chart <-  renderPlot({
 
      profile_theme() +
 
-     ggtitle(ltxt(plabs(), "inc"),
-             subtitle = ltxt(plabs(), "rate_100k_yr") ) +
-
-     # Build the legend usual a manual colour scale
+     # Build the legend using a manual colour scale
      scale_color_manual(name = "",
                         breaks = c("inc", "notifs", "tbhivinc"),
                         values = c("inc" = standard_palette("incidence"),
                                    "notifs" = "black",
                                    "tbhivinc" = standard_palette("tbhiv_incidence")),
                         labels = c("inc" = ltxt(plabs(), "incidence_tb"),
+                                   # couldn't get R to interpret \n or <br /> embedded in the label itself so
+                                   # either split labels into two and use "\n" to join them (which does get interpreted!)
+                                   # or don't use legends and instead use colour coding in the title
                                    "notifs" = ltxt(plabs(), "notifs_totnewrel"),
-                                   "tbhivinc" = ltxt(plabs(), "incidence_tbhiv"))) +
+                                   "tbhivinc" = ltxt(plabs(), "incidence_tbhiv"))
+                        ) +
 
-    # Use guide_legend() to force the legends into two columns only. This prevented
-    # long text from being truncated in the output
-    guides(colour = guide_legend(ncol = 2, byrow = TRUE))
-
+    # suppress legend
+    theme(legend.position="none")
 
 })
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 1. Mortality chart
+# 2. Mortality chart
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Move heading and subheading out of ggplot2
+# because ggplot2 headings don't wrap when space is restricted
+
+output$mort_chart_head <- renderText({  paste0("<span style='color: ",  standard_palette("mortality_exc_tbhiv"), ";'>",
+                                               ltxt(plabs(), "mortality_hivneg"),
+                                               "</span>") })
+output$mort_chart_subhead <- renderText({ ltxt(plabs(), "rate_100k_yr") })
 
 output$mort_chart <-  renderPlot({
 
@@ -91,11 +108,6 @@ output$mort_chart <-  renderPlot({
 
      scale_x_continuous(name="", breaks = c(2000, 2005, 2010, 2015, dcyear-1)) +
 
-     profile_theme() +
-
-
-     ggtitle(ltxt(plabs(), "mortality_hivneg"),
-             subtitle = ltxt(plabs(), "rate_100k_yr") )
-
+     profile_theme()
 
 })
