@@ -48,7 +48,15 @@ ui <- function(request) {
             tags$style(HTML("
                             @media only print {
                                 #side_bar, #main_tabs {display:none;}
-                            }")
+                            }
+
+                            /* set column width for the DR estimates table
+                               and the uhc estimates table so that the outputs of
+                               the two look aligned */
+                            #drestimates_table td:nth-child(1) {width: 80%;}
+                            #uhc_table td:nth-child(1) {width: 80%;}
+
+                            ")
                        )
                  ),
 
