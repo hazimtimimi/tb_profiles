@@ -3,9 +3,9 @@ Show a selecton of important indicators concerning tuberculosis (TB) in a chosen
 
 ## Features
 
-* Choose from 216 countries and areas
+* Choose from 215 countries and areas
 * Choose interface and results in English, French, Russian or Spanish
-* View results as tables and charts displayed under a series of thematic tabs
+* View results as two-column output of tables and charts. (Versions prior to 0.5 used a tabbed interface + sidebar for entity and language selectors which I have now dropped as people didn't like it).
 
 ## Components and data source
 

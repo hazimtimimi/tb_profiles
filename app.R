@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Beta test version 0.4"
+app_version <- "Version 0.5"
 
 library(shiny)
 library(dplyr)
@@ -39,32 +39,29 @@ source("set_plot_theme.R")
 
 ui <- function(request) {
 
-    fluidPage(
+    fixedPage(title = "TB profile",
 
-        # Add CSS so that the sidebar is not rendered upon printing
-        # Use the id I defined for it in code below ("side_bar")
-        # And same for the tabset, id of "main_tabs"
+        # Add CSS so that the selectors are not rendered upon printing
+        # Use the id I defined for their container row in code below ("selectors")
+        # Do the same for the metadata footer
         tags$head(
             tags$style(HTML("
                             @media only print {
-                                #side_bar, #main_tabs {display:none;}
+                                #selectors, #metadata {display:none;}
                             }
-
-                            /* set column width for the DR estimates table
-                               and the uhc estimates table so that the outputs of
-                               the two look aligned */
-                            #drestimates_table td:nth-child(1) {width: 80%;}
-                            #uhc_table td:nth-child(1) {width: 80%;}
 
                             ")
                        )
                  ),
 
+        fixedRow(id="selectors",
 
-        sidebarLayout(
-            sidebarPanel(id="side_bar",
+                   column(width = 7,
+                          uiOutput(outputId = "countries")
+                   ),
 
-                # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
+                   column(width = 5,
+                 # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
                 # If the code below also doesn't work when running on shinyapps.io
                 # then try the workaround suggested at https://stackoverflow.com/questions/59832593/how-to-render-inequalities-in-r-shiny-selectinput-dropdown-list
 
@@ -74,13 +71,14 @@ ui <- function(request) {
                                         "Español" = "ES",
                                         "Français" = "FR",
                                         "Русский" = "RU"),
-                            ),
+                            inline = TRUE
+                            )
 
-                uiOutput(outputId = "countries")
-            ),
+                   )
+                 ),
 
 
-            mainPanel(
+        fixedRow(id="main_content",
 
                 textOutput(outputId = "main_heading", container = h1),
 
@@ -88,26 +86,12 @@ ui <- function(request) {
                     tags$i(
                         textOutput(outputId = "population", inline = TRUE))),
 
-                tabsetPanel(id = "main_tabs",
-                    tabPanel(title = htmlOutput(outputId = "est_tab_name", inline = TRUE), value = "est_tab",
+                fixedRow(
+                    column(width = 7,
 
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
                              htmlOutput(outputId = "estimates_heading", container = h2),
                              tableOutput(outputId = "estimates_table"),
-
-                             # Plot the two charts side by side
-                             fluidRow(column(width = 6,
-                                             htmlOutput(outputId = "inc_chart_head", container = h2),
-                                             textOutput(outputId = "inc_chart_subhead", container = h4),
-                                             plotOutput(outputId = "inc_chart")
-                                             ),
-                                      column(width = 6,
-                                             htmlOutput(outputId = "mort_chart_head", container = h2),
-                                             textOutput(outputId = "mort_chart_subhead", container = h4),
-                                             plotOutput(outputId = "mort_chart")
-                                             )
-                                     ),
-
 
                              htmlOutput(outputId = "drestimates_heading", container = h2),
                              tableOutput(outputId = "drestimates_table"),
@@ -116,18 +100,10 @@ ui <- function(request) {
                              tableOutput(outputId = "uhc_table"),
 
                              htmlOutput(outputId = "foot_est"),
-                             htmlOutput(outputId = "foot_mdr_defn")
-
-                             ),
-
-                    tabPanel(title = htmlOutput(outputId = "not_tab_name", inline = TRUE), value = "not_tab",
+                             htmlOutput(outputId = "foot_mdr_defn"),
 
                              textOutput(outputId = "notifs_heading", container = h2),
                              tableOutput(outputId = "notifs_table"),
-
-                             textOutput(outputId = "agesex_chart_head", container = h2),
-                             textOutput(outputId = "agesex_chart_subhead", container = h4),
-                             plotOutput(outputId = "agesex_chart"),
 
                              textOutput(outputId = "tbhiv_heading", container = h2),
                              tableOutput(outputId = "tbhiv_table"),
@@ -137,64 +113,67 @@ ui <- function(request) {
 
                              htmlOutput(outputId = "foot_pulm"),
                              htmlOutput(outputId = "foot_newunk"),
-                             htmlOutput(outputId = "foot_rrmdr")
-
-                            ),
-
-                    tabPanel(title = htmlOutput(outputId = "out_tab_name", inline = TRUE), value = "out_tab",
+                             htmlOutput(outputId = "foot_rrmdr"),
 
                              textOutput(outputId = "outcomes_heading", container = h2),
-
                              tableOutput(outputId = "oucomes_table"),
+
+                             textOutput(outputId = "prevtx_heading", container = h2),
+                             tableOutput(outputId = "prevtx_table"),
+
+                             # The financing table should only be shown if dc_form_description is set to 'Long form'
+                             # or if it is a short form with budget > 0 (rounded to nearest million)
+                             conditionalPanel(condition = "output.show_finance >= 1",
+
+                                 textOutput(outputId = "finance_heading", container = h2),
+                                 tableOutput(outputId = "budget_table")
+                             )
+
+                           ),
+
+                    column(width = 5,
+                             htmlOutput(outputId = "inc_chart_head", container = h2),
+                             textOutput(outputId = "inc_chart_subhead", container = h4),
+                             plotOutput(outputId = "inc_chart"),
+
+                             htmlOutput(outputId = "mort_chart_head", container = h2),
+                             textOutput(outputId = "mort_chart_subhead", container = h4),
+                             plotOutput(outputId = "mort_chart"),
+
+                             textOutput(outputId = "agesex_chart_head", container = h2),
+                             textOutput(outputId = "agesex_chart_subhead", container = h4),
+                             plotOutput(outputId = "agesex_chart"),
 
                              textOutput(outputId = "tsr_chart_head", container = h2),
                              textOutput(outputId = "tsr_chart_subhead", container = h4),
-                             plotOutput(outputId = "tsr_chart")
+                             plotOutput(outputId = "tsr_chart"),
 
-                            ),
+                             # The financing chart should only be shown if dc_form_description is set to 'TRUE'Long form'
+                             conditionalPanel(condition = "output.show_finance == 2",
 
-                    tabPanel(title = htmlOutput(outputId = "tpt_tab_name", inline = TRUE), value = "tpt_tab",
-
-                             textOutput(outputId = "prevtx_heading", container = h2),
-
-                             tableOutput(outputId = "prevtx_table")
-
-
-                            ),
-
-
-                    # The financing tab should only be shown if dc_form_description is set to 'TRUE'Long form'
-                    tabPanel(title = htmlOutput(outputId = "fin_tab_name", inline = TRUE), value = "fin_tab",
-
-                             textOutput(outputId = "finance_heading", container = h2),
-
-                             tableOutput(outputId = "budget_table"),
-
-                             textOutput(outputId = "budget_chart_head", container = h2),
-                             textOutput(outputId = "budget_chart_subhead", container = h4),
-                             plotOutput(outputId = "budget_chart")
-
-                            )
+                                 textOutput(outputId = "budget_chart_head", container = h2),
+                                 textOutput(outputId = "budget_chart_subhead", container = h4),
+                                 plotOutput(outputId = "budget_chart")
+                             )
+                           )
 
                 ),
 
                 # Add the footer that goes on every page
                 htmlOutput(outputId = "foot_main", inline = TRUE),
 
-
-                HTML(paste0("<hr />",
-                            "<p><i>Data also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
-                      <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
-                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a></i></p>",
-                            "<p><i>",
+                # Add an "About" bit of metadata
+                HTML(paste0("<div id='metadata'>",
+                            "<i>",
                             app_version,
-                            ", Source code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a></i></p>"))
-
-
+                            ", Source code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a>. ",
+                            "Data are also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
+                      <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
+                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a>.</i></div>"))
 
             )
         )
-    )
+
 }
 
 
@@ -236,27 +215,29 @@ server <- function(input, output, session) {
     })
 
 
-    # Show or hide the finance tab depending on the country selected
-    # The financing tab should only be shown if dc_form_description is set to 'Long form'
+    # Show or hide the finance data depending on the country selected
+    # They should only be shown if dc_form_description is set to 'Long form'
     # Or of it is 'Short form' and the total budget has been reported and is greater than 0
-    # when rounded to the nearest million
+    # when rounded to the nearest million (show the table only, not the chart)
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    observeEvent(input$iso2, ignoreNULL = TRUE, ignoreInit = TRUE, {
+    output$show_finance <- eventReactive(input$iso2, ignoreNULL = TRUE, ignoreInit = TRUE, {
 
         if (pdata()$profile_properties[, "dc_form_description"] == "Long form"){
-            showTab(inputId = "main_tabs", target = "fin_tab")
+            result <- 2
 
         } else if (pdata()$profile_properties[, "dc_form_description"] == "Short form" &
                    rounder(NZ(pdata()$profile_data[, "tot_req"])) > 0) {
-            showTab(inputId = "main_tabs", target = "fin_tab")
+            result <- 1
 
         } else {
-            hideTab(inputId = "main_tabs", target = "fin_tab")
-
+            result <- 0
         }
-
+        return(result)
     })
+
+    # Need this to make sure browser can switch Finance elements back on again if hidden
+    outputOptions(output, "show_finance", suspendWhenHidden = FALSE)
 
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
