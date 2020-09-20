@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 0.5"
+app_version <- "Version 0.6"
 
 library(shiny)
 library(dplyr)
@@ -44,6 +44,9 @@ ui <- function(request) {
         # Add CSS so that the selectors are not rendered upon printing
         # Use the id I defined for their container row in code below ("selectors")
         # Do the same for the metadata footer
+        # Also add a link to the boostrap CSS Sandstone theme downloaded from
+        # https://bootswatch.com/3/sandstone/bootstrap.css
+
         tags$head(
             tags$style(HTML("
                             @media only print {
@@ -51,28 +54,38 @@ ui <- function(request) {
                             }
 
                             ")
-                       )
+                       ),
+
+            tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css")
+
                  ),
 
         fixedRow(id="selectors",
 
+
                    column(width = 7,
-                          uiOutput(outputId = "countries")
+                          tags$div(class = "navbar navbar-inverse",
+                                    uiOutput(outputId = "countries")
+                                    )
                    ),
 
                    column(width = 5,
-                 # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
-                # If the code below also doesn't work when running on shinyapps.io
-                # then try the workaround suggested at https://stackoverflow.com/questions/59832593/how-to-render-inequalities-in-r-shiny-selectinput-dropdown-list
 
-                radioButtons(inputId = "lan",
-                            label = "",
-                            choices = c("English" = "EN",
-                                        "Español" = "ES",
-                                        "Français" = "FR",
-                                        "Русский" = "RU"),
-                            inline = TRUE
-                            )
+                          tags$div(class = "navbar navbar-inverse",
+
+                             # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
+                            # If the code below also doesn't work when running on shinyapps.io
+                            # then try the workaround suggested at https://stackoverflow.com/questions/59832593/how-to-render-inequalities-in-r-shiny-selectinput-dropdown-list
+
+                            radioButtons(inputId = "lan",
+                                        label = "",
+                                        choices = c("English" = "EN",
+                                                    "Español" = "ES",
+                                                    "Français" = "FR",
+                                                    "Русский" = "RU"),
+                                        inline = TRUE
+                                        )
+                                      )
 
                    )
                  ),
@@ -169,7 +182,7 @@ ui <- function(request) {
                             ", Source code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a>. ",
                             "Data are also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
                       <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
-                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a>.</i></div>"))
+                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a>.</i><br /><br /></div>"))
 
             )
         )
