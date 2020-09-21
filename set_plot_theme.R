@@ -2,7 +2,7 @@
 # Based on the BBC ggplot2 theme at https://github.com/bbc/bbplot/blob/master/R/bbc_style.R
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-profile_theme <- function(base_size=14, base_family="") {
+profile_theme <- function(base_size=10, base_family="") {
 
   gray <- "#BCBCBC"
   charcoal <- "#222222"
@@ -12,14 +12,14 @@ profile_theme <- function(base_size=14, base_family="") {
 
   #Text format:
   plot.title = element_text(family=base_family,
-                            size=28,
+                            #size=28,
                             #face="bold",
                             color=charcoal),
   plot.subtitle = element_text(family=base_family,
-                               size=18,
+                               #size=18,
                                margin=ggplot2::margin(9,0,9,0)),
 
-  plot.margin = margin(30,0,30,0,),
+  plot.margin = margin(0,0,30,0,),
 
   #Legend format
   legend.position = "top",
@@ -34,7 +34,7 @@ profile_theme <- function(base_size=14, base_family="") {
   #Axis format
   axis.title = element_blank(),
   axis.text = element_text(family=base_family,
-                           size=18,
+                           size=12,
                            color=charcoal),
   axis.text.x = ggplot2::element_text(margin=ggplot2::margin(5, b = 10)),
   axis.ticks = ggplot2::element_blank(),

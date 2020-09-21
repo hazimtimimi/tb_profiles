@@ -3,7 +3,7 @@
 # Build output for the first tab (estimates table)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$estimates_heading <- renderText({ HTML(paste0(ltxt(plabs(), "estimates"), "&sup1;, ", dcyear-1)) })
+output$estimates_heading <- renderText({ HTML(paste0(ltxt(plabs(), "estimates"), "*, ", dcyear-1)) })
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -16,9 +16,8 @@ estimates_table_content <- reactive({
   # build the dataframe manually
   row_head <- c(ltxt(plabs(), "incidence_tb"),
                 ltxt(plabs(), "incidence_tbhiv"),
-                # next use unicode character for superscript 1 instead of the HTML
-                # entity &sup2; as it was getting tricky to display the HTML within the table ...
-                paste0(ltxt(plabs(), "incidence_rr"), "\u00b2"),
+                # next use ** as callout marker for the second footnote
+                paste0(ltxt(plabs(), "incidence_rr"), "**"),
                 ltxt(plabs(), "mortality_hivneg"),
                 ltxt(plabs(), "mortality_hivpos"))
 
@@ -93,7 +92,7 @@ output$estimates_table <- renderTable({ estimates_table_content() },
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-output$drestimates_heading <- renderText({ HTML(paste0(ltxt(plabs(), "rrmdr_est_pct"), "&sup1;, ", dcyear-1))  })
+output$drestimates_heading <- renderText({ HTML(paste0(ltxt(plabs(), "rrmdr_est_pct"), "*, ", dcyear-1))  })
 
 
 drestimates_table_content <- reactive({
@@ -131,7 +130,7 @@ output$drestimates_table <- renderTable({ drestimates_table_content() },
 # 3. UHC and social protection table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$uhc_heading <- renderText({ HTML(paste0(ltxt(plabs(), "uhc"), "&sup1;"))  })
+output$uhc_heading <- renderText({ HTML(paste0(ltxt(plabs(), "uhc"), "*"))  })
 
 
 uhc_data <- reactive({
@@ -188,6 +187,6 @@ output$uhc_table <- renderTable({ data.frame( c(paste0(ltxt(plabs(), "tx_coverag
 # 4. Add footnotes
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$foot_est <- renderText({  HTML(paste("&sup1;<i>", ltxt(plabs(), "foot_est"),"</i>")) })
-output$foot_mdr_defn <- renderText({ HTML(paste("&sup2;<i>", ltxt(plabs(), "mdr_definition"), "</i>")) })
+output$foot_est <- renderText({  HTML(paste("*<i>", ltxt(plabs(), "foot_est"),"</i>")) })
+output$foot_mdr_defn <- renderText({ HTML(paste("**<i>", ltxt(plabs(), "mdr_definition"), "</i>")) })
 

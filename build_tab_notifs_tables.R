@@ -86,8 +86,8 @@ output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
                                                 paste(" - ",ltxt(plabs(), "pct_rdx")),
                                                 paste(" - ",ltxt(plabs(), "pct_hivtest")),
                                                 paste(" - ",ltxt(plabs(), "pct_pulmonary")),
-                                                # Add a callout to footnote 1 using unicode character for superscript 1
-                                                paste(" - ",ltxt(plabs(), "pct_pulm_bacconf"), "\u00b9"),
+                                                # Add a callout to footnote ^
+                                                paste(" - ",ltxt(plabs(), "pct_pulm_bacconf"), "^"),
                                                 paste(" - ",ltxt(plabs(), "pct_children")),
                                                 paste(" - ",ltxt(plabs(), "pct_women")),
                                                 paste(" - ",ltxt(plabs(), "pct_men")),
@@ -179,13 +179,16 @@ drtb_data <- reactive({
 
 })
 
+# Callouts to footnotes in the table using plain characters as I couldn't use HTML superscript
+# entities, and unicode characters for superscript 4 and 5 didn;t work when testing
 
-output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "new"), "\u00b9"),
-                                                 paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "ret"), "\u00b9"),
-                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_rr_mdr"), "\u00b2"),
-                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_rr_mdr"), "\u00b3"),
-                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_xdr_short"), "\u00b2"),
-                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_xdr_short"), "\u00b3"),
+
+output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "new"), "^"),
+                                                 paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "ret"), "^"),
+                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_rr_mdr"), "^^"),
+                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_rr_mdr"), "^^^"),
+                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_xdr_short"), "^^"),
+                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_xdr_short"), "^^^"),
                                                  ltxt(plabs(), "rr_sldst")
                                                   ),
                                                drtb_data()
@@ -204,7 +207,7 @@ output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"),
 # 4. Add footnotes
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$foot_pulm <- renderText({  HTML(paste("&sup1;<i>", ltxt(plabs(), "foot_pulm"), "</i>")) })
-output$foot_newunk <- renderText({  HTML(paste("&sup2;<i>", ltxt(plabs(), "newunk"), "</i>")) })
-output$foot_rrmdr <- renderText({  HTML(paste("&sup3;<i>", str_replace(ltxt(plabs(), "rrmdr"), fixed("[yr-1]"), dcyear-1), "</i>")) })
+output$foot_pulm <- renderText({  HTML(paste("^<i>", ltxt(plabs(), "foot_pulm"), "</i>")) })
+output$foot_newunk <- renderText({  HTML(paste("^^<i>", ltxt(plabs(), "newunk"), "</i>")) })
+output$foot_rrmdr <- renderText({  HTML(paste("^^^<i>", str_replace(ltxt(plabs(), "rrmdr"), fixed("[yr-1]"), dcyear-1), "</i>")) })
 

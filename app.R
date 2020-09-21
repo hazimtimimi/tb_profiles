@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 0.6"
+app_version <- "Version 0.7"
 
 library(shiny)
 library(dplyr)
@@ -94,85 +94,86 @@ ui <- function(request) {
         fixedRow(id="main_content",
 
                 textOutput(outputId = "main_heading", container = h1),
-
-                tags$p(
-                    tags$i(
-                        textOutput(outputId = "population", inline = TRUE))),
+                textOutput(outputId = "population", container = h5),
 
                 fixedRow(
                     column(width = 7,
 
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
-                             htmlOutput(outputId = "estimates_heading", container = h2),
+                             htmlOutput(outputId = "estimates_heading", container = h3),
                              tableOutput(outputId = "estimates_table"),
 
-                             htmlOutput(outputId = "drestimates_heading", container = h2),
+                             htmlOutput(outputId = "drestimates_heading", container = h3),
                              tableOutput(outputId = "drestimates_table"),
 
-                             htmlOutput(outputId = "uhc_heading", container = h2),
+                             htmlOutput(outputId = "uhc_heading", container = h3),
                              tableOutput(outputId = "uhc_table"),
 
-                             htmlOutput(outputId = "foot_est"),
-                             htmlOutput(outputId = "foot_mdr_defn"),
-
-                             textOutput(outputId = "notifs_heading", container = h2),
+                             textOutput(outputId = "notifs_heading", container = h3),
                              tableOutput(outputId = "notifs_table"),
 
-                             textOutput(outputId = "tbhiv_heading", container = h2),
+                             textOutput(outputId = "tbhiv_heading", container = h3),
                              tableOutput(outputId = "tbhiv_table"),
 
-                             textOutput(outputId = "drtb_heading", container = h2),
+                             textOutput(outputId = "drtb_heading", container = h3),
                              tableOutput(outputId = "drtb_table"),
 
-                             htmlOutput(outputId = "foot_pulm"),
-                             htmlOutput(outputId = "foot_newunk"),
-                             htmlOutput(outputId = "foot_rrmdr"),
 
-                             textOutput(outputId = "outcomes_heading", container = h2),
+                             textOutput(outputId = "outcomes_heading", container = h3),
                              tableOutput(outputId = "oucomes_table"),
 
-                             textOutput(outputId = "prevtx_heading", container = h2),
+                             textOutput(outputId = "prevtx_heading", container = h3),
                              tableOutput(outputId = "prevtx_table"),
 
                              # The financing table should only be shown if dc_form_description is set to 'Long form'
                              # or if it is a short form with budget > 0 (rounded to nearest million)
                              conditionalPanel(condition = "output.show_finance >= 1",
 
-                                 textOutput(outputId = "finance_heading", container = h2),
+                                 textOutput(outputId = "finance_heading", container = h3),
                                  tableOutput(outputId = "budget_table")
                              )
 
                            ),
 
                     column(width = 5,
-                             htmlOutput(outputId = "inc_chart_head", container = h2),
-                             textOutput(outputId = "inc_chart_subhead", container = h4),
-                             plotOutput(outputId = "inc_chart"),
+                             htmlOutput(outputId = "inc_chart_head", container = h3),
+                             textOutput(outputId = "inc_chart_subhead", container = h5),
+                             plotOutput(outputId = "inc_chart", height = "300px"),
 
-                             htmlOutput(outputId = "mort_chart_head", container = h2),
-                             textOutput(outputId = "mort_chart_subhead", container = h4),
-                             plotOutput(outputId = "mort_chart"),
+                             htmlOutput(outputId = "mort_chart_head", container = h3),
+                             textOutput(outputId = "mort_chart_subhead", container = h5),
+                             plotOutput(outputId = "mort_chart", height = "300px"),
 
-                             textOutput(outputId = "agesex_chart_head", container = h2),
-                             textOutput(outputId = "agesex_chart_subhead", container = h4),
-                             plotOutput(outputId = "agesex_chart"),
+                             textOutput(outputId = "agesex_chart_head", container = h3),
+                             textOutput(outputId = "agesex_chart_subhead", container = h5),
+                             plotOutput(outputId = "agesex_chart", height = "300px"),
 
-                             textOutput(outputId = "tsr_chart_head", container = h2),
-                             textOutput(outputId = "tsr_chart_subhead", container = h4),
-                             plotOutput(outputId = "tsr_chart"),
+                             textOutput(outputId = "tsr_chart_head", container = h3),
+                             textOutput(outputId = "tsr_chart_subhead", container = h5),
+                             plotOutput(outputId = "tsr_chart", height = "300px"),
 
                              # The financing chart should only be shown if dc_form_description is set to 'TRUE'Long form'
                              conditionalPanel(condition = "output.show_finance == 2",
 
-                                 textOutput(outputId = "budget_chart_head", container = h2),
-                                 textOutput(outputId = "budget_chart_subhead", container = h4),
-                                 plotOutput(outputId = "budget_chart")
+                                 textOutput(outputId = "budget_chart_head", container = h3),
+                                 textOutput(outputId = "budget_chart_subhead", container = h5),
+                                 plotOutput(outputId = "budget_chart", height = "300px")
                              )
                            )
 
                 ),
 
-                # Add the footer that goes on every page
+
+                 # Footnotes
+                 htmlOutput(outputId = "foot_est"),
+                 htmlOutput(outputId = "foot_mdr_defn"),
+
+                 htmlOutput(outputId = "foot_pulm"),
+                 htmlOutput(outputId = "foot_newunk"),
+                 htmlOutput(outputId = "foot_rrmdr"),
+
+
+                # Footer that goes on every page
                 htmlOutput(outputId = "foot_main", inline = TRUE),
 
                 # Add an "About" bit of metadata
