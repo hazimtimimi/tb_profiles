@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 0.7"
+app_version <- "Version 1.0"
 
 library(shiny)
 library(dplyr)
@@ -41,27 +41,19 @@ ui <- function(request) {
 
     fixedPage(title = "TB profile",
 
-        # Add CSS so that the selectors are not rendered upon printing
-        # Use the id I defined for their container row in code below ("selectors")
-        # Do the same for the metadata footer
-        # Also add a link to the boostrap CSS Sandstone theme downloaded from
+        # Add a link to the boostrap CSS Sandstone theme downloaded from
         # https://bootswatch.com/3/sandstone/bootstrap.css
+        # and a link to a print-specific CSS to hide selectors and metadata and to
+        # retain two columns when printing
 
         tags$head(
-            tags$style(HTML("
-                            @media only print {
-                                #selectors, #metadata {display:none;}
-                            }
 
-                            ")
-                       ),
-
-            tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css")
+            tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css"),
+            tags$link(rel = "stylesheet", type = "text/css", href = "boot_print.css", media="print")
 
                  ),
 
         fixedRow(id="selectors",
-
 
                    column(width = 7,
                           tags$div(class = "navbar navbar-inverse",
@@ -73,7 +65,7 @@ ui <- function(request) {
 
                           tags$div(class = "navbar navbar-inverse",
 
-                             # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
+                            # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
                             # If the code below also doesn't work when running on shinyapps.io
                             # then try the workaround suggested at https://stackoverflow.com/questions/59832593/how-to-render-inequalities-in-r-shiny-selectinput-dropdown-list
 
