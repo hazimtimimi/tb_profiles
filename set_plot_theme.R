@@ -81,9 +81,9 @@ budget_palette <- function(){
 
 agesex_palette <- function() {
 
- c("inc" = "#EEEEEE", # incidence (almost whute)
-   "f" = "#EE1D23",  # Females (red used by Sue in 2017)
-   "m" = "#00AAAD"   # Males   (turquoise used by Sue in 2017)
+ c("inc" = "#EEEEEE", # incidence (almost white)
+   "f" = "#732969",  # Females (Purple used in 2020 global report)
+   "m" = "#8BC63F"   # Males   (Green used in 2020 global report)
  )
 
 }

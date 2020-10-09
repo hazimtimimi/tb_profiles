@@ -169,6 +169,7 @@ output$agesex_chart <-  renderPlot({
 
     geom_bar(aes(x=age_group, y=notifs,fill=sex),
              stat="identity",
+             width = 0.5,
              size=.3,
              position="identity") +
 

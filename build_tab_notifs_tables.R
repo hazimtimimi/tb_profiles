@@ -172,7 +172,11 @@ drtb_data <- reactive({
     rounder(pdata()$profile_data[, "mdr_tx"]),
     rounder(pdata()$profile_data[, "all_conf_xdr"]),
     rounder(pdata()$profile_data[, "conf_xdr_tx"]),
-    rounder(pdata()$profile_data[, "rr_sldst"])
+
+    ifelse(dcyear == 2019,
+           rounder(pdata()$profile_data[, "rr_sldst"]),
+           # Change the variable displayed from 2020 data collection year onwards
+           rounder(pdata()$profile_data[, "rr_dst_rlt_fq"]))
 
   )
 
@@ -189,7 +193,12 @@ output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"),
                                                  paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_rr_mdr"), "^^^"),
                                                  paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_xdr_short"), "^^"),
                                                  paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_xdr_short"), "^^^"),
-                                                 ltxt(plabs(), "rr_sldst")
+
+                                                 ifelse(dcyear == 2019,
+                                                        ltxt(plabs(), "rr_sldst"),
+                                                        # Change the variable displayed from 2020 data collection year onwards
+                                                        ltxt(plabs(), "rr_fqdst"))
+
                                                   ),
                                                drtb_data()
                                               )  },

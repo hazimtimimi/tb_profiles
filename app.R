@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 1.0"
+app_version <- "Version 1.1"
 
 library(shiny)
 library(dplyr)
@@ -57,6 +57,7 @@ ui <- function(request) {
 
                    column(width = 7,
                           tags$div(class = "navbar navbar-inverse",
+                                   style = "padding-left: 20px;",
                                     uiOutput(outputId = "countries")
                                     )
                    ),
@@ -64,6 +65,7 @@ ui <- function(request) {
                    column(width = 5,
 
                           tags$div(class = "navbar navbar-inverse",
+                                   style = "padding-left: 20px;",
 
                             # Note that in Windows the word  Русский doesn't render correctly, but seems OK in Linux/iOS.
                             # If the code below also doesn't work when running on shinyapps.io
