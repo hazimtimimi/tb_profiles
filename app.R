@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 1.1"
+app_version <- "Version 1.2"
 
 library(shiny)
 library(dplyr)
@@ -49,7 +49,17 @@ ui <- function(request) {
         tags$head(
 
             tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.css"),
-            tags$link(rel = "stylesheet", type = "text/css", href = "boot_print.css", media="print")
+            tags$link(rel = "stylesheet", type = "text/css", href = "boot_print.css", media="print"),
+
+            # Make sure columns with numeric values don't wrap
+            tags$style(HTML("#uhc_table td:nth-child(2),
+                             #notifs_table td:nth-child(2),
+                             #drtb_table td:nth-child(2),
+                             #outcomes_table td:nth-child(3),
+                             #prevtx_table td:nth-child(2) {
+                               white-space: nowrap;
+                             }
+                            "))
 
                  ),
 
@@ -114,7 +124,7 @@ ui <- function(request) {
 
 
                              textOutput(outputId = "outcomes_heading", container = h3),
-                             tableOutput(outputId = "oucomes_table"),
+                             tableOutput(outputId = "outcomes_table"),
 
                              textOutput(outputId = "prevtx_heading", container = h3),
                              tableOutput(outputId = "prevtx_table"),

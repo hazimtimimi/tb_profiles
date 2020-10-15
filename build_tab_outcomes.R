@@ -55,7 +55,7 @@ outcomes_table_content <- reactive({
 })
 
 
-output$oucomes_table <- renderTable({ outcomes_table_content() },
+output$outcomes_table <- renderTable({ outcomes_table_content() },
 
 
             striped = TRUE,
