@@ -4,7 +4,7 @@
 # Hazim Timimi, February 2020
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 1.2"
+app_version <- "Version 1.3"
 
 library(shiny)
 library(dplyr)
@@ -52,12 +52,18 @@ ui <- function(request) {
             tags$link(rel = "stylesheet", type = "text/css", href = "boot_print.css", media="print"),
 
             # Make sure columns with numeric values don't wrap
-            tags$style(HTML("#uhc_table td:nth-child(2),
+            tags$style(HTML("#estimates_table td:nth-child(2),
+                             #estimates_table td:nth-child(3),
+                             #uhc_table td:nth-child(2),
                              #notifs_table td:nth-child(2),
                              #drtb_table td:nth-child(2),
+                             #tbhiv_table td:nth-child(2),
                              #outcomes_table td:nth-child(3),
                              #prevtx_table td:nth-child(2) {
                                white-space: nowrap;
+                             }
+                             #tbhiv_table th:nth-child(2), #outcomes_table th:nth-child(3) {
+                               text-align: right !important;
                              }
                             "))
 

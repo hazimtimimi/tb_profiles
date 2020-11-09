@@ -3,15 +3,60 @@
 #selectors, #metadata {
 	display:none;
 }
-
-/* Adjust the bootstrap styles so that the profile prints with two columns rather than the default behaviour of stacking columns above each other. CSS copied  from https://stackoverflow.com/a/49851233  */
 @page {
 	size: A4;
+	margin: 1cm;
 }
-html, body {
+html {
 	width: 210mm;
 	height: 297mm;
 }
+/* Reduce vertical space taken up by elements and the font size, which should be expressed in points for printing */
+body {
+	font-size: 6pt;
+	line-height: 1;
+}
+h1 {
+	margin-top: 0;
+	font-size: 16pt;
+}
+
+h2, h3 {
+	margin-top: 0;
+	margin-bottom: 3pt;
+	font-size: 12pt;
+	page-break-after: avoid;
+}
+h4, h5, h6 {
+	margin-top: 0;
+	margin-bottom: 3pt;
+	font-size: 8pt;
+}
+img,#inc_chart, #mort_chart, #agesex_chart, #tsr_chart, #budget_chart {
+	height: 4cm !important;
+	margin-bottom: 5mm;
+	page-break-inside: avoid;
+}
+.table td, .shiny-table td, .shiny-table.spacing-s td {
+	line-height: 1;
+	padding: 0;
+	margin: 0;
+	border-top-width: 0.25pt;
+	page-break-inside: avoid;
+	font-size: 6pt;
+}
+.table th, .shiny-table th, .shiny-table.spacing-s th {
+	line-height: 1;
+	padding: 0;
+	margin: 0;
+	border-bottom-width: 0;
+	font-size: 6pt;
+}
+.table, .shiny-table, .shiny-table.spacing-s {
+	margin-top: 0;
+	margin-bottom: 6pt;
+}
+/* Adjust the bootstrap styles so that the profile prints with two columns rather than the default behaviour of stacking columns above each other. CSS taken from https://stackoverflow.com/a/49851233  */
 @-moz-document url-prefix() {}
 .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-smdm-12 {
 	float: left;
