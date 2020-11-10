@@ -65,6 +65,10 @@ ui <- function(request) {
                              #tbhiv_table th:nth-child(2), #outcomes_table th:nth-child(3) {
                                text-align: right !important;
                              }
+                             #generation {
+                               margin-top: 10px;
+                               border-top: 0.25px solid #BCBCBC;
+                             }
                             "))
 
                  ),
@@ -184,7 +188,7 @@ ui <- function(request) {
 
 
                 # Footer that goes on every page
-                htmlOutput(outputId = "foot_main", inline = TRUE),
+                htmlOutput(outputId = "generation"),
 
                 # Add an "About" bit of metadata
                 HTML(paste0("<div id='metadata'>",
@@ -285,8 +289,7 @@ server <- function(input, output, session) {
     source("build_tab_finance.R", local = TRUE)
 
     # Add the footer that goes on every page
-    output$foot_main <- renderText({  HTML(paste("<br /><hr />",
-                                                 ltxt(plabs(), "generated"),
+    output$generation <- renderText({  HTML(paste(ltxt(plabs(), "generated"),
                                                  format(Sys.Date(), "%Y-%m-%d"),
                                                  ltxt(plabs(), "by_who")
                                                  )
