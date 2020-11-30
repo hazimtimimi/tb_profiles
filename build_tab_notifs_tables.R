@@ -56,8 +56,17 @@ notifs_data <- reactive({
                                    pdata()$profile_data[, "c_newinc"]),
 
                    # calculate pct_hivtest
-                   display_cap_pct(pdata()$profile_data[, "newrel_hivtest"],
-                                   pdata()$profile_data[, "c_newinc"]),
+                   if (check_entity_type(input$entity_type) == "group") {
+                     # For groups need to use the aggregated data view results
+                     display_cap_pct(pdata()$profile_data[, "hivtest_pct_numerator"],
+                                     pdata()$profile_data[, "hivtest_pct_denominator"])
+
+                   } else {
+                     # default is country data
+                     display_cap_pct(pdata()$profile_data[, "newrel_hivtest"],
+                                     pdata()$profile_data[, "c_newinc"])
+
+                   },
 
                    # calculate pct_pulmonary
                    display_cap_pct(pulmonary,
@@ -120,14 +129,29 @@ tbhiv_data <- reactive({
   num_data <- c(rounder(pdata()$profile_data[, "newrel_hivpos"]),
                 rounder(pdata()$profile_data[, "newrel_art"]))
 
+  # percentages
+  if (check_entity_type(input$entity_type) == "group") {
+     # For groups need to use the aggregated data view results
+      pct_data <- c( # calculate pct_hivtestpositive
+                     display_cap_pct(pdata()$profile_data[, "hivtest_pos_pct_numerator"],
+                                     pdata()$profile_data[, "hivtest_pos_pct_denominator"]),
 
-  pct_data <- c( # calculate pct_hivtestpositive
-                 display_cap_pct(pdata()$profile_data[, "newrel_hivpos"],
-                                 pdata()$profile_data[, "newrel_hivtest"]),
+                     # calculate pct_art
+                     display_cap_pct(pdata()$profile_data[, "hiv_art_pct_numerator"],
+                                     pdata()$profile_data[, "hiv_art_pct_denominator"]) )
 
-                 # calculate pct_pulmonary
-                 display_cap_pct(pdata()$profile_data[, "newrel_art"],
-                                 pdata()$profile_data[, "newrel_hivpos"]) )
+    } else {
+      # default is country data
+      pct_data <- c( # calculate pct_hivtestpositive
+                     display_cap_pct(pdata()$profile_data[, "newrel_hivpos"],
+                                     pdata()$profile_data[, "newrel_hivtest"]),
+
+                     # calculate pct_art
+                     display_cap_pct(pdata()$profile_data[, "newrel_art"],
+                                     pdata()$profile_data[, "newrel_hivpos"]) )
+
+  }
+
 
   df <- data.frame(c(ltxt(plabs(), "hivtest_pos"),
                      paste(" - ",ltxt(plabs(), "art")) ),

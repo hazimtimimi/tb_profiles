@@ -1,25 +1,29 @@
-# Tuberculosis country profiles
-Show a selecton of important indicators concerning tuberculosis (TB) in a chosen country or area. Such a selection is known as a *country profile*.
+# Tuberculosis country and group profiles
+Show a selecton of important indicators concerning tuberculosis (TB) for a chosen country, area or group of countries.
 
 ## Features
 
-* Choose from 215 countries and areas
-* Choose interface and results in English, French, Russian or Spanish
-* View results as two-column output of tables and charts. (Versions prior to 0.5 used a tabbed interface + sidebar for entity and language selectors which I have now dropped as people didn't like it).
+* Choose a country or area (from a list of 215 countries and areas) or a group (from a list of 6 WHO regions and the global group of all 215 countries and areas)
+* Choose the language for the interface and results (from English, French, Russian or Spanish)
+* View the results as a two-column output of tables and charts.
 
 ## Components and data source
 
-This is an app built using [Shiny](https://shiny.rstudio.com/). It uses data published by the World Health Organization's [Global Tuberculosis Programme](https://www.who.int/tb/data).
+This is an app built using [Shiny](https://shiny.rstudio.com/) and hosted at [shinyapps.io](https://worldhealthorg.shinyapps.io/tb_profiles/). It uses data published by the World Health Organization's [Global Tuberculosis Programme](https://www.who.int/tb/data).
 
 The app pulls data directly from the global TB database. Unfortunately there is no standard api with which to interogate the database, so I built a script and some queries to return JSON files specifically for this app.
 
-The script can return three types of JSON file:
+The script can return five types of JSON file:
 
 1. https://extranet.who.int/tme/generateJSON.asp?ds=countries. This returns a list of all countries and areas which report TB data annually to WHO. The list includes the entity name in English, French, Spanish and Russian.
 
-2. https://extranet.who.int/tme/generateJSON.asp?ds=labels&lan=XX  (where XX is a two-letter language code, EN=English, ES=Spanish, FR=French, RU=Russian). This returns all the text that appear in the user interface such as headings, paragraphs, tables, legends, etc., in the chosen language.
+2. https://extranet.who.int/tme/generateJSON.asp?ds=groups. This returns a list of all groups for which profiles are available, currently six WHO regions countries and the global group of all countries and areas which report TB data annually to WHO. The list includes the entity name in English, French, Spanish and Russian.
 
-3. https://extranet.who.int/tme/generateJSON.asp?ds=data&iso2=XX (where XX is a country [ISO2 code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)). This returns all the data that appear in the tables and charts for the chosen country or area.
+3. https://extranet.who.int/tme/generateJSON.asp?ds=labels&lan=XX  (where XX is a two-letter language code, EN=English, ES=Spanish, FR=French, RU=Russian). This returns all the text that appear in the user interface such as headings, paragraphs, tables, legends, etc., in the chosen language.
+
+4. https://extranet.who.int/tme/generateJSON.asp?ds=data&iso2=XX (where XX is a country [ISO2 code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)). This returns all the data that appear in the tables and charts for the chosen country or area.
+
+5. https://extranet.who.int/tme/generateJSON.asp?ds=group_data&group_code=XXX (where XXX is a code for a WHO region or the global group). This returns all the data that appear in the tables and charts for the group of countries and areas.
 
 
 ## Data updates

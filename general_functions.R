@@ -89,7 +89,25 @@ format_estimate <- function(best, lo, hi, style="n"){
 }
 
 
-# Replace a null value with zero
+# Replace an NA value with zero
 NZ <- function(x){
   ifelse(is.na(x), 0, x)
+}
+
+# Validate inputs received via the URL: if an invalid choice is made, Shiny sets the input value to null
+# So convert to a defaultvalue
+
+# Replace a null entity_type with "country"   -- although invalid iso2 code doesn't seem to trigger an errors
+check_entity_type <- function(x){
+  ifelse(is.null(x), "country", x)
+}
+
+# Replace a null language value with "EN"
+check_lan <- function(x){
+  ifelse(is.null(x), "EN", x)
+}
+
+# Replace a null group_code with "AFR"
+check_group_code <- function(x){
+  ifelse(is.null(x), "AFR", x)
 }

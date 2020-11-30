@@ -1,10 +1,11 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Shiny app to display TB country profiles using JSON data retrieved from the
-# WHO global tuberculosis database
+# Shiny app to display TB country and group (regional/global) profiles using JSON data
+# retrieved from the WHO global tuberculosis database
 # Hazim Timimi, February 2020
+#               Updated November 2020 to include group profiles (version 2.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 1.3"
+app_version <- "Version 2.0"
 
 library(shiny)
 library(dplyr)
@@ -14,18 +15,23 @@ library(ggplot2)
 library(jsonlite)
 
 
-# get the data collection year and list of countries. This is only called once (not reactive)
+# get the data collection year and list of countries and groups. This is only called once (not reactive)
 # and is shared across all sessions.
 # Make sure to specify the data being read are UTF-8 encoded
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
 json_url <- "https://extranet.who.int/tme/generateJSON.asp"
+
 year_countries <- fromJSON(readLines(paste0(json_url, "?ds=countries"), warn = FALSE, encoding = "UTF-8"))
 
 dcyear <- year_countries$dcyear
 countries <- year_countries$countries
 rm(year_countries)
 
+# Get the groups
+aggregate_groups <- fromJSON(readLines(paste0(json_url, "?ds=groups"), warn = FALSE, encoding = "UTF-8"))
+aggregate_groups <- aggregate_groups$groups
 
 # Load general, non-reactive functions
 source("general_functions.R")
@@ -75,10 +81,30 @@ ui <- function(request) {
 
         fixedRow(id="selectors",
 
-                   column(width = 7,
+                   column(width = 2,
                           tags$div(class = "navbar navbar-inverse",
                                    style = "padding-left: 20px;",
-                                    uiOutput(outputId = "countries")
+
+                                   uiOutput(outputId = "entitytypes")
+
+                                   # radioButtons(inputId = "entity_type",
+                                   #              label = "",
+                                   #              choices = c("Country" = "country",
+                                   #                          "Group" = "group"),
+                                   #              inline = FALSE
+                                   #      )
+                                   )
+                   ),
+
+                 # Choose whether to show the list of countries or the list of groups
+                 # based on the choice made above
+
+                   column(width = 5,
+                          tags$div(class = "navbar navbar-inverse",
+                                   style = "padding-left: 20px;",
+
+                                   uiOutput(outputId = "entities")
+
                                     )
                    ),
 
@@ -215,16 +241,57 @@ server <- function(input, output, session) {
     # Include bookmarks in the URL
     source("bookmark_url.R", local = TRUE)
 
-    # Create the country selection list in the selected language
-    source("select_country.R", local = TRUE)
+    # Make sure language choice is valid in case someone messes with URL
+    # Note that Shiny will change input$lan to null if it doesn't match the
+    # available choices, so use general function check_lan()
 
+    # Create the entity type radio button selector using the chosen language
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    type_name_list <- reactive({
+
+        country <- switch (check_lan(input$lan),
+                "FR" = "Pays",
+                "ES" = "País",
+                "RU" = "Страна",
+                "Country" #default!
+            )
+
+        group <- switch (check_lan(input$lan),
+                "FR" = "Groupe",
+                "ES" = "Grupo",
+                "RU" = "Группа",
+                "Group" #default!
+            )
+
+        # Return a list
+        return(list(country, group))
+
+    })
+
+    # Build the entity type radio buttons
+    output$entitytypes <- renderUI({
+
+        radioButtons(inputId = "entity_type",
+                     label = "",
+                     choiceNames = type_name_list(),
+                     choiceValues = list("country", "group"),
+
+                     # next line needed to avoid losing the selected country when the language is changed
+                     selected = input$entity_type,
+                     inline = FALSE)
+    })
+
+
+    # Create the country or group selection lists in the selected language
+    source("select_entity.R", local = TRUE)
 
     # Get the JSON file for the labels to be used
     # Make sure to specify the data being read are UTF-8 encoded
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     plabs <- reactive({
 
-       url <- paste0(json_url, "?ds=labels&lan=", input$lan)
+       url <- paste0(json_url, "?ds=labels&lan=", check_lan(input$lan))
        json <- fromJSON(readLines(url, warn = FALSE, encoding = 'UTF-8'))
 
        # return the dataframe
@@ -232,12 +299,19 @@ server <- function(input, output, session) {
     })
 
 
-    # Get the profile data as a JSON file for the chosen country
+    # Get the profile data as a JSON file for the chosen country or group
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     pdata <- reactive({
 
-       url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
+        if (check_entity_type(input$entity_type) == "group") {
+            url <- paste0(json_url, "?ds=group_data&group_code=", input$group_code)
+        } else {
+            url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
+        }
+
+
+       #url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
        json <- fromJSON(readLines(url, warn = FALSE, encoding = 'UTF-8'))
        return(json)
     })
@@ -249,7 +323,9 @@ server <- function(input, output, session) {
     # when rounded to the nearest million (show the table only, not the chart)
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    output$show_finance <- eventReactive(input$iso2, ignoreNULL = TRUE, ignoreInit = TRUE, {
+    output$show_finance <- reactive({
+
+        req(pdata()$profile_properties)
 
         if (pdata()$profile_properties[, "dc_form_description"] == "Long form"){
             result <- 2

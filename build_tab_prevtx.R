@@ -18,9 +18,20 @@ output$prevtx_table <- renderTable({
   data.frame( c(ltxt(plabs(), "prevtx_hiv"),
                 ltxt(plabs(), "prevtx_kids")),
 
-              # format the estimates
-              c(display_cap_pct(pdata()$profile_data[, "hiv_ipt"],
-                                pdata()$profile_data[, "hiv_reg_new"]),
+              c(
+             # calculate pct_hiv_ipt
+             if (check_entity_type(input$entity_type) == "group") {
+               # For groups need to use the aggregated data view results
+               display_cap_pct(pdata()$profile_data[, "hiv_ipt_pct_numerator"],
+                               pdata()$profile_data[, "hiv_ipt_pct_denominator"])
+
+             } else {
+               # default is country data
+               display_cap_pct(pdata()$profile_data[, "hiv_ipt"],
+                                  pdata()$profile_data[, "hiv_reg_new"])
+
+             },
+
 
               format_estimate(pdata()$profile_estimates[, "e_prevtx_kids_pct"],
                               pdata()$profile_estimates[, "e_prevtx_kids_pct_lo"],
