@@ -98,7 +98,9 @@ output$budget_chart <-  renderPlot({
                           values = budget_palette(),
                           labels = c("a_domestic" = ltxt(plabs(), "source_domestic"),
                                      "b_international" = ltxt(plabs(), "source_international"),
-                                     "c_gap" = ltxt(plabs(), "source_unfunded")))
+                                     "c_gap" = ltxt(plabs(), "source_unfunded"))) +
+        scale_x_continuous(name="", seq(dcyear-4, dcyear))
+
   } else {
 
       plotobj <- NA
