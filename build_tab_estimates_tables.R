@@ -133,55 +133,60 @@ output$drestimates_table <- renderTable({ drestimates_table_content() },
 output$uhc_heading <- renderText({ HTML(paste0(ltxt(plabs(), "uhc"), "*"))  })
 
 
-uhc_data <- reactive({
+uhc_table_content <- reactive({
 
-  c(# treatment coverage
-    format_estimate(pdata()$profile_estimates[, "c_cdr"],
-                    pdata()$profile_estimates[, "c_cdr_lo"],
-                    pdata()$profile_estimates[, "c_cdr_hi"],
-                    style="%"),
+  # build the table manually
 
-    # catastrophic costs -- only a few countries have this data
-    # so need first to check whether the data exist
-    ifelse(!is.na(pdata()$profile_data[, "catast_pct"]),
-            format_estimate(pdata()$profile_data[, "catast_pct"],
-                            pdata()$profile_data[, "catast_pct_lo"],
-                            pdata()$profile_data[, "catast_pct_hi"],
-                            style="%"),
-           ""
-           ),
+  row_head <-  c(paste0(ltxt(plabs(), "tx_coverage"), ", ", dcyear - 1),
 
+                 ifelse(!is.na(pdata()$profile_data[, "catast_survey_year"]),
+                         paste0(ltxt(plabs(), "catastrophic_costs"), ", ",
+                                pdata()$profile_data[, "catast_survey_year"]),
+                         ltxt(plabs(), "catastrophic_costs")),
 
-    # case fatality ratio -- convert from a raio to percent
-    format_estimate(pdata()$profile_estimates[, "cfr"] * 100,
-                    pdata()$profile_estimates[, "cfr_lo"] * 100,
-                    pdata()$profile_estimates[, "cfr_hi"] * 100,
-                    style="%")
+                  paste0(ltxt(plabs(), "cfr"), ", ", dcyear - 1))
 
+  row_data <- c(# treatment coverage
+                format_estimate(pdata()$profile_estimates[, "c_cdr"],
+                                pdata()$profile_estimates[, "c_cdr_lo"],
+                                pdata()$profile_estimates[, "c_cdr_hi"],
+                                style="%"),
 
-    )
+                # catastrophic costs -- only a few countries have this data
+                # so need first to check whether the data exist
+                ifelse(!is.na(pdata()$profile_data[, "catast_pct"]),
+                        format_estimate(pdata()$profile_data[, "catast_pct"],
+                                        pdata()$profile_data[, "catast_pct_lo"],
+                                        pdata()$profile_data[, "catast_pct_hi"],
+                                        style="%"),
+                       ""
+                       ),
 
+                # case fatality ratio -- convert from a ratio to percent
+                format_estimate(pdata()$profile_estimates[, "cfr"] * 100,
+                                pdata()$profile_estimates[, "cfr_lo"] * 100,
+                                pdata()$profile_estimates[, "cfr_hi"] * 100,
+                                style="%"))
 
+  df <- data.frame(row_head, row_data)
+
+  # Remove the second row on catastrophic costs if the selected entity is a group
+  if (check_entity_type(input$entity_type) == "group") {
+    df <- df[-2,]
+  }
+
+  return(df)
 })
 
+uhc_table_to_render <-
 
-output$uhc_table <- renderTable({ data.frame( c(paste0(ltxt(plabs(), "tx_coverage"), ", ", dcyear - 1),
-
-
-                                                ifelse(!is.na(pdata()$profile_data[, "catast_survey_year"]),
-                                                       paste0(ltxt(plabs(), "catastrophic_costs"), ", ",
-                                                              pdata()$profile_data[, "catast_survey_year"]),
-                                                       ltxt(plabs(), "catastrophic_costs")),
-
-                                                paste0(ltxt(plabs(), "cfr"), ", ", dcyear - 1)),
-                                              uhc_data()
-                                             )  },
-                                      striped = TRUE,
-                                      hover = TRUE,
-                                      width = "100%",
-                                      # suppress column headers
-                                      colnames = FALSE,
-                                      na="")
+output$uhc_table <- renderTable({ uhc_table_content() },
+                                  striped = TRUE,
+                                  hover = TRUE,
+                                  width = "100%",
+                                  # suppress column headers
+                                  colnames = FALSE,
+                                  na="")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # 4. Add footnotes
