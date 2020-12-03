@@ -138,11 +138,14 @@ output$agesex_chart_subhead <- renderText({ paste0("(", ltxt(plabs(), "number"),
 
 output$agesex_chart <-  renderPlot({
 
-
   # Create quick function ss that the chart axis shows
-  # absolute numbers with space separators
+  # absolute numbers with space separators, but only for
+  # whole integers, otherwise get strange effects with fractions
+  # which happens on charts with small case numbers
   abs_rounder <- function(x){
-    rounder(abs(x))
+    ifelse(x %% 1 == 0,
+           rounder(abs(x)),
+           "")
   }
 
 

@@ -23,26 +23,29 @@ notifs_data <- reactive({
   # calculate percent of men, women and children in new and relapse
   # in 2019 instead of c_newinc used c_tot_agesex as the denominator,
   # which is the total number of cases reported in the age/sex table.
-  #
-  pct_women <- display_cap_pct(pdata()$profile_data[, "c_newrel_women"],
+  # Use NZ() with the numerator t0 0% when there are no men or no women when
+  # numbers hadn't all been filled in and when denominator > 0
+
+  pct_women <- display_cap_pct(NZ(pdata()$profile_data[, "c_newrel_women"]),
                                pdata()$profile_data[, "c_tot_agesex"])
 
-  pct_men <- display_cap_pct(pdata()$profile_data[, "c_newrel_men"],
+  pct_men <- display_cap_pct(NZ(pdata()$profile_data[, "c_newrel_men"]),
                              pdata()$profile_data[, "c_tot_agesex"])
 
   # to avoid weirdness of percentages not adding up to 100, will calculate %children as 100 - %men - %women to avoid rounding errors.
 	# Not entirely satisfactory but avoid people questioning why rounded percentages don't add up to 100%
+  # Use NZ() with the numerator to avoid errors when there are no men or no women
 
   pct_014 <- ifelse((pct_women == "" & pct_men == ""),
                     "",
                     100 -
-                    get_cap_pct(pdata()$profile_data[, "c_newrel_women"], pdata()$profile_data[, "c_tot_agesex"]) -
-                    get_cap_pct(pdata()$profile_data[, "c_newrel_men"], pdata()$profile_data[, "c_tot_agesex"]) )
+                    get_cap_pct(NZ(pdata()$profile_data[, "c_newrel_women"]), pdata()$profile_data[, "c_tot_agesex"]) -
+                    get_cap_pct(NZ(pdata()$profile_data[, "c_newrel_men"]), pdata()$profile_data[, "c_tot_agesex"]) )
 
   if (pct_014 != "") {
 
     # now format pct_014 as a string
-    pct_014 <- ifelse((pct_014 == 0 & pdata()$profile_data[, "c_newrel_014"] > 0),
+    pct_014 <- ifelse((pct_014 == 0 & NZ(pdata()$profile_data[, "c_newrel_014"]) > 0),
                       # show this to avoid a false 0%
                       "<1%",
                       paste0(signif(pct_014, 2), "%"))
