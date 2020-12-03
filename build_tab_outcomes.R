@@ -21,11 +21,11 @@ outcomes_table_content <- reactive({
   df <- data.frame(
 
             c(#labels depend on whether or not the country includes relapses with new
-               ifelse(pdata()$profile_data[, "rel_with_new_flg"] == 1,
+               ifelse(NZ(pdata()$profile_data[, "rel_with_new_flg"]) == 1,
                       paste(ltxt(plabs(), "tsr_newrel"), dcyear - 2),
                       paste(ltxt(plabs(), "tsr_new"), dcyear - 2)),
 
-               ifelse(pdata()$profile_data[, "rel_with_new_flg"] == 1,
+               ifelse(NZ(pdata()$profile_data[, "rel_with_new_flg"]) == 1,
                       paste(ltxt(plabs(), "tsr_ret_nrel"), dcyear - 2),
                       paste(ltxt(plabs(), "tsr_allret"), dcyear - 2)),
 
