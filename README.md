@@ -9,7 +9,7 @@ Show a selecton of important indicators concerning tuberculosis (TB) for a chose
 
 ## Components and data source
 
-This is an app built using [Shiny](https://shiny.rstudio.com/) and hosted at [shinyapps.io](https://worldhealthorg.shinyapps.io/tb_profiles/). It uses data published by the World Health Organization's [Global Tuberculosis Programme](https://www.who.int/tb/data).
+This is an app built using [Shiny](https://shiny.rstudio.com/) and hosted at [shinyapps.io](https://worldhealthorg.shinyapps.io/tb_profiles/). It uses data published by the World Health Organization's [Global Tuberculosis Programme](https://www.who.int/teams/global-tuberculosis-programme/data).
 
 The app pulls data directly from the global TB database. Unfortunately there is no standard api with which to interogate the database, so I built a script and some queries to return JSON files specifically for this app.
 
@@ -28,7 +28,7 @@ The script can return five types of JSON file:
 
 ## Data updates
 
-WHO collects TB data annually from all countries and areas and publishes them in the  [Global Tuberculosis Report](https://www.who.int/tb/publications/global_report/en/), usually in October of each year.
+WHO collects TB data annually from all countries and areas and publishes them in the  [Global Tuberculosis Report](https://www.who.int/teams/global-tuberculosis-programme/data), usually in October of each year.
 
 
 ***

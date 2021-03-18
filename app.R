@@ -87,12 +87,6 @@ ui <- function(request) {
 
                                    uiOutput(outputId = "entitytypes")
 
-                                   # radioButtons(inputId = "entity_type",
-                                   #              label = "",
-                                   #              choices = c("Country" = "country",
-                                   #                          "Group" = "group"),
-                                   #              inline = FALSE
-                                   #      )
                                    )
                    ),
 
@@ -223,7 +217,7 @@ ui <- function(request) {
                             ", Source code on <a href='https://github.com/hazimtimimi/tb_profiles' target='_blank'>Github</a>. ",
                             "Data are also available on the TB Report app for <a href='https://apps.apple.com/us/app/tb-report/id1483112411' target='_blank'>iOS</a> and
                       <a href='https://play.google.com/store/apps/details?id=uk.co.adappt.whotbreport&hl=en_us' target='_blank'>Android</a>
-                      and as <a href='https://www.who.int/tb/country/data/download/en/' target='_blank'>CSV files</a>.</i><br /><br /></div>"))
+                      and as <a href='https://www.who.int/teams/global-tuberculosis-programme/data' target='_blank'>CSV files</a>.</i><br /><br /></div>"))
 
             )
         )
@@ -310,8 +304,6 @@ server <- function(input, output, session) {
             url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
         }
 
-
-       #url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
        json <- fromJSON(readLines(url, warn = FALSE, encoding = 'UTF-8'))
        return(json)
     })
