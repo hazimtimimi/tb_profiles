@@ -106,14 +106,18 @@ output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
                                                 ltxt(plabs(), "tot_notified") ),
                                                 notifs_data()
                                                 )  },
-                                      striped = TRUE,
-                                      hover = TRUE,
-                                      width = "100%",
-                                      # right-align the data column
-                                      align = "lr",
-                                      # suppress column headers
-                                      colnames = FALSE,
-                                      na="")
+                                   striped = TRUE,
+                                   hover = TRUE,
+                                   width = "100%",
+                                   # right-align the data column
+                                   align = "lr",
+                                   # suppress column headers
+                                   colnames = FALSE,
+                                   na="",
+                                   # Use this xtable print option to prevent the HTML &ge;
+                                   # character entity from being displayed as "&ge;"
+                                   # (the character may be needed in some label strings intended for HTML output)
+                                   sanitize.text.function=function(x){x})
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,7 +183,7 @@ output$tbhiv_table <- renderTable({ tbhiv_data()  },
 # 3. DR-TB table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$drtb_heading <- renderText({ paste0(ltxt(plabs(), "drtb_care"), ", ", dcyear-1)  })
+output$drtb_heading <- renderText({ paste0(ltxt(plabs(), "drtb_care"), "**, ", dcyear-1)  })
 
 drtb_data <- reactive({
 
@@ -218,15 +222,10 @@ output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"),
                                                  paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "ret"), "^"),
                                                  paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_rr_mdr"), "^^"),
                                                  paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_rr_mdr"), "^^^"),
-                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_xdr_short"), "^^"),
-                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_xdr_short"), "^^^"),
-
-                                                 ifelse(dcyear == 2019,
-                                                        ltxt(plabs(), "rr_sldst"),
-                                                        # Change the variable displayed from 2020 data collection year onwards
-                                                        ltxt(plabs(), "rr_fqdst"))
-
-                                                  ),
+                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "pre_xdr"), "^^"),
+                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "pre_xdr"), "^^^"),
+                                                 ltxt(plabs(), "rr_fqdst")
+                                                 ),
                                                drtb_data()
                                               )  },
                                       striped = TRUE,

@@ -111,3 +111,44 @@ output$mort_chart <-  renderPlot({
      profile_theme()
 
 })
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 3. Cases attributable to 5 risk factors chart
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$rf_chart_head <- renderText({ paste0(ltxt(plabs(), "attrib_cases"), ", ", dcyear-1) })
+
+output$rf_chart_subhead <- renderText({ paste0("(", ltxt(plabs(), "number"), ")") })
+
+output$rf_chart <-  renderPlot({
+
+  # Make sure there are data to plot
+  req(is.data.frame(pdata()$attributable_cases))
+
+  pdata()$attributable_cases %>%
+
+    # Get the labels for each of the five risk factor categories
+    right_join(filter(plabs(), label_tag %in% c("alc", "dia", "hiv", "smk", "und") ),
+               by = c("risk_factor"="label_tag")) %>%
+
+    # Order by descending number of attributable cases
+    arrange(desc(best)) %>%
+    # Preserve the order by setting risk_factor as a factor variable
+    mutate(label_text = factor(label_text, levels = rev(label_text))) %>%
+
+    # Plot
+    ggplot(aes(x=label_text,
+               y=best)) +
+    geom_point() +
+    # Some records have null entries for lo and hi which triggers an error so
+    # set them to zero using NZ() because this only happens when best is zero.
+    geom_pointrange(aes(ymin=NZ(lo), ymax=NZ(hi)),
+                    size=1.2,
+                    colour='Darkgreen') +
+    expand_limits(y=0) +
+    # USe space separators to label large numbers; don't display fractions
+    scale_y_continuous(labels = function(x){ifelse(x %% 1 == 0, rounder(x),"")}) +
+    coord_flip() +
+    profile_theme()
+
+})

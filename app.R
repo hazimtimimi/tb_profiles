@@ -5,7 +5,7 @@
 #               Updated November 2020 to include group profiles (version 2.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 2.0"
+app_version <- "Version 2.1"
 
 library(shiny)
 library(dplyr)
@@ -137,9 +137,6 @@ ui <- function(request) {
                              htmlOutput(outputId = "estimates_heading", container = h3),
                              tableOutput(outputId = "estimates_table"),
 
-                             htmlOutput(outputId = "drestimates_heading", container = h3),
-                             tableOutput(outputId = "drestimates_table"),
-
                              htmlOutput(outputId = "uhc_heading", container = h3),
                              tableOutput(outputId = "uhc_table"),
 
@@ -172,26 +169,33 @@ ui <- function(request) {
                     column(width = 5,
                              htmlOutput(outputId = "inc_chart_head", container = h3),
                              textOutput(outputId = "inc_chart_subhead", container = h5),
-                             plotOutput(outputId = "inc_chart", height = "300px"),
+                             plotOutput(outputId = "inc_chart", height = "250px"),
 
                              htmlOutput(outputId = "mort_chart_head", container = h3),
                              textOutput(outputId = "mort_chart_subhead", container = h5),
-                             plotOutput(outputId = "mort_chart", height = "300px"),
+                             plotOutput(outputId = "mort_chart", height = "250px"),
 
                              textOutput(outputId = "agesex_chart_head", container = h3),
                              textOutput(outputId = "agesex_chart_subhead", container = h5),
-                             plotOutput(outputId = "agesex_chart", height = "300px"),
+                             plotOutput(outputId = "agesex_chart", height = "250px"),
 
-                             textOutput(outputId = "tsr_chart_head", container = h3),
-                             textOutput(outputId = "tsr_chart_subhead", container = h5),
-                             plotOutput(outputId = "tsr_chart", height = "300px"),
+                           # in 2021 data collection year replaced the treatment success time series
+                           # chart with a chart on cases attributable to five risk factors
+                           # This should only be shown if the estimates exist for the entity
+                           conditionalPanel(condition = "output.show_attributable_cases == 1",
+
+                                            textOutput(outputId = "rf_chart_head", container = h3),
+                                            textOutput(outputId = "rf_chart_subhead", container = h5),
+                                            plotOutput(outputId = "rf_chart", height = "250px")
+                           ),
+
 
                              # The financing chart should only be shown if dc_form_description is set to 'TRUE'Long form'
                              conditionalPanel(condition = "output.show_finance == 2",
 
                                  textOutput(outputId = "budget_chart_head", container = h3),
                                  textOutput(outputId = "budget_chart_subhead", container = h5),
-                                 plotOutput(outputId = "budget_chart", height = "300px")
+                                 plotOutput(outputId = "budget_chart", height = "250px")
                              )
                            )
 
@@ -200,12 +204,14 @@ ui <- function(request) {
 
                  # Footnotes
                  htmlOutput(outputId = "foot_est"),
-                 htmlOutput(outputId = "foot_mdr_defn"),
+                 htmlOutput(outputId = "foot_dr_defn"),
 
                  htmlOutput(outputId = "foot_pulm"),
                  htmlOutput(outputId = "foot_newunk"),
                  htmlOutput(outputId = "foot_rrmdr"),
 
+                # Aggregated finance footer that doesn't appear for countries
+                htmlOutput(outputId = "foot_aggfin"),
 
                 # Footer that goes on every page
                 htmlOutput(outputId = "generation"),
@@ -307,6 +313,29 @@ server <- function(input, output, session) {
        json <- fromJSON(readLines(url, warn = FALSE, encoding = 'UTF-8'))
        return(json)
     })
+
+
+    # Show or hide the cases attributable to 5 risk factors
+    # Some entities don;t have these estimates and the attributable_cases
+    # part of the profile data will be null rather than a data frame.
+    # If there is no data frame then hide the chart and its heading/subheading
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    output$show_attributable_cases <- reactive ({
+
+        req(pdata()$attributable_cases)
+
+        if (is.data.frame(pdata()$attributable_cases)){
+            result <- 1
+        } else {
+            result <- 0
+        }
+
+        return(result)
+    })
+
+    # Need this to make sure browser can switch attributable cases  elements back on again if hidden
+    outputOptions(output, "show_attributable_cases", suspendWhenHidden = FALSE)
 
 
     # Show or hide the finance data depending on the country selected

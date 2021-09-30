@@ -16,8 +16,6 @@ estimates_table_content <- reactive({
   # build the dataframe manually
   row_head <- c(ltxt(plabs(), "incidence_tb"),
                 ltxt(plabs(), "incidence_tbhiv"),
-                # next use ** as callout marker for the second footnote
-                paste0(ltxt(plabs(), "incidence_rr"), "**"),
                 ltxt(plabs(), "mortality_hivneg"),
                 ltxt(plabs(), "mortality_hivpos"))
 
@@ -31,11 +29,6 @@ estimates_table_content <- reactive({
                 format_estimate(pdata()$profile_estimates[, "e_inc_tbhiv_num"],
                                 pdata()$profile_estimates[, "e_inc_tbhiv_num_lo"],
                                 pdata()$profile_estimates[, "e_inc_tbhiv_num_hi"],
-                                style="k"),
-
-                format_estimate(pdata()$profile_estimates[, "e_inc_rr_num"],
-                                pdata()$profile_estimates[, "e_inc_rr_num_lo"],
-                                pdata()$profile_estimates[, "e_inc_rr_num_hi"],
                                 style="k"),
 
                 format_estimate(pdata()$profile_estimates[, "e_mort_exc_tbhiv_num"],
@@ -58,10 +51,6 @@ estimates_table_content <- reactive({
                 format_estimate(pdata()$profile_estimates[, "e_inc_tbhiv_100k"],
                                 pdata()$profile_estimates[, "e_inc_tbhiv_100k_lo"],
                                 pdata()$profile_estimates[, "e_inc_tbhiv_100k_hi"]),
-
-                format_estimate(pdata()$profile_estimates[, "e_inc_rr_100k"],
-                                pdata()$profile_estimates[, "e_inc_rr_100k_lo"],
-                                pdata()$profile_estimates[, "e_inc_rr_100k_hi"]),
 
                 format_estimate(pdata()$profile_estimates[, "e_mort_exc_tbhiv_100k"],
                                 pdata()$profile_estimates[, "e_mort_exc_tbhiv_100k_lo"],
@@ -88,46 +77,7 @@ output$estimates_table <- renderTable({ estimates_table_content() },
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 2. Proportion of cases with RR-TB table
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-output$drestimates_heading <- renderText({ HTML(paste0(ltxt(plabs(), "rrmdr_est_pct"), "*, ", dcyear-1))  })
-
-
-drestimates_table_content <- reactive({
-
-  # build the dataframe manually
-  row_head <- c(ltxt(plabs(), "new"),
-                ltxt(plabs(), "ret"))
-
-  est_pct <- c( format_estimate(pdata()$profile_estimates[, "e_rr_pct_new"],
-                                pdata()$profile_estimates[, "e_rr_pct_new_lo"],
-                                pdata()$profile_estimates[, "e_rr_pct_new_hi"],
-                                style="%"),
-
-
-                format_estimate(pdata()$profile_estimates[, "e_rr_pct_ret"],
-                                pdata()$profile_estimates[, "e_rr_pct_ret_lo"],
-                                pdata()$profile_estimates[, "e_rr_pct_ret_hi"],
-                                style="%")
-                )
-  df <- data.frame(row_head, est_pct)
-
-  return(df)
-
-})
-
-output$drestimates_table <- renderTable({ drestimates_table_content() },
-                                      striped = TRUE,
-                                      hover = TRUE,
-                                      width = "100%",
-                                      # suppress column headers
-                                      colnames = FALSE,
-                                      na="")
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 3. UHC and social protection table
+# 2. UHC and social protection table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 output$uhc_heading <- renderText({ HTML(paste0(ltxt(plabs(), "uhc"), "*"))  })
@@ -189,9 +139,9 @@ output$uhc_table <- renderTable({ uhc_table_content() },
                                   na="")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 4. Add footnotes
+# 3. Add footnotes
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 output$foot_est <- renderText({  HTML(paste("*<i>", ltxt(plabs(), "foot_est"),"</i>")) })
-output$foot_mdr_defn <- renderText({ HTML(paste("**<i>", ltxt(plabs(), "mdr_definition"), "</i>")) })
+output$foot_dr_defn <- renderText({ HTML(paste("**<i>", ltxt(plabs(), "dr_definition"), "</i>")) })
 

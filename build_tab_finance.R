@@ -2,8 +2,12 @@
 # Build output for the sixth tab (financing charts and tables)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+# Add callout to footnote if finance is an aggregate group
+output$finance_heading <- renderText({ ifelse(check_entity_type(input$entity_type) == "group",
+                                              paste0(ltxt(plabs(), "finance"),"***"),
+                                              ltxt(plabs(), "finance")
+                                              ) })
 
-output$finance_heading <- renderText({ ltxt(plabs(), "finance") })
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # 1. Budget table
@@ -65,7 +69,13 @@ output$budget_table <- renderTable({
 # Move heading and subheading out of ggplot2
 # because ggplot2 headings don't wrap when space is restricted
 
-output$budget_chart_head <- renderText({ ltxt(plabs(), "budget") })
+# Add callout to footnote if finance is an aggregate group
+output$budget_chart_head <- renderText({ ifelse(check_entity_type(input$entity_type) == "group",
+                                                paste0(ltxt(plabs(), "budget"),"***"),
+                                                ltxt(plabs(), "budget")
+                                                ) })
+
+
 output$budget_chart_subhead <- renderText({ ltxt(plabs(), "usd_millions") })
 
 output$budget_chart <-  renderPlot({
@@ -109,3 +119,16 @@ output$budget_chart <-  renderPlot({
   return(plotobj)
 
 })
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 3. Add footnote for aggregated finance
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$foot_aggfin <- renderText({  ifelse(check_entity_type(input$entity_type) == "group",
+                                           HTML(paste("***<i>",
+                                                      ltxt(plabs(), "foot_aggfin_lmc"),
+                                                      ltxt(plabs(), "foot_aggfin_ghs"),
+                                                      "</i>")),
+                                           "") })
+
+
