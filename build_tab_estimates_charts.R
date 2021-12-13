@@ -147,7 +147,8 @@ output$rf_chart <-  renderPlot({
                     colour='Darkgreen') +
     expand_limits(y=0) +
     # USe space separators to label large numbers; don't display fractions
-    scale_y_continuous(labels = function(x){ifelse(x %% 1 == 0, rounder(x),"")}) +
+    scale_y_continuous(labels = function(x){ifelse(x %% 1 == 0, rounder(x),"")},
+                       expand = expansion(mult = c(0.05, 0.15))) +
     coord_flip() +
     profile_theme()
 
