@@ -19,7 +19,7 @@ profile_theme <- function(base_size=10, base_family="") {
                                #size=18,
                                margin=ggplot2::margin(9,0,9,0)),
 
-  plot.margin = margin(0,0,30,0,),
+  plot.margin = margin(0,20,30,0),
 
   #Legend format
   legend.position = "top",
@@ -36,7 +36,7 @@ profile_theme <- function(base_size=10, base_family="") {
   axis.text = element_text(family=base_family,
                            size=12,
                            color=charcoal),
-  axis.text.x = ggplot2::element_text(margin=ggplot2::margin(5, b = 10)),
+  axis.text.x = ggplot2::element_text(margin=ggplot2::margin(5, 5, 10, 5)),
   axis.ticks = ggplot2::element_blank(),
   axis.line = ggplot2::element_blank(),
 

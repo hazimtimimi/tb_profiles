@@ -137,19 +137,19 @@ output$rf_chart <-  renderPlot({
     mutate(label_text = factor(label_text, levels = rev(label_text))) %>%
 
     # Plot
-    ggplot(aes(x=label_text,
-               y=best)) +
+    ggplot(aes(y=label_text,
+               x=best)) +
     geom_point() +
     # Some records have null entries for lo and hi which triggers an error so
     # set them to zero using NZ() because this only happens when best is zero.
-    geom_pointrange(aes(ymin=NZ(lo), ymax=NZ(hi)),
+    geom_pointrange(aes(xmin=NZ(lo), xmax=NZ(hi)),
                     size=1.2,
                     colour='Darkgreen') +
-    expand_limits(y=0) +
+    expand_limits(x=0) +
     # USe space separators to label large numbers; don't display fractions
-    scale_y_continuous(labels = function(x){ifelse(x %% 1 == 0, rounder(x),"")},
+    scale_x_continuous(labels = function(x){ifelse(x %% 1 == 0, rounder(x),"")},
                        expand = expansion(mult = c(0.05, 0.15))) +
-    coord_flip() +
+
     profile_theme()
 
 })
