@@ -21,8 +21,8 @@ output$budget_table <- renderTable({
   req(pdata()$profile_properties)
 
   # build the data frame manually
-  # There are two versions depending on whether this is a long or short form country
-  if (pdata()$profile_properties[, "dc_form_description"] == "Long form"){
+  # There are two versions depending on whether dc_finance_display is true or false
+  if (isTRUE(pdata()$profile_properties[, "dc_finance_display"])){
 
         data.frame(c(paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
                      paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),

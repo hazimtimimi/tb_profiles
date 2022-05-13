@@ -156,7 +156,7 @@ ui <- function(request) {
                              textOutput(outputId = "prevtx_heading", container = h3),
                              tableOutput(outputId = "prevtx_table"),
 
-                             # The financing table should only be shown if dc_form_description is set to 'Long form'
+                             # The financing table should only be shown if dc_finance_display is true
                              # or if it is a short form with budget > 0 (rounded to nearest million)
                              conditionalPanel(condition = "output.show_finance >= 1",
 
@@ -190,7 +190,7 @@ ui <- function(request) {
                            ),
 
 
-                             # The financing chart should only be shown if dc_form_description is set to 'TRUE'Long form'
+                             # The financing chart should only be shown if dc_finance_display is true
                              conditionalPanel(condition = "output.show_finance == 2",
 
                                  textOutput(outputId = "budget_chart_head", container = h3),
@@ -339,8 +339,8 @@ server <- function(input, output, session) {
 
 
     # Show or hide the finance data depending on the country selected
-    # They should only be shown if dc_form_description is set to 'Long form'
-    # Or of it is 'Short form' and the total budget has been reported and is greater than 0
+    # They should only be shown if dc_finance_display is true
+    # Or of it is not true and the total budget has been reported and is greater than 0
     # when rounded to the nearest million (show the table only, not the chart)
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -348,10 +348,10 @@ server <- function(input, output, session) {
 
         req(pdata()$profile_properties)
 
-        if (pdata()$profile_properties[, "dc_form_description"] == "Long form"){
+        if (isTRUE(pdata()$profile_properties[, "dc_finance_display"])){
             result <- 2
 
-        } else if (pdata()$profile_properties[, "dc_form_description"] == "Short form" &
+        } else if (!isTRUE(pdata()$profile_properties[, "dc_finance_display"]) &
                    rounder(NZ(pdata()$profile_data[, "tot_req"])) > 0) {
             result <- 1
 
