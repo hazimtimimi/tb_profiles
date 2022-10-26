@@ -5,7 +5,7 @@
 #               Updated November 2020 to include group profiles (version 2.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 2.1"
+app_version <- "Version 2.2"
 
 library(shiny)
 library(dplyr)
@@ -136,6 +136,9 @@ ui <- function(request) {
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
                              htmlOutput(outputId = "estimates_heading", container = h3),
                              tableOutput(outputId = "estimates_table"),
+
+                             htmlOutput(outputId = "drestimates_heading", container = h3),
+                             tableOutput(outputId = "drestimates_table"),
 
                              htmlOutput(outputId = "uhc_heading", container = h3),
                              tableOutput(outputId = "uhc_table"),
