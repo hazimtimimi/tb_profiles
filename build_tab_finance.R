@@ -83,6 +83,9 @@ output$budget_chart <-  renderPlot({
   # Make sure there are data to plot
   req(pdata()$profile_finance)
 
+  # Additional check for aggregates -- variable names are different
+  req(check_entity_type(input$entity_type) != "group")
+
   # First make sure there are some data to display
   # There will only be the year column if no data, so check number of columns
 
