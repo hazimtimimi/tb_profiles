@@ -78,6 +78,14 @@ budget_palette <- function(){
 
 }
 
+funding_palette <- function(){
+
+  c("a_domestic_funds"      =  "#7DAAD4", # (blue)
+    "b_international_funds" =  "#E9C04F"  # (orange)
+  )
+
+}
+
 
 agesex_palette <- function() {
 
