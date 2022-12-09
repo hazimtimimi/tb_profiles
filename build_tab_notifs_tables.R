@@ -199,10 +199,12 @@ drtb_data <- reactive({
                     pdata()$profile_data[, "pulm_labconf_ret"]),
 
 
-    rounder(pdata()$profile_data[, "conf_rrmdr"]),
-    rounder(pdata()$profile_data[, "mdr_tx"]),
-    rounder(pdata()$profile_data[, "all_conf_xdr"]),
-    rounder(pdata()$profile_data[, "conf_xdr_tx"]),
+    rounder(pdata()$profile_data[, "conf_rr_nfqr"]),
+    rounder(ifelse(is.na(pdata()$profile_data[, "unconf_rr_nfqr_tx"]) & is.na(pdata()$profile_data[, "conf_rr_nfqr_tx"]),
+                   NA,
+                   NZ(pdata()$profile_data[, "unconf_rr_nfqr_tx"]) + NZ(pdata()$profile_data[, "conf_rr_nfqr_tx"]))),
+    rounder(pdata()$profile_data[, "conf_rr_fqr"]),
+    rounder(pdata()$profile_data[, "conf_rr_fqr_tx"]),
 
     ifelse(dcyear == 2019,
            rounder(pdata()$profile_data[, "rr_sldst"]),
@@ -220,8 +222,8 @@ drtb_data <- reactive({
 
 output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "new"), "^"),
                                                  paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "ret"), "^"),
-                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "tsr_rr_mdr"), "^^"),
-                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "tsr_rr_mdr"), "^^^"),
+                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "rr_nfqr_abbr"), "^^"),
+                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "rr_nfqr_abbr"), "^^^"),
                                                  paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "pre_xdr"), "^^"),
                                                  paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "pre_xdr"), "^^^"),
                                                  ltxt(plabs(), "rr_fqdst")
