@@ -31,49 +31,52 @@ output$inc_chart <-  renderPlot({
 
   pdata()$epi_timeseries %>%
 
-     # quick fix if TB/HIV estimates are all NAs, make sure
-     # data type is numeric (problem with Andorra etc)
-     mutate(e_inc_tbhiv_100k = as.numeric(e_inc_tbhiv_100k),
-            e_inc_tbhiv_100k_lo = as.numeric(e_inc_tbhiv_100k_lo),
-            e_inc_tbhiv_100k_hi = as.numeric(e_inc_tbhiv_100k_hi)) %>%
+    # start times eries at year 2010
+    filter(year >= 2010) %>%
 
-     ggplot(aes(x=year, y=c_newinc_100k, ymin=0)) +
-     geom_line(linewidth=1, aes(colour="notifs")) +
+    # quick fix if TB/HIV estimates are all NAs, make sure
+    # data type is numeric (problem with Andorra etc)
+    mutate(e_inc_tbhiv_100k = as.numeric(e_inc_tbhiv_100k),
+          e_inc_tbhiv_100k_lo = as.numeric(e_inc_tbhiv_100k_lo),
+          e_inc_tbhiv_100k_hi = as.numeric(e_inc_tbhiv_100k_hi)) %>%
 
-     geom_ribbon(aes(x=year, ymin=e_inc_100k_lo, ymax=e_inc_100k_hi),
-                 fill=standard_palette("incidence"),
-                 alpha=0.4) +
+    ggplot(aes(x=year, y=c_newinc_100k, ymin=0)) +
+    geom_line(linewidth=1, aes(colour="notifs")) +
 
-     geom_line(aes(y=e_inc_100k, colour="inc"),
-               linewidth=1) +
+    geom_ribbon(aes(x=year, ymin=e_inc_100k_lo, ymax=e_inc_100k_hi),
+               fill=standard_palette("incidence"),
+               alpha=0.4) +
 
-     geom_ribbon(aes(x=year, ymin=e_inc_tbhiv_100k_lo, ymax=e_inc_tbhiv_100k_hi),
-                 fill=standard_palette("tbhiv_incidence"),
-                 alpha=0.4) +
+    geom_line(aes(y=e_inc_100k, colour="inc"),
+             linewidth=1) +
 
-     geom_line(aes(y=e_inc_tbhiv_100k, colour="tbhivinc"),
-               linewidth=1,
-               # The next option suppresses warnings about missing values
-               # from appearing in the console
-               na.rm = TRUE) +
+    geom_ribbon(aes(x=year, ymin=e_inc_tbhiv_100k_lo, ymax=e_inc_tbhiv_100k_hi),
+               fill=standard_palette("tbhiv_incidence"),
+               alpha=0.4) +
 
-     scale_x_continuous(name="", breaks = c(2000, 2005, 2010, 2015, dcyear-1)) +
+    geom_line(aes(y=e_inc_tbhiv_100k, colour="tbhivinc"),
+             linewidth=1,
+             # The next option suppresses warnings about missing values
+             # from appearing in the console
+             na.rm = TRUE) +
 
-     profile_theme() +
+    scale_x_continuous(name="", breaks = seq(2010, dcyear-1, by=2)) +
 
-     # Build the legend using a manual colour scale
-     scale_color_manual(name = "",
-                        breaks = c("inc", "notifs", "tbhivinc"),
-                        values = c("inc" = standard_palette("incidence"),
-                                   "notifs" = "black",
-                                   "tbhivinc" = standard_palette("tbhiv_incidence")),
-                        labels = c("inc" = ltxt(plabs(), "incidence_tb"),
-                                   # couldn't get R to interpret \n or <br /> embedded in the label itself so
-                                   # either split labels into two and use "\n" to join them (which does get interpreted!)
-                                   # or don't use legends and instead use colour coding in the title
-                                   "notifs" = ltxt(plabs(), "notifs_totnewrel"),
-                                   "tbhivinc" = ltxt(plabs(), "incidence_tbhiv"))
-                        ) +
+    profile_theme() +
+
+    # Build the legend using a manual colour scale
+    scale_color_manual(name = "",
+                      breaks = c("inc", "notifs", "tbhivinc"),
+                      values = c("inc" = standard_palette("incidence"),
+                                 "notifs" = "black",
+                                 "tbhivinc" = standard_palette("tbhiv_incidence")),
+                      labels = c("inc" = ltxt(plabs(), "incidence_tb"),
+                                 # couldn't get R to interpret \n or <br /> embedded in the label itself so
+                                 # either split labels into two and use "\n" to join them (which does get interpreted!)
+                                 # or don't use legends and instead use colour coding in the title
+                                 "notifs" = ltxt(plabs(), "notifs_totnewrel"),
+                                 "tbhivinc" = ltxt(plabs(), "incidence_tbhiv"))
+                      ) +
 
     # suppress legend
     theme(legend.position="none")
@@ -98,6 +101,10 @@ output$mort_chart <-  renderPlot({
   req(pdata()$epi_timeseries)
 
   pdata()$epi_timeseries %>%
+
+    # start time series at year 2010
+    filter(year >= 2010) %>%
+
     ggplot(aes(x=year, y=e_mort_exc_tbhiv_100k, ymin=0)) +
     geom_line(linewidth=1,
 		          colour=standard_palette("mortality_exc_tbhiv")) +
@@ -106,9 +113,9 @@ output$mort_chart <-  renderPlot({
                 fill=standard_palette("mortality_exc_tbhiv"),
                 alpha=0.4) +
 
-     scale_x_continuous(name="", breaks = c(2000, 2005, 2010, 2015, dcyear-1)) +
+    scale_x_continuous(name="", breaks = seq(2010, dcyear-1, by=2)) +
 
-     profile_theme()
+    profile_theme()
 
 })
 
