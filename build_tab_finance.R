@@ -10,7 +10,7 @@ output$finance_heading <- renderText({ ifelse(check_entity_type(input$entity_typ
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 1. Funding table
+# 1. Expenditure (received funding) and budget (committed funding) table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Combine the data with the row headers manually and render for output
@@ -19,25 +19,43 @@ output$funding_table <- renderTable({
   # Make sure there are data to display
   req(pdata()$profile_properties)
 
-  # build the data frame manually
-  # There are two versions depending on whether dc_finance_display is true or false
+  # build the data frame manually, but only if dc_finance_display is true
   if (isTRUE(pdata()$profile_properties[, "dc_finance_display"])){
 
     data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
                  paste0("- ", ltxt(plabs(), "fund_domestic")),
-                 paste0("- ", ltxt(plabs(), "fund_international"))),
+                 paste0("- ", ltxt(plabs(), "fund_international")),
+                 paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
+                 paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
+                 paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
+                 paste0("- ", ltxt(plabs(), "source_unfunded"))
+                 ),
 
                c(rounder(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
                            NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
 
-                 # calculate pct_domestic and international
+                 # calculate pct_domestic and international for expenditure (received funding)
                  display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]),
                                  NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
                                    NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
 
                  display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"]),
                                  NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
-                                   NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])))
+                                   NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+
+                 rounder(pdata()$profile_data[, "tot_req"]),
+
+                 # calculate pct_domestic, international and unfunded for budget (committed funding)
+                 display_cap_pct(pdata()$profile_data[, "tot_domestic"],
+                                 pdata()$profile_data[, "tot_req"]),
+
+                 display_cap_pct(pdata()$profile_data[, "tot_international"],
+                                 pdata()$profile_data[, "tot_req"]),
+
+                 display_cap_pct(pdata()$profile_data[, "tot_gap"],
+                                 pdata()$profile_data[, "tot_req"])
+
+                 )
     )
 
   }
@@ -56,7 +74,7 @@ na="")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 2. Funding chart
+# 2. Expenditure (committed funding) chart
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Move heading and subheading out of ggplot2

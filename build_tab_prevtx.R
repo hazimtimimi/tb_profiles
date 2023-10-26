@@ -16,7 +16,7 @@ output$prevtx_table <- renderTable({
 
   # build the data frame manually
   data.frame( c(ltxt(plabs(), "prevtx_hiv"),
-                ltxt(plabs(), "prevtx_kids")),
+                ltxt(plabs(), "prevtx_con")),
 
               c(
              # calculate pct_hiv_ipt
@@ -33,9 +33,9 @@ output$prevtx_table <- renderTable({
              },
 
 
-              format_estimate(pdata()$profile_estimates[, "e_prevtx_kids_pct"],
-                              pdata()$profile_estimates[, "e_prevtx_kids_pct_lo"],
-                              pdata()$profile_estimates[, "e_prevtx_kids_pct_hi"],
+              format_estimate(pdata()$profile_estimates[, "e_prevtx_hh_contacts_pct"],
+                              pdata()$profile_estimates[, "e_prevtx_hh_contacts_pct_lo"],
+                              pdata()$profile_estimates[, "e_prevtx_hh_contacts_pct_hi"],
                               style="%")
                )
             ) },

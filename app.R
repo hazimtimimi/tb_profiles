@@ -5,7 +5,7 @@
 #               Updated November 2020 to include group profiles (version 2.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 2.5.1"
+app_version <- "Version 2.5.0.2"
 
 library(shiny)
 library(dplyr)
