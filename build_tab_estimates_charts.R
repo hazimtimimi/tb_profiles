@@ -38,21 +38,21 @@ output$inc_chart <-  renderPlot({
             e_inc_tbhiv_100k_hi = as.numeric(e_inc_tbhiv_100k_hi)) %>%
 
      ggplot(aes(x=year, y=c_newinc_100k, ymin=0)) +
-     geom_line(size=1, aes(colour="notifs")) +
+     geom_line(linewidth=1, aes(colour="notifs")) +
 
      geom_ribbon(aes(x=year, ymin=e_inc_100k_lo, ymax=e_inc_100k_hi),
                  fill=standard_palette("incidence"),
                  alpha=0.4) +
 
      geom_line(aes(y=e_inc_100k, colour="inc"),
-               size=1) +
+               linewidth=1) +
 
      geom_ribbon(aes(x=year, ymin=e_inc_tbhiv_100k_lo, ymax=e_inc_tbhiv_100k_hi),
                  fill=standard_palette("tbhiv_incidence"),
                  alpha=0.4) +
 
      geom_line(aes(y=e_inc_tbhiv_100k, colour="tbhivinc"),
-               size=1,
+               linewidth=1,
                # The next option suppresses warnings about missing values
                # from appearing in the console
                na.rm = TRUE) +
@@ -99,7 +99,7 @@ output$mort_chart <-  renderPlot({
 
   pdata()$epi_timeseries %>%
     ggplot(aes(x=year, y=e_mort_exc_tbhiv_100k, ymin=0)) +
-    geom_line(size=1,
+    geom_line(linewidth=1,
 		          colour=standard_palette("mortality_exc_tbhiv")) +
 
     geom_ribbon(aes(x=year, ymin=e_mort_exc_tbhiv_100k_lo, ymax=e_mort_exc_tbhiv_100k_hi),

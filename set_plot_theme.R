@@ -44,7 +44,7 @@ profile_theme <- function(base_size=10, base_family="") {
   #This removes all minor gridlines and adds major y gridlines.
   panel.grid.minor = ggplot2::element_blank(),
   panel.grid.major.y = ggplot2::element_line(color=gray,
-                                             size = 0.25),
+                                             linewidth = 0.25),
   panel.grid.major.x = ggplot2::element_blank(),
 
   #Blank background

@@ -55,7 +55,7 @@ notifs_data <- reactive({
   data_column <- c(rounder(pdata()$profile_data[, "c_newinc"]),
 
                    # calculate pct_rdx
-                   display_cap_pct(pdata()$profile_data[, "newinc_rdx"],      # !!!! TBD: adjust based on rdx_data_available
+                   display_cap_pct(pdata()$profile_data[, "newinc_rdx"],
                                    pdata()$profile_data[, "c_newinc"]),
 
                    # calculate pct_hivtest
