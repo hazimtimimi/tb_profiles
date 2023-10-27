@@ -10,7 +10,8 @@ output$finance_heading <- renderText({ ifelse(check_entity_type(input$entity_typ
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 1. Expenditure (received funding) and budget (committed funding) table
+# 1. Expenditure (received funding)
+#    and, if this is a country-level profile, the budget (committed funding) table
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Combine the data with the row headers manually and render for output
@@ -20,7 +21,8 @@ output$funding_table <- renderTable({
   req(pdata()$profile_properties)
 
   # build the data frame manually, but only if dc_finance_display is true
-  if (isTRUE(pdata()$profile_properties[, "dc_finance_display"])){
+  # 1. Country-level version showing expenditure and budget
+  if (isTRUE(pdata()$profile_properties[, "dc_finance_display"]) & check_entity_type(input$entity_type) != "group"){
 
     data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
                  paste0("- ", ltxt(plabs(), "fund_domestic")),
@@ -56,6 +58,31 @@ output$funding_table <- renderTable({
                                  pdata()$profile_data[, "tot_req"])
 
                  )
+    )
+
+  }
+  # 1. Aggregate version showing expenditure only
+  else if (isTRUE(pdata()$profile_properties[, "dc_finance_display"]) & check_entity_type(input$entity_type) == "group") {
+
+
+    data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
+                 paste0("- ", ltxt(plabs(), "fund_domestic")),
+                 paste0("- ", ltxt(plabs(), "fund_international"))
+    ),
+
+    c(rounder(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
+                NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+
+      # calculate pct_domestic and international for expenditure (received funding)
+      display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]),
+                      NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
+                        NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+
+      display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"]),
+                      NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
+                        NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"]))
+
+    )
     )
 
   }
