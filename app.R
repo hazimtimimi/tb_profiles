@@ -3,15 +3,16 @@
 # retrieved from the WHO global tuberculosis database
 # Hazim Timimi, February 2020
 #               Updated November 2020 to include group profiles (version 2.0)
+#               Updated September 2024 switching to hicharter graphs (Version 3.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 2.5.0.3"
+app_version <- "Version 3.0.draft"
 
 library(shiny)
 library(dplyr)
 library(stringr)
 library(tidyr)
-library(ggplot2)
+library(highcharter)
 library(jsonlite)
 
 
@@ -169,17 +170,17 @@ ui <- function(request) {
                            ),
 
                     column(width = 5,
-                             htmlOutput(outputId = "inc_chart_head", container = h3),
-                             textOutput(outputId = "inc_chart_subhead", container = h5),
-                             plotOutput(outputId = "inc_chart", height = "250px"),
+                             #htmlOutput(outputId = "inc_chart_head", container = h3),
+                             #textOutput(outputId = "inc_chart_subhead", container = h5),
+                             highchartOutput(outputId = "inc_chart", height = "300px"),
 
                              htmlOutput(outputId = "mort_chart_head", container = h3),
                              textOutput(outputId = "mort_chart_subhead", container = h5),
-                             plotOutput(outputId = "mort_chart", height = "250px"),
+                             #plotOutput(outputId = "mort_chart", height = "250px"),
 
                              textOutput(outputId = "agesex_chart_head", container = h3),
                              textOutput(outputId = "agesex_chart_subhead", container = h5),
-                             plotOutput(outputId = "agesex_chart", height = "250px"),
+                             #plotOutput(outputId = "agesex_chart", height = "250px"),
 
                            # in 2021 data collection year replaced the treatment success time series
                            # chart with a chart on cases attributable to five risk factors
@@ -187,8 +188,8 @@ ui <- function(request) {
                            conditionalPanel(condition = "output.show_attributable_cases == 1",
 
                                             textOutput(outputId = "rf_chart_head", container = h3),
-                                            textOutput(outputId = "rf_chart_subhead", container = h5),
-                                            plotOutput(outputId = "rf_chart", height = "250px")
+                                            textOutput(outputId = "rf_chart_subhead", container = h5)#,
+                                            #plotOutput(outputId = "rf_chart", height = "250px")
                            ),
 
 
@@ -196,8 +197,8 @@ ui <- function(request) {
                              conditionalPanel(condition = "output.show_finance == 1",
 
                                  textOutput(outputId = "funding_chart_head", container = h3),
-                                 textOutput(outputId = "funding_chart_subhead", container = h5),
-                                 plotOutput(outputId = "funding_chart", height = "250px")
+                                 textOutput(outputId = "funding_chart_subhead", container = h5)#,
+                                 #plotOutput(outputId = "funding_chart", height = "250px")
                              )
                            )
 
@@ -369,11 +370,11 @@ server <- function(input, output, session) {
 
     source("build_tab_estimates_tables.R", local = TRUE)
 
-    source("build_tab_estimates_charts.R", local = TRUE)
+    source("build_charts.R", local = TRUE)
 
     source("build_tab_notifs_tables.R", local = TRUE)
 
-    source("build_tab_notifs_charts.R", local = TRUE)
+    #source("build_tab_notifs_charts.R", local = TRUE)
 
     source("build_tab_outcomes.R", local = TRUE)
 
