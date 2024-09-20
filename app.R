@@ -170,13 +170,9 @@ ui <- function(request) {
                            ),
 
                     column(width = 5,
-                             #htmlOutput(outputId = "inc_chart_head", container = h3),
-                             #textOutput(outputId = "inc_chart_subhead", container = h5),
                              highchartOutput(outputId = "inc_chart", height = "300px"),
 
-                             htmlOutput(outputId = "mort_chart_head", container = h3),
-                             textOutput(outputId = "mort_chart_subhead", container = h5),
-                             #plotOutput(outputId = "mort_chart", height = "250px"),
+                             highchartOutput(outputId = "mort_chart", height = "300px"),
 
                              textOutput(outputId = "agesex_chart_head", container = h3),
                              textOutput(outputId = "agesex_chart_subhead", container = h5),
@@ -187,9 +183,7 @@ ui <- function(request) {
                            # This should only be shown if the estimates exist for the entity
                            conditionalPanel(condition = "output.show_attributable_cases == 1",
 
-                                            textOutput(outputId = "rf_chart_head", container = h3),
-                                            textOutput(outputId = "rf_chart_subhead", container = h5)#,
-                                            #plotOutput(outputId = "rf_chart", height = "250px")
+                                            highchartOutput(outputId = "rf_chart", height = "300px")
                            ),
 
 
