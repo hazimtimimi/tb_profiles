@@ -14,6 +14,7 @@ library(stringr)
 library(tidyr)
 library(highcharter)
 library(jsonlite)
+library(gtbreport)
 
 
 # get the data collection year and list of countries and groups. This is only called once (not reactive)
@@ -174,9 +175,7 @@ ui <- function(request) {
 
                              highchartOutput(outputId = "mort_chart", height = "300px"),
 
-                             textOutput(outputId = "agesex_chart_head", container = h3),
-                             textOutput(outputId = "agesex_chart_subhead", container = h5),
-                             #plotOutput(outputId = "agesex_chart", height = "250px"),
+                             highchartOutput(outputId = "agesex_chart", height = "300px"),
 
                            # in 2021 data collection year replaced the treatment success time series
                            # chart with a chart on cases attributable to five risk factors
