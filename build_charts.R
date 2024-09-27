@@ -388,6 +388,54 @@ output$agesex_chart <-  renderHighchart({
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Provision of TPT ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$tpt_chart <- renderHighchart({
+
+  # Make sure there are data to plot
+  req(pdata()$tpt_timeseries)
+
+  tpt <- pdata()$tpt_timeseries
+
+  #Make sure there are some non-null values in the dataframe
+  req(sum(!is.na(tpt$hiv)) +
+        sum(!is.na(tpt$contact_04)) +
+        sum(!is.na(tpt$contact_5plus)) > 0)
+
+
+  highchart()  |>
+
+    hc_title(text = "People started on TB preventive treatment") |>
+
+    hc_chart(type = "column") |>
+
+    hc_xAxis(title = list(text = "Year"),
+             categories = tpt$year) |>
+
+    hc_yAxis(title = list(text = "Number of people"),
+             min = 0,
+             reversedStacks = FALSE) |>
+
+    hc_plotOptions(series = list(stacking = "normal")) |>
+
+    hc_add_series(name = "plhiv",
+                  data = tpt$hiv,
+                  color = "#FFC425") |>
+
+    hc_add_series(name = "Contacts <5",
+                  data = tpt$contact_04,
+                  color = "#9FCD25") |>
+
+    hc_add_series(name = "Contacts 5 and over",
+                  data = tpt$contact_5plus,
+                  color = "dark green")
+
+
+})
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Expenditure (committed funding) ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

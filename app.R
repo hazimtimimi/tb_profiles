@@ -153,13 +153,14 @@ ui <- function(request) {
                 ),
 
                 fixedRow(
-                  column(width = 6
+                  column(width = 6,
+                         highchartOutput(outputId = "tpt_chart", height = "300px")
                   ),
                   column(width = 6,
                          # The financing chart should only be shown if dc_finance_display is true
                          conditionalPanel(condition = "output.show_finance == 1",
 
-                                          highchartOutput(outputId = "funding_chart", height = "250px")
+                                          highchartOutput(outputId = "funding_chart", height = "300px")
                          )
                   )
                 ),
