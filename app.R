@@ -154,6 +154,15 @@ ui <- function(request) {
 
                 fixedRow(
                   column(width = 6,
+                         highchartOutput(outputId = "rr_new_chart", height = "300px")
+                  ),
+                  column(width = 6,
+                         highchartOutput(outputId = "rr_ret_chart", height = "300px")
+                  )
+                ),
+
+                fixedRow(
+                  column(width = 6,
                          highchartOutput(outputId = "tpt_chart", height = "300px")
                   ),
                   column(width = 6,

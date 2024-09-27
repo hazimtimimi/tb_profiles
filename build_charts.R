@@ -388,6 +388,113 @@ output$agesex_chart <-  renderHighchart({
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Prevalence of rif resistance among new pulmonary bacteriologically confirmed TB  ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$rr_new_chart <-  renderHighchart({
+
+  # Make sure there are data to plot
+  req(pdata()$rr_timeseries)
+
+  rr <- pdata()$rr_timeseries
+
+  highchart()  |>
+
+    hc_title(text = "RR prev new") |>
+
+    hc_xAxis(title = list(text = "")) |>
+
+    hc_yAxis(title = list(text = "%"),
+             min = 0,
+             tickAmount = 3,
+             endOnTick = FALSE,
+             allowDecimals = FALSE) |>
+
+    hc_tooltip(crosshairs = TRUE,
+               shared = TRUE) |>
+
+    hc_add_series(type = "line",
+                  name = "% of new pulm bac+ cases with RR",
+                  data = rr,
+                  hcaes(x = year,
+                        y = e_rr_pcnt_new),
+
+                  lineWidth = 6,
+                  color = gtbreport::palette_gtb("inc"),
+                  marker = list(enabled = FALSE)) |>
+
+    hc_add_series(type = "arearange",
+                  name = "Uncertainty interval",
+                  data = rr,
+                  hcaes(x = year,
+                        low = e_rr_pcnt_new_lo,
+                        high = e_rr_pcnt_new_hi),
+
+                  lineWidth = 0,
+                  linkedTo = ":previous",
+                  color = gtbreport::palette_gtb("inc"),
+                  fillOpacity = 0.3,
+                  zIndex = 0,
+                  marker = list(enabled = FALSE))
+
+})
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Prevalence of rif resistance among previously treated pulmonary bacteriologically confirmed TB  ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$rr_ret_chart <-  renderHighchart({
+
+  # Make sure there are data to plot
+  req(pdata()$rr_timeseries)
+
+  rr <- pdata()$rr_timeseries
+
+  highchart()  |>
+
+    hc_title(text = "RR prev ret") |>
+
+    hc_xAxis(title = list(text = "")) |>
+
+    hc_yAxis(title = list(text = "%"),
+             min = 0,
+             tickAmount = 3,
+             endOnTick = FALSE,
+             allowDecimals = FALSE) |>
+
+    hc_tooltip(crosshairs = TRUE,
+               shared = TRUE) |>
+
+    hc_add_series(type = "line",
+                  name = "% of ret pulm bac+ cases with RR",
+                  data = rr,
+                  hcaes(x = year,
+                        y = e_rr_pcnt_ret),
+
+                  lineWidth = 6,
+                  color = gtbreport::palette_gtb("inc"),
+                  marker = list(enabled = FALSE)) |>
+
+    hc_add_series(type = "arearange",
+                  name = "Uncertainty interval",
+                  data = rr,
+                  hcaes(x = year,
+                        low = e_rr_pcnt_ret_lo,
+                        high = e_rr_pcnt_ret_hi),
+
+                  lineWidth = 0,
+                  linkedTo = ":previous",
+                  color = gtbreport::palette_gtb("inc"),
+                  fillOpacity = 0.3,
+                  zIndex = 0,
+                  marker = list(enabled = FALSE))
+
+})
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Provision of TPT ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
