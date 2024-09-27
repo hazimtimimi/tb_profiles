@@ -131,6 +131,40 @@ ui <- function(request) {
                 textOutput(outputId = "population", container = h5),
 
                 fixedRow(
+                  column(width = 6,
+                         highchartOutput(outputId = "inc_chart", height = "300px")
+                  ),
+                  column(width = 6,
+                         highchartOutput(outputId = "mort_chart", height = "300px")
+                  )
+                ),
+
+                fixedRow(
+                  column(width = 6,
+                         highchartOutput(outputId = "agesex_chart", height = "300px")
+                  ),
+                  column(width = 6,
+                         # Only show estimates by risk factors if the estimates exist for the entity
+                         conditionalPanel(condition = "output.show_attributable_cases == 1",
+
+                                          highchartOutput(outputId = "rf_chart", height = "300px")
+                         )
+                  )
+                ),
+
+                fixedRow(
+                  column(width = 6
+                  ),
+                  column(width = 6,
+                         # The financing chart should only be shown if dc_finance_display is true
+                         conditionalPanel(condition = "output.show_finance == 1",
+
+                                          highchartOutput(outputId = "funding_chart", height = "250px")
+                         )
+                  )
+                ),
+
+                fixedRow(
                     column(width = 7,
 
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
@@ -168,27 +202,7 @@ ui <- function(request) {
 
                            ),
 
-                    column(width = 5,
-                             highchartOutput(outputId = "inc_chart", height = "300px"),
-
-                             highchartOutput(outputId = "mort_chart", height = "300px"),
-
-                             highchartOutput(outputId = "agesex_chart", height = "300px"),
-
-                           # in 2021 data collection year replaced the treatment success time series
-                           # chart with a chart on cases attributable to five risk factors
-                           # This should only be shown if the estimates exist for the entity
-                           conditionalPanel(condition = "output.show_attributable_cases == 1",
-
-                                            highchartOutput(outputId = "rf_chart", height = "300px")
-                           ),
-
-
-                             # The financing chart should only be shown if dc_finance_display is true
-                             conditionalPanel(condition = "output.show_finance == 1",
-
-                                 highchartOutput(outputId = "funding_chart", height = "250px")
-                             )
+                    column(width = 5
                            )
 
                 ),
