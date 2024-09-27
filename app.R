@@ -38,8 +38,6 @@ aggregate_groups <- aggregate_groups$groups
 # Load general, non-reactive functions
 source("general_functions.R")
 
-# Load the standard themes
-source("set_plot_theme.R")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Web interface code
@@ -189,9 +187,7 @@ ui <- function(request) {
                              # The financing chart should only be shown if dc_finance_display is true
                              conditionalPanel(condition = "output.show_finance == 1",
 
-                                 textOutput(outputId = "funding_chart_head", container = h3),
-                                 textOutput(outputId = "funding_chart_subhead", container = h5)#,
-                                 #plotOutput(outputId = "funding_chart", height = "250px")
+                                 highchartOutput(outputId = "funding_chart", height = "250px")
                              )
                            )
 
@@ -361,13 +357,11 @@ server <- function(input, output, session) {
 
     source("build_header.R", local = TRUE)
 
-    source("build_tab_estimates_tables.R", local = TRUE)
-
     source("build_charts.R", local = TRUE)
 
-    source("build_tab_notifs_tables.R", local = TRUE)
+    source("build_tab_estimates_tables.R", local = TRUE)
 
-    #source("build_tab_notifs_charts.R", local = TRUE)
+    source("build_tab_notifs_tables.R", local = TRUE)
 
     source("build_tab_outcomes.R", local = TRUE)
 

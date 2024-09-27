@@ -101,67 +101,7 @@ na="")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 2. Expenditure (committed funding) chart
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-# Move heading and subheading out of ggplot2
-# because ggplot2 headings don't wrap when space is restricted
-
-# Add callout to footnote if finance is an aggregate group
-output$funding_chart_head <- renderText({ ifelse(check_entity_type(input$entity_type) == "group",
-                                                paste0(ltxt(plabs(), "funding"),"***"),
-                                                ltxt(plabs(), "funding")
-                                                ) })
-
-
-output$funding_chart_subhead <- renderText({ ltxt(plabs(), "usd_millions") })
-
-
-output$funding_chart <-  renderPlot({
-
-  # Make sure there are data to plot
-  req(pdata()$funding_timeseries)
-
-  # First make sure there are some data to display
-  # There will only be the year column if no data, so check number of columns
-
-  ndata_cols <- ncol(pdata()$funding_timeseries) - 1
-
-  # Only plot the data if have at least one year with data
-
-  if (ndata_cols > 0){
-
-    plotobj <- pdata()$funding_timeseries %>%
-
-      # Convert to long format
-      pivot_longer(cols = -year,
-                   names_to = "funding",
-                   values_to = "fund_amount",
-                   # drop empty values
-                   values_drop_na = TRUE) %>%
-
-      ggplot(aes(x=year, y=fund_amount, fill = funding)) +
-      geom_col(position = position_stack(reverse = TRUE)) +
-      profile_theme()  +
-      scale_fill_manual("",
-                        values = funding_palette(),
-                        labels = c("a_domestic_funds" = ltxt(plabs(), "source_domestic"),
-                                   "b_international_funds" = ltxt(plabs(), "source_international"))) +
-      scale_x_continuous(name="", seq(dcyear-5, dcyear-1))
-
-  } else {
-
-    plotobj <- NA
-  }
-
-  return(plotobj)
-
-})
-
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 3. Add footnote for aggregated finance
+# 2. Add footnote for aggregated finance
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 output$foot_aggfin <- renderText({  ifelse(check_entity_type(input$entity_type) == "group",

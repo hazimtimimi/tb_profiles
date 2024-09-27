@@ -40,7 +40,7 @@ output$inc_chart <-  renderHighchart({
                         y = e_inc_100k),
 
                   lineWidth = 6,
-                  color = standard_palette("incidence"),
+                  color = gtbreport::palette_gtb("inc"),
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "arearange",
@@ -52,7 +52,7 @@ output$inc_chart <-  renderHighchart({
 
                   lineWidth = 0,
                   linkedTo = ":previous",
-                  color = standard_palette("incidence"),
+                  color = gtbreport::palette_gtb("inc"),
                   fillOpacity = 0.3,
                   zIndex = 0,
                   marker = list(enabled = FALSE)) |>
@@ -105,7 +105,7 @@ output$mort_chart <-  renderHighchart({
                         y = e_mort_exc_tbhiv_100k),
 
                   lineWidth = 6,
-                  color = standard_palette("mortality_exc_tbhiv"),
+                  color = gtbreport::palette_gtb("mort"),
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "arearange",
@@ -117,7 +117,7 @@ output$mort_chart <-  renderHighchart({
 
                   lineWidth = 0,
                   linkedTo = ":previous",
-                  color = standard_palette("mortality_exc_tbhiv"),
+                  color = gtbreport::palette_gtb("mort"),
                   fillOpacity = 0.3,
                   zIndex = 0,
                   marker = list(enabled = FALSE))
@@ -177,7 +177,7 @@ output$rf_chart <-  renderHighchart({
                   hcaes(y = best),
 
                   lineWidth = 0,
-                  color = standard_palette("incidence")) |>
+                  color = gtbreport::palette_gtb("inc")) |>
 
     hc_add_series(type = "errorbar",
                   name = "Uncertainty intervals",
@@ -186,7 +186,7 @@ output$rf_chart <-  renderHighchart({
                         high = hi),
 
                   linkedTo = ":previous",
-                  color = standard_palette("incidence"),
+                  color = gtbreport::palette_gtb("inc"),
                   whiskerLength = 15,
                   whiskerWidth = 4)
 
@@ -384,8 +384,57 @@ output$agesex_chart <-  renderHighchart({
                   whiskerLength = 15,
                   whiskerWidth = 4)
 
-
 })
 
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Expenditure (committed funding) ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+output$funding_chart <-  renderHighchart({
+
+  # Make sure there are data to plot
+  req(pdata()$funding_timeseries)
+
+  funding_data <- pdata()$funding_timeseries
+
+  # Make sure there are some data to display
+  # There will only be the year column if no data, so check number of columns
+
+  ndata_cols <- ncol(funding_data) - 1
+
+  # Only plot the data if have at least one year with data
+  req(ndata_cols > 0)
+
+  highchart()  |>
+
+    hc_title(text = ifelse(check_entity_type(input$entity_type) == "group",
+                           paste0(ltxt(plabs(), "funding"),"***"),
+                           ltxt(plabs(), "funding")
+    )) |>
+
+    hc_chart(type = "column") |>
+
+    hc_xAxis(title = list(text = "Year"),
+             categories = funding_data$year) |>
+
+    hc_yAxis(title = list(text = ltxt(plabs(), "usd_millions")),
+             min = 0,
+             reversedStacks = FALSE) |>
+
+    hc_plotOptions(series = list(stacking = "normal")) |>
+
+    hc_tooltip(formatter = JS("function() {
+					return '<b>'+ this.series.name +'</b><br/>'+
+					this.x +': US$'+ this.y +' million';
+			}")) |>
+
+    hc_add_series(name = "domestic",
+                  data = funding_data$a_domestic_funds,
+                  color = "#7DAAD4") |>
+
+    hc_add_series(name = "international",
+                  data = funding_data$b_international_funds,
+                  color = "#E9C04F")
+
+})
