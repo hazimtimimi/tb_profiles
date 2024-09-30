@@ -383,15 +383,15 @@ server <- function(input, output, session) {
 
     source("build_charts.R", local = TRUE)
 
-    source("build_tab_estimates_tables.R", local = TRUE)
+    source("build_estimates_tables.R", local = TRUE)
 
-    source("build_tab_notifs_tables.R", local = TRUE)
+    source("build_notifs_tables.R", local = TRUE)
 
-    source("build_tab_outcomes.R", local = TRUE)
+    source("build_outcomes_table.R", local = TRUE)
 
-    source("build_tab_prevtx.R", local = TRUE)
+    source("build_tpt_table.R", local = TRUE)
 
-    source("build_tab_finance.R", local = TRUE)
+    source("build_finance_table.R", local = TRUE)
 
     # Add the footer that goes on every page
     output$generation <- renderText({  HTML(paste(ltxt(plabs(), "generated"),
