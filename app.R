@@ -163,6 +163,14 @@ ui <- function(request) {
 
                 fixedRow(
                   column(width = 6,
+                         highchartOutput(outputId = "rr_inc_chart", height = "300px")
+                  ),
+                  column(width = 6
+                  )
+                ),
+
+                fixedRow(
+                  column(width = 6,
                          highchartOutput(outputId = "tpt_chart", height = "300px")
                   ),
                   column(width = 6,
@@ -175,7 +183,9 @@ ui <- function(request) {
                 ),
 
                 fixedRow(
-                    column(width = 7,
+                  column(width = 1
+                  ),
+                  column(width = 10,
 
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
                              htmlOutput(outputId = "estimates_heading", container = h3),
@@ -212,7 +222,7 @@ ui <- function(request) {
 
                            ),
 
-                    column(width = 5
+                    column(width = 1
                            )
 
                 ),

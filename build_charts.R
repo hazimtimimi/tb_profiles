@@ -21,6 +21,8 @@ output$inc_chart <-  renderHighchart({
 
     hc_title(text = "Estimated TB incidence and notifications") |>
 
+    hc_subtitle(text = "Should this show the 2025 milestone?") |>
+
     hc_xAxis(title = list(text = "")) |>
 
     hc_yAxis(title = list(text = ltxt(plabs(), "rate_100k_yr")),
@@ -85,6 +87,8 @@ output$mort_chart <-  renderHighchart({
   highchart()  |>
 
     hc_title(text = "Estimated HIV-negative TB mortality") |>
+
+    hc_subtitle(text = "Should this show total number of TB deaths with the 2025 milestone instead?") |>
 
     hc_xAxis(title = list(text = "")) |>
 
@@ -493,6 +497,56 @@ output$rr_ret_chart <-  renderHighchart({
 
 })
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Incidence of rif-resistant TB  ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$rr_inc_chart <-  renderHighchart({
+
+  # Make sure there are data to plot
+  req(pdata()$rr_timeseries)
+
+  rr <- pdata()$rr_timeseries
+
+  highchart()  |>
+
+    hc_title(text = "RR inc") |>
+
+    hc_xAxis(title = list(text = "")) |>
+
+    hc_yAxis(title = list(text = "Number"),
+             min = 0,
+             tickAmount = 3,
+             endOnTick = FALSE,
+             allowDecimals = FALSE) |>
+
+    hc_tooltip(crosshairs = TRUE,
+               shared = TRUE) |>
+
+    hc_add_series(type = "line",
+                  name = "Number of incident RR-TB cases",
+                  data = rr,
+                  hcaes(x = year,
+                        y = e_inc_rr_num),
+
+                  lineWidth = 6,
+                  color = gtbreport::palette_gtb("inc"),
+                  marker = list(enabled = FALSE)) |>
+
+    hc_add_series(type = "arearange",
+                  name = "Uncertainty interval",
+                  data = rr,
+                  hcaes(x = year,
+                        low = e_inc_rr_num_lo,
+                        high = e_inc_rr_num_hi),
+
+                  lineWidth = 0,
+                  linkedTo = ":previous",
+                  color = gtbreport::palette_gtb("inc"),
+                  fillOpacity = 0.3,
+                  zIndex = 0,
+                  marker = list(enabled = FALSE))
+})
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Provision of TPT ----
@@ -514,6 +568,8 @@ output$tpt_chart <- renderHighchart({
   highchart()  |>
 
     hc_title(text = "People started on TB preventive treatment") |>
+
+    hc_subtitle(text = "Should this be like Fig 3.2 showing % coverage and the 2027 90% target instead?") |>
 
     hc_chart(type = "column") |>
 
