@@ -200,6 +200,7 @@ drtb_data <- reactive({
 
 
     rounder(pdata()$profile_data[, "conf_rr_nfqr"]),
+    rounder(pdata()$profile_data[, "conf_rr_nfqr_tx"]),
     rounder(ifelse(is.na(pdata()$profile_data[, "unconf_rr_nfqr_tx"]) & is.na(pdata()$profile_data[, "conf_rr_nfqr_tx"]),
                    NA,
                    NZ(pdata()$profile_data[, "unconf_rr_nfqr_tx"]) + NZ(pdata()$profile_data[, "conf_rr_nfqr_tx"]))),
@@ -223,6 +224,7 @@ drtb_data <- reactive({
 output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "new"), "^"),
                                                  paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "ret"), "^"),
                                                  paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "rr_nfqr_abbr"), "^^"),
+                                                 "XXXX lab-confirmed RR/MDR started on treatement XXX",
                                                  paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "rr_nfqr_abbr"), "^^^"),
                                                  paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "pre_xdr"), "^^"),
                                                  paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "pre_xdr"), "^^^"),
