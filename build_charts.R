@@ -19,13 +19,13 @@ output$inc_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "Estimated TB incidence and notifications") |>
+    hc_title(text = "|Estimated TB incidence and notifications|") |>
 
     hc_subtitle(text = "Should this show the 2025 milestone?") |>
 
     hc_xAxis(title = list(text = "")) |>
 
-    hc_yAxis(title = list(text = ltxt(plabs(), "rate_100k_yr")),
+    hc_yAxis(title = list(text = "|Number per 100 000 population|"), #ltxt(plabs(), "rate_100k_yr")),
              min = 0,
              tickAmount = 3,
              # avoid unnecessary vertical space
@@ -36,7 +36,7 @@ output$inc_chart <-  renderHighchart({
                shared = TRUE) |>
 
     hc_add_series(type = "line",
-                  name = "Incidence per 100 000 population",
+                  name = "|Estimated TB incidence per 100 000 population|",
                   data = df,
                   hcaes(x = year,
                         y = e_inc_100k),
@@ -46,7 +46,7 @@ output$inc_chart <-  renderHighchart({
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "arearange",
-                  name = "Uncertainty interval",
+                  name = "|Uncertainty interval|",
                   data = df,
                   hcaes(x = year,
                         low = e_inc_100k_lo,
@@ -60,7 +60,7 @@ output$inc_chart <-  renderHighchart({
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "line",
-                  name = "Cases notified per 100 000 population",
+                  name = "|New and relapse TB cases notified per 100 000 population|",
                   data = df,
                   hcaes(x = year,
                         y = c_newinc_100k),
@@ -86,13 +86,13 @@ output$mort_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "Estimated HIV-negative TB mortality") |>
+    hc_title(text = "|Estimated HIV-negative TB mortality|") |>
 
     hc_subtitle(text = "Should this show total number of TB deaths with the 2025 milestone instead?") |>
 
     hc_xAxis(title = list(text = "")) |>
 
-    hc_yAxis(title = list(text = ltxt(plabs(), "rate_100k_yr")),
+    hc_yAxis(title = list(text = "|Number per 100 000 population|"), #ltxt(plabs(), "rate_100k_yr")),
              min = 0,
              tickAmount = 3,
              # avoid unnecessary vertical space
@@ -103,7 +103,7 @@ output$mort_chart <-  renderHighchart({
                shared = TRUE) |>
 
     hc_add_series(type = "line",
-                  name = "Estimated HIV-negative TB mortality per 100 000 population",
+                  name = "|Estimated HIV-negative TB mortality per 100 000 population|",
                   data = df,
                   hcaes(x = year,
                         y = e_mort_exc_tbhiv_100k),
@@ -113,7 +113,7 @@ output$mort_chart <-  renderHighchart({
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "arearange",
-                  name = "Uncertainty interval",
+                  name = "|Uncertainty interval|",
                   data = df,
                   hcaes(x = year,
                         low = e_mort_exc_tbhiv_100k_lo,
@@ -151,7 +151,7 @@ output$rf_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = paste0(ltxt(plabs(), "attrib_cases"), ", ", dcyear-1)) |>
+    hc_title(text = paste0("|Estimated number of TB cases attributable to five risk factors|", ", ", dcyear-1)) |> #paste0(ltxt(plabs(), "attrib_cases"), ", ", dcyear-1)) |>
 
     hc_chart(inverted = TRUE) |>
 
@@ -176,7 +176,7 @@ output$rf_chart <-  renderHighchart({
     hc_legend(enabled = FALSE) |>
 
     hc_add_series(type = "line",
-                  name = "Best",
+                  name = "|Estimated number|",
                   data = df,
                   hcaes(y = best),
 
@@ -184,7 +184,7 @@ output$rf_chart <-  renderHighchart({
                   color = gtbreport::palette_gtb("inc")) |>
 
     hc_add_series(type = "errorbar",
-                  name = "Uncertainty intervals",
+                  name = "|Uncertainty interval|",
                   data = df,
                   hcaes(low = lo,
                         high = hi),
@@ -281,11 +281,11 @@ output$agesex_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = paste0("estimated inc and notifs x age gp and sex", ", ", dcyear-1)) |>
+    hc_title(text = paste0("|Estimated and reported number of TB cases by age group and sex|", ", ", dcyear-1)) |>
 
     hc_chart(inverted = TRUE) |>
 
-    hc_xAxis(title = list(text = "Age gp"),
+    hc_xAxis(title = list(text = "|Age group (years)|"),
              categories = as.character.factor(agesex$age_group),
              reversed = FALSE) |>
 
@@ -316,7 +316,7 @@ output$agesex_chart <-  renderHighchart({
       crosshairs = TRUE) |>
 
     hc_add_series(type = "bar",
-                  name = "notifs f",
+                  name = "|New and relapse cases (females)|",
                   stacking = "normal",
                   data = filter(agesex, sex == "f") |> mutate(notifs = -1*notifs),
 
@@ -327,7 +327,7 @@ output$agesex_chart <-  renderHighchart({
     ) |>
 
     hc_add_series(type = "line",
-                  name = "est inc f",
+                  name = "|Estimated number (females)|",
                   # Stop default stacking of line series
                   stacking = NA,
                   lineWidth = 0,
@@ -342,7 +342,7 @@ output$agesex_chart <-  renderHighchart({
     )  |>
 
     hc_add_series(type = "errorbar",
-                  name = "Uncertainty intervals F",
+                  name = "|Uncertainty interval (females)|",
                   data = filter(agesex, sex == "f") |> mutate(lo = -1*lo,
                                                               hi = -1*hi),
                   hcaes(low = lo,
@@ -354,7 +354,7 @@ output$agesex_chart <-  renderHighchart({
                   whiskerWidth = 4) |>
 
     hc_add_series(type = "bar",
-                  name = "notifs m",
+                  name = "|New and relapse cases (males)|",
                   stacking = "normal",
                   data = filter(agesex, sex == "m"),
                   hcaes(x = age_group,
@@ -363,7 +363,7 @@ output$agesex_chart <-  renderHighchart({
     ) |>
 
     hc_add_series(type = "line",
-                  name = "est inc m",
+                  name = "|Estimated number (males)|",
                   # Stop default stacking of line series
                   stacking = NA,
                   lineWidth = 0,
@@ -378,7 +378,7 @@ output$agesex_chart <-  renderHighchart({
     )  |>
 
     hc_add_series(type = "errorbar",
-                  name = "Uncertainty intervals M",
+                  name = "|Uncertainty interval (males)|",
                   data = filter(agesex, sex == "m"),
                   hcaes(low = lo,
                         high = hi),
@@ -392,10 +392,10 @@ output$agesex_chart <-  renderHighchart({
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Prevalence of rif resistance among new pulmonary bacteriologically confirmed TB  ----
+# Prevalence of rif resistance among pulmonary bacteriologically confirmed TB  ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$rr_new_chart <-  renderHighchart({
+output$rr_prop_chart <-  renderHighchart({
 
   # Make sure there are data to plot
   req(pdata()$rr_timeseries)
@@ -404,7 +404,7 @@ output$rr_new_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "RR prev new") |>
+    hc_title(text = "|Estimated proportion of pulmonary bacteriologially confirmed TB cases resistant to rifampicin|") |>
 
     hc_xAxis(title = list(text = "")) |>
 
@@ -418,71 +418,17 @@ output$rr_new_chart <-  renderHighchart({
                shared = TRUE) |>
 
     hc_add_series(type = "line",
-                  name = "% of new pulm bac+ cases with RR",
-                  data = rr,
-                  hcaes(x = year,
-                        y = e_rr_pcnt_new),
-
-                  lineWidth = 6,
-                  color = gtbreport::palette_gtb("inc"),
-                  marker = list(enabled = FALSE)) |>
-
-    hc_add_series(type = "arearange",
-                  name = "Uncertainty interval",
-                  data = rr,
-                  hcaes(x = year,
-                        low = e_rr_pcnt_new_lo,
-                        high = e_rr_pcnt_new_hi),
-
-                  lineWidth = 0,
-                  linkedTo = ":previous",
-                  color = gtbreport::palette_gtb("inc"),
-                  fillOpacity = 0.3,
-                  zIndex = 0,
-                  marker = list(enabled = FALSE))
-
-})
-
-
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Prevalence of rif resistance among previously treated pulmonary bacteriologically confirmed TB  ----
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-output$rr_ret_chart <-  renderHighchart({
-
-  # Make sure there are data to plot
-  req(pdata()$rr_timeseries)
-
-  rr <- pdata()$rr_timeseries
-
-  highchart()  |>
-
-    hc_title(text = "RR prev ret") |>
-
-    hc_xAxis(title = list(text = "")) |>
-
-    hc_yAxis(title = list(text = "%"),
-             min = 0,
-             tickAmount = 3,
-             endOnTick = FALSE,
-             allowDecimals = FALSE) |>
-
-    hc_tooltip(crosshairs = TRUE,
-               shared = TRUE) |>
-
-    hc_add_series(type = "line",
-                  name = "% of ret pulm bac+ cases with RR",
+                  name = "|previously treated cases|",
                   data = rr,
                   hcaes(x = year,
                         y = e_rr_pcnt_ret),
 
                   lineWidth = 6,
-                  color = gtbreport::palette_gtb("inc"),
+                  color = "#F1DC27",
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "arearange",
-                  name = "Uncertainty interval",
+                  name = "|Uncertainty interval|",
                   data = rr,
                   hcaes(x = year,
                         low = e_rr_pcnt_ret_lo,
@@ -490,12 +436,37 @@ output$rr_ret_chart <-  renderHighchart({
 
                   lineWidth = 0,
                   linkedTo = ":previous",
-                  color = gtbreport::palette_gtb("inc"),
+                  color = "#F1DC27",
+                  fillOpacity = 0.3,
+                  zIndex = 0,
+                  marker = list(enabled = FALSE)) |>
+
+  hc_add_series(type = "line",
+                  name = "|new cases|",
+                  data = rr,
+                  hcaes(x = year,
+                        y = e_rr_pcnt_new),
+
+                  lineWidth = 6,
+                  color = "#F49A20",
+                  marker = list(enabled = FALSE)) |>
+
+    hc_add_series(type = "arearange",
+                  name = "|Uncertainty interval|",
+                  data = rr,
+                  hcaes(x = year,
+                        low = e_rr_pcnt_new_lo,
+                        high = e_rr_pcnt_new_hi),
+
+                  lineWidth = 0,
+                  linkedTo = ":previous",
+                  color = "#F49A20",
                   fillOpacity = 0.3,
                   zIndex = 0,
                   marker = list(enabled = FALSE))
 
 })
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Incidence of rif-resistant TB  ----
@@ -510,11 +481,11 @@ output$rr_inc_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "RR inc") |>
+    hc_title(text = "|Estimated incidence number of rifampicin-resistant TB (RR-TB)") |>
 
     hc_xAxis(title = list(text = "")) |>
 
-    hc_yAxis(title = list(text = "Number"),
+    hc_yAxis(title = list(text = "|Number|"),
              min = 0,
              tickAmount = 3,
              endOnTick = FALSE,
@@ -524,7 +495,7 @@ output$rr_inc_chart <-  renderHighchart({
                shared = TRUE) |>
 
     hc_add_series(type = "line",
-                  name = "Number of incident RR-TB cases",
+                  name = "|Estimated incidence number of RR-TB cases|",
                   data = rr,
                   hcaes(x = year,
                         y = e_inc_rr_num),
@@ -534,7 +505,7 @@ output$rr_inc_chart <-  renderHighchart({
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "arearange",
-                  name = "Uncertainty interval",
+                  name = "|Uncertainty interval|",
                   data = rr,
                   hcaes(x = year,
                         low = e_inc_rr_num_lo,
@@ -567,7 +538,7 @@ output$tpt_chart <- renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "People started on TB preventive treatment") |>
+    hc_title(text = "|People provided with TB preventive treatment|") |>
 
     hc_subtitle(text = "Should this be like Fig 3.2 showing % coverage and the 2027 90% target instead?") |>
 
@@ -576,21 +547,21 @@ output$tpt_chart <- renderHighchart({
     hc_xAxis(title = list(text = "Year"),
              categories = tpt$year) |>
 
-    hc_yAxis(title = list(text = "Number of people"),
+    hc_yAxis(title = list(text = "|Number|"),
              min = 0,
              reversedStacks = FALSE) |>
 
     hc_plotOptions(series = list(stacking = "normal")) |>
 
-    hc_add_series(name = "plhiv",
+    hc_add_series(name = "|People living with HIV|",
                   data = tpt$hiv,
                   color = "#FFC425") |>
 
-    hc_add_series(name = "Contacts <5",
+    hc_add_series(name = "|Household contacts aged <5 years|",
                   data = tpt$contact_04,
                   color = "#9FCD25") |>
 
-    hc_add_series(name = "Contacts 5 and over",
+    hc_add_series(name = "|Household contacts aged ≥5 years|",
                   data = tpt$contact_5plus,
                   color = "dark green")
 
@@ -640,11 +611,11 @@ output$funding_chart <-  renderHighchart({
 					this.x +': US$'+ this.y +' million';
 			}")) |>
 
-    hc_add_series(name = "domestic",
+    hc_add_series(name = "|domestic funding|",
                   data = funding_data$a_domestic_funds,
                   color = "#7DAAD4") |>
 
-    hc_add_series(name = "international",
+    hc_add_series(name = "|international funding|",
                   data = funding_data$b_international_funds,
                   color = "#E9C04F")
 

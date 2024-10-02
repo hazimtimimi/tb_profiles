@@ -7,6 +7,17 @@ ltxt <- function(df, tag){
 
 }
 
+# Look for a URL string and convert to an HTML link
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+html_link <- function(x) {
+
+  sub('(https?://\\S+)',
+      "<a href='\\1' target='_blank'>\\1</a>",
+      x,
+      ignore.case = TRUE)
+
+}
+
 # Simple rounding function that returns a string rounded to the nearest integer and
 # uses a space as the thousands separator as per WHO standard.
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

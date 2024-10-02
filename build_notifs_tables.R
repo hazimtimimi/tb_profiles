@@ -3,11 +3,11 @@
 # Build output for the third tab (notifications tables)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$notifs_heading <- renderText({ paste0(ltxt(plabs(), "notifs"), ", ", dcyear-1)  })
+output$notifs_heading <- renderText({ ltxt(plabs(), "notifs") })
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 1. Main notifications table
+# Main notifications ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 notifs_data <- reactive({
@@ -79,11 +79,11 @@ notifs_data <- reactive({
                    display_cap_pct((pdata()$profile_data[, "new_labconf"] + pdata()$profile_data[, "ret_rel_labconf"]),
                                    pulmonary),
 
-                   pct_014,
-
                    pct_women,
 
                    pct_men,
+
+                   pct_014,
 
                    rounder(pdata()$profile_data[, "c_notified"])
 
@@ -94,16 +94,15 @@ notifs_data <- reactive({
 
 
 # Combine the data with the row headers manually and render for output
-output$notifs_table <- renderTable({ data.frame(c( ltxt(plabs(), "tot_newrel"),
+output$notifs_table <- renderTable({ data.frame(c( paste0("|New and relapse TB cases|", ", ", dcyear - 1),  #ltxt(plabs(), "tot_newrel"),
                                                 paste(" - ",ltxt(plabs(), "pct_rdx")),
                                                 paste(" - ",ltxt(plabs(), "pct_hivtest")),
                                                 paste(" - ",ltxt(plabs(), "pct_pulmonary")),
-                                                # Add a callout to footnote ^
-                                                paste(" - ",ltxt(plabs(), "pct_pulm_bacconf"), "^"),
-                                                paste(" - ",ltxt(plabs(), "pct_children")),
-                                                paste(" - ",ltxt(plabs(), "pct_women")),
-                                                paste(" - ",ltxt(plabs(), "pct_men")),
-                                                ltxt(plabs(), "tot_notified") ),
+                                                paste(" - |% of pulmonary cases that are bacteriologically confirmed|"),
+                                                paste(" - ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
+                                                paste(" - ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
+                                                paste(" - |% people aged 0-14 years|"),
+                                                paste0(ltxt(plabs(), "tot_notified"), ", ", dcyear - 1) ),
                                                 notifs_data()
                                                 )  },
                                    striped = TRUE,
@@ -246,7 +245,6 @@ output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"),
 # 4. Add footnotes
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$foot_pulm <- renderText({  HTML(paste("^<i>", ltxt(plabs(), "foot_pulm"), "</i>")) })
 output$foot_newunk <- renderText({  HTML(paste("^^<i>", ltxt(plabs(), "newunk"), "</i>")) })
 output$foot_rrmdr <- renderText({  HTML(paste("^^^<i>", str_replace(ltxt(plabs(), "rrmdr"), fixed("[yr-1]"), dcyear-1), "</i>")) })
 

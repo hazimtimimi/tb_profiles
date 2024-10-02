@@ -128,7 +128,6 @@ ui <- function(request) {
         fixedRow(id="main_content",
 
                 textOutput(outputId = "main_heading", container = h1),
-                textOutput(outputId = "population", container = h5),
 
                 fixedRow(
                   column(width = 6,
@@ -154,18 +153,10 @@ ui <- function(request) {
 
                 fixedRow(
                   column(width = 6,
-                         highchartOutput(outputId = "rr_new_chart", height = "300px")
+                         highchartOutput(outputId = "rr_prop_chart", height = "300px")
                   ),
-                  column(width = 6,
-                         highchartOutput(outputId = "rr_ret_chart", height = "300px")
-                  )
-                ),
-
-                fixedRow(
                   column(width = 6,
                          highchartOutput(outputId = "rr_inc_chart", height = "300px")
-                  ),
-                  column(width = 6
                   )
                 ),
 
@@ -187,8 +178,13 @@ ui <- function(request) {
                   ),
                   column(width = 10,
 
+                             textOutput(outputId = "population", container = h3),
+                             htmlOutput(outputId = "population_source"),
+
+
                              # Use htmloutput so can use HTML superscript tags for callouts to footnotes
                              htmlOutput(outputId = "estimates_heading", container = h3),
+                             htmlOutput(outputId = "estimates_source"),
                              tableOutput(outputId = "estimates_table"),
 
                              htmlOutput(outputId = "drestimates_heading", container = h3),
@@ -229,10 +225,9 @@ ui <- function(request) {
 
 
                  # Footnotes
-                 htmlOutput(outputId = "foot_est"),
+                 htmlOutput(outputId = "modelled_catastrophic_costs_source"),
                  htmlOutput(outputId = "foot_dr_defn"),
 
-                 htmlOutput(outputId = "foot_pulm"),
                  htmlOutput(outputId = "foot_newunk"),
                  htmlOutput(outputId = "foot_rrmdr"),
 
