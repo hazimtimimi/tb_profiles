@@ -69,6 +69,22 @@ get_cap_pct <- function(numerator, denominator) {
   return(pct)
 }
 
+# Calculate % change and describe it as increase or decrease
+pct_change_description <- function(x1, x2){
+
+  ifelse(NZ(x1)==0 | is.na(x2),
+         "No data",
+         ifelse(x1 == x2,
+                "0% change",
+                paste0(signif(abs(x2 - x1) * 100/x1,2),
+                       "%",
+                       ifelse(x2 <= x1,
+                              " |reduction|",
+                              " |increase|")
+                )
+         )
+  )
+}
 
 # Non-reactive functions to build estimate strings
 # as best (lo-hi)
@@ -86,15 +102,15 @@ format_estimate <- function(best, lo, hi, style="n"){
 
     } else if (style=="k"){
         # format number using spaces for thousands separator
-        return(paste0(rounder(best), " (", rounder(lo), "-", rounder(hi), ")"))
+        return(paste0(rounder(best), " (", rounder(lo), "–", rounder(hi), ")"))
 
     } else if (style=="%") {
         # append percent sign to best
-        return(paste0(best, "% (", lo, "-", hi, ")"))
+        return(paste0(best, "% (", lo, "–", hi, ")"))
 
     } else {
         # keep numbers as they are
-        return(paste0(best, " (", lo, "-", hi, ")"))
+        return(paste0(best, " (", lo, "–", hi, ")"))
     }
 
 }

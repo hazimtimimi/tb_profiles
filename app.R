@@ -178,58 +178,56 @@ ui <- function(request) {
                   ),
                   column(width = 10,
 
-                             textOutput(outputId = "population", container = h3),
-                             htmlOutput(outputId = "population_source"),
+                         textOutput(outputId = "population", container = h3),
+                         htmlOutput(outputId = "population_source"),
 
 
-                             # Use htmloutput so can use HTML superscript tags for callouts to footnotes
-                             htmlOutput(outputId = "estimates_heading", container = h3),
-                             htmlOutput(outputId = "estimates_source"),
-                             tableOutput(outputId = "estimates_table"),
+                         textOutput(outputId = "estimates_heading", container = h3),
+                         textOutput(outputId = "estimates_source"),
+                         tableOutput(outputId = "estimates_table"),
 
-                             htmlOutput(outputId = "drestimates_heading", container = h3),
-                             tableOutput(outputId = "drestimates_table"),
-
-                             htmlOutput(outputId = "uhc_heading", container = h3),
-                             tableOutput(outputId = "uhc_table"),
-
-                             textOutput(outputId = "notifs_heading", container = h3),
-                             tableOutput(outputId = "notifs_table"),
-
-                             textOutput(outputId = "tbhiv_heading", container = h3),
-                             tableOutput(outputId = "tbhiv_table"),
-
-                             textOutput(outputId = "drtb_heading", container = h3),
-                             tableOutput(outputId = "drtb_table"),
+                         textOutput(outputId = "estimates_changes_heading", container = h3),
+                         tableOutput(outputId = "estimates_changes_table"),
 
 
-                             textOutput(outputId = "outcomes_heading", container = h3),
-                             tableOutput(outputId = "outcomes_table"),
+                         textOutput(outputId = "drestimates_heading", container = h3),
+                         tableOutput(outputId = "drestimates_table"),
 
-                             textOutput(outputId = "prevtx_heading", container = h3),
-                             tableOutput(outputId = "prevtx_table"),
+                         textOutput(outputId = "uhc_heading", container = h3),
+                         tableOutput(outputId = "uhc_table"),
+                         htmlOutput(outputId = "modelled_catastrophic_costs_source"),
 
-                             # The financing table should only be shown if dc_finance_display is true
-                             conditionalPanel(condition = "output.show_finance == 1",
 
-                                 textOutput(outputId = "finance_heading", container = h3),
-                                 tableOutput(outputId = "funding_table")
-                             )
+                         textOutput(outputId = "notifs_heading", container = h3),
+                         tableOutput(outputId = "notifs_table"),
 
-                           ),
+                         textOutput(outputId = "tbhiv_heading", container = h3),
+                         tableOutput(outputId = "tbhiv_table"),
 
-                    column(width = 1
-                           )
+                         textOutput(outputId = "drtb_heading", container = h3),
+                         tableOutput(outputId = "drtb_table"),
+
+
+                         textOutput(outputId = "outcomes_heading", container = h3),
+                         tableOutput(outputId = "outcomes_table"),
+
+                         textOutput(outputId = "prevtx_heading", container = h3),
+                         tableOutput(outputId = "prevtx_table"),
+
+                         # The financing table should only be shown if dc_finance_display is true
+                         conditionalPanel(condition = "output.show_finance == 1",
+
+                                          textOutput(outputId = "finance_heading", container = h3),
+                                          tableOutput(outputId = "funding_table")
+                         )
+
+                  ),
+
+                  column(width = 1
+                  )
 
                 ),
 
-
-                 # Footnotes
-                 htmlOutput(outputId = "modelled_catastrophic_costs_source"),
-                 htmlOutput(outputId = "foot_dr_defn"),
-
-                 htmlOutput(outputId = "foot_newunk"),
-                 htmlOutput(outputId = "foot_rrmdr"),
 
                 # Aggregated finance footer that doesn't appear for countries
                 htmlOutput(outputId = "foot_aggfin"),

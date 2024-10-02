@@ -3,7 +3,7 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-output$prevtx_heading <- renderText({ paste0(ltxt(plabs(), "prevtx"), ", ", dcyear-1) })
+output$prevtx_heading <- renderText({ ltxt(plabs(), "prevtx") })
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # 1. Preventive treatment table
@@ -15,8 +15,9 @@ output$prevtx_table <- renderTable({
 
 
   # build the data frame manually
-  data.frame( c(ltxt(plabs(), "prevtx_hiv"),
-                ltxt(plabs(), "prevtx_con")),
+  data.frame( c(paste0(str_replace_all(ltxt(plabs(), "prevtx_hiv"), "[()]", ""), ", ", dcyear-1),
+                paste0("|% of estimated number of household contacts of bacteriologically-confirmed TB cases on preventive treatment|", ", ", dcyear-1)
+                ),
 
               c(
              # calculate pct_hiv_ipt

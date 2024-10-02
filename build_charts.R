@@ -302,7 +302,7 @@ output$agesex_chart <-  renderHighchart({
 
 				if (this.series.type == 'errorbar') {
 
-					returnString = Highcharts.numberFormat(Math.abs(this.point.low), 0) + ' - ' +
+					returnString = Highcharts.numberFormat(Math.abs(this.point.low), 0) + '–' +
 									Highcharts.numberFormat(Math.abs(this.point.high), 0);
 
 					} else {

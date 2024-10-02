@@ -25,12 +25,12 @@ output$funding_table <- renderTable({
   if (isTRUE(pdata()$profile_properties[, "dc_finance_display"]) & check_entity_type(input$entity_type) != "group"){
 
     data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
-                 paste0("- ", ltxt(plabs(), "fund_domestic")),
-                 paste0("- ", ltxt(plabs(), "fund_international")),
+                 paste0(" – ", ltxt(plabs(), "fund_domestic")),
+                 paste0(" – ", ltxt(plabs(), "fund_international")),
                  paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
-                 paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
-                 paste0("- ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
-                 paste0("- ", ltxt(plabs(), "source_unfunded"))
+                 paste0(" – ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
+                 paste0(" – ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
+                 paste0(" – ", ltxt(plabs(), "source_unfunded"))
                  ),
 
                c(rounder(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
@@ -66,8 +66,8 @@ output$funding_table <- renderTable({
 
 
     data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
-                 paste0("- ", ltxt(plabs(), "fund_domestic")),
-                 paste0("- ", ltxt(plabs(), "fund_international"))
+                 paste0(" – ", ltxt(plabs(), "fund_domestic")),
+                 paste0(" – ", ltxt(plabs(), "fund_international"))
     ),
 
     c(rounder(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +

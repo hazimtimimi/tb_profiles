@@ -95,13 +95,13 @@ notifs_data <- reactive({
 
 # Combine the data with the row headers manually and render for output
 output$notifs_table <- renderTable({ data.frame(c( paste0("|New and relapse TB cases|", ", ", dcyear - 1),  #ltxt(plabs(), "tot_newrel"),
-                                                paste(" - ",ltxt(plabs(), "pct_rdx")),
-                                                paste(" - ",ltxt(plabs(), "pct_hivtest")),
-                                                paste(" - ",ltxt(plabs(), "pct_pulmonary")),
-                                                paste(" - |% of pulmonary cases that are bacteriologically confirmed|"),
-                                                paste(" - ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
-                                                paste(" - ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
-                                                paste(" - |% people aged 0-14 years|"),
+                                                paste(" – ",ltxt(plabs(), "pct_rdx")),
+                                                paste(" – ",ltxt(plabs(), "pct_hivtest")),
+                                                paste(" – ",ltxt(plabs(), "pct_pulmonary")),
+                                                paste(" – |% of pulmonary cases that are bacteriologically confirmed|"),
+                                                paste(" – ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
+                                                paste(" – ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
+                                                paste(" – |% people aged 0-14 years|"),
                                                 paste0(ltxt(plabs(), "tot_notified"), ", ", dcyear - 1) ),
                                                 notifs_data()
                                                 )  },
@@ -120,10 +120,10 @@ output$notifs_table <- renderTable({ data.frame(c( paste0("|New and relapse TB c
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 2. TB/HIV table
+# TB/HIV ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$tbhiv_heading <- renderText({ paste0(ltxt(plabs(), "newrel_tbhiv_care"), ", ", dcyear-1)  })
+output$tbhiv_heading <- renderText({ "|TB/HIV care|" }) #paste0(ltxt(plabs(), "newrel_tbhiv_care"), ", ", dcyear-1)  })
 
 
 tbhiv_data <- reactive({
@@ -159,8 +159,8 @@ tbhiv_data <- reactive({
   }
 
 
-  df <- data.frame(c(ltxt(plabs(), "hivtest_pos"),
-                     paste(" - ",ltxt(plabs(), "art")) ),
+  df <- data.frame(c(paste0("|New and relapse TB patients with known HIV status who are HIV-positive|", ", ", dcyear-1),  #ltxt(plabs(), "hivtest_pos"),
+                     paste0("|New and relapse HIV-positive TB patients on antiretroviral therapy|", ", ", dcyear-1)), #ltxt(plabs(), "art")) ),
                    num_data, pct_data)
 
   # add the column names
@@ -179,10 +179,10 @@ output$tbhiv_table <- renderTable({ tbhiv_data()  },
                                       na="")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 3. DR-TB table
+# DR-TB ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$drtb_heading <- renderText({ paste0(ltxt(plabs(), "drtb_care"), "**, ", dcyear-1)  })
+output$drtb_heading <- renderText({ ltxt(plabs(), "drtb_care") })
 
 drtb_data <- reactive({
 
@@ -220,14 +220,18 @@ drtb_data <- reactive({
 # entities, and unicode characters for superscript 4 and 5 didn;t work when testing
 
 
-output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "new"), "^"),
-                                                 paste(ltxt(plabs(), "dst_pct"), "-", ltxt(plabs(), "ret"), "^"),
-                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "rr_nfqr_abbr"), "^^"),
-                                                 "XXXX lab-confirmed RR/MDR started on treatement XXX",
-                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "rr_nfqr_abbr"), "^^^"),
-                                                 paste(ltxt(plabs(), "labconf_dr"), "-", ltxt(plabs(), "pre_xdr"), "^^"),
-                                                 paste(ltxt(plabs(), "mdr_tx"), "-", ltxt(plabs(), "pre_xdr"), "^^^"),
-                                                 ltxt(plabs(), "rr_fqdst")
+output$drtb_table <- renderTable({
+
+  data.frame(
+    c(paste0("|% of new bacteriologically confirmed pulmonary TB cases tested for rifampicin resistance|", ", ", dcyear-1),
+    paste0("|% of previously treated bacteriologically confirmed pulmonary TB cases tested for rifampicin resistance|", ", ", dcyear-1),
+    paste0("|Laboratory-confirmed TB cases with rifampicin resistance and no known fluoroquinolone resistance|", ", ", dcyear-1),
+    paste0("|Laboratory-confirmed TB cases with rifampicin resistance and no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
+    paste0("|Total number of TB cases with rifampicin resistance and no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
+    paste0("|Laboratory-confirmed TB cases with rifampicin resistance and fluoroquinolone resistance (pre-XDR-TB or XDR-TB)|", ", ", dcyear-1),
+    paste0("|Laboratory-confirmed TB cases with rifampicin resistance and fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
+    paste0("|Laboratory-confirmed TB cases with rifampicin resistance tested for resistance to fluoroquinolones (would this be better as a % and moved to the third row?)|", ", ", dcyear-1)
+
                                                  ),
                                                drtb_data()
                                               )  },
@@ -240,11 +244,4 @@ output$drtb_table <- renderTable({ data.frame( c(paste(ltxt(plabs(), "dst_pct"),
                                       colnames = FALSE,
                                       na="")
 
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 4. Add footnotes
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-output$foot_newunk <- renderText({  HTML(paste("^^<i>", ltxt(plabs(), "newunk"), "</i>")) })
-output$foot_rrmdr <- renderText({  HTML(paste("^^^<i>", str_replace(ltxt(plabs(), "rrmdr"), fixed("[yr-1]"), dcyear-1), "</i>")) })
 

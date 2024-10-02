@@ -22,7 +22,7 @@ output$population <- renderText({
          ltxt(plabs(), "million"))
 })
 
-output$population_source <- renderText({ HTML(paste("<i>", "|estimated by the UN Population Division|","</i>")) })
+output$population_source <- renderText({ HTML(paste("<i>", html_link("|Estimated by the UN Population Division (https://population.un.org/wpp/)|"),"</i>")) })
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,11 +43,10 @@ estimates_table_content <- reactive({
   # build the dataframe manually
   row_head <- c(paste0(ltxt(plabs(), "incidence_tb"), ", ", dcyear-1),
                 paste0(ltxt(plabs(), "incidence_tbhiv"), ", ", dcyear-1),
-                # next use ** as callout marker for the second footnote
-                #paste0(ltxt(plabs(), "incidence_rr"), "**"),
                 paste0("|Rifampicin-resistant TB (MDR/RR-TB) incidence|", ", ", dcyear-1),
                 paste0(ltxt(plabs(), "mortality_hivneg"), ", ", dcyear-1),
-                paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1))
+                paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1)
+  )
 
 
   est_num <- c( format_estimate(pdata()$profile_estimates[, "e_inc_num"],
@@ -116,6 +115,46 @@ output$estimates_table <- renderTable({ estimates_table_content() },
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Changes in incidence and mortality since 2015----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$estimates_changes_heading <- renderText({ "|Add Changes in incidence rate and total TB deaths???|" })
+
+estimates_changes_table_content <- reactive({
+
+  # make sure there are data to display
+  req(pdata()$epi_timeseries)
+
+
+  # build the dataframe manually
+  row_head <- c(paste0("% change in TB incidence 2015–", dcyear-1),
+                paste0("% change in total TB deaths 2015–", dcyear-1)
+  )
+
+ est_changes <- c(
+
+   pct_change_description(pdata()$epi_timeseries[pdata()$epi_timeseries$year == 2015, "e_inc_100k"],
+                          pdata()$epi_timeseries[pdata()$epi_timeseries$year == dcyear-1, "e_inc_100k"]),
+
+   pct_change_description(pdata()$epi_timeseries[pdata()$epi_timeseries$year == 2015, "e_mort_num"],
+                          pdata()$epi_timeseries[pdata()$epi_timeseries$year == dcyear-1, "e_mort_num"])
+
+ )
+
+ df <- data.frame(row_head, est_changes)
+ return(df)
+})
+
+output$estimates_changes_table <- renderTable({ estimates_changes_table_content() },
+                                      striped = TRUE,
+                                      hover = TRUE,
+                                      width = "100%",
+                                      # suppress column headers
+                                      colnames = FALSE,
+                                      na="")
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Proportion of cases with rifampicin resistance
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -171,7 +210,7 @@ uhc_table_content <- reactive({
   req(pdata()$profile_data)
 
   # build the table manually
-  row_head <-  c(paste0(ltxt(plabs(), "tx_coverage"), ", ", dcyear - 1),
+  row_head <-  c(paste0("|TB treatment coverage (notified new and relapse cases/estimated incidence)|, ", dcyear - 1),
 
                  paste0(ltxt(plabs(), "cfr"), ", ", dcyear - 1),
 
@@ -253,10 +292,4 @@ output$modelled_catastrophic_costs_source <- renderText({
          "")
 
   })
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 4. Add footnotes
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-output$foot_dr_defn <- renderText({ HTML(paste("**<i>", ltxt(plabs(), "dr_definition"), "</i>")) })
 

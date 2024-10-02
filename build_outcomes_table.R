@@ -30,8 +30,11 @@ outcomes_table_content <- reactive({
                       paste(ltxt(plabs(), "tsr_allret"), dcyear - 2)),
 
                paste(ltxt(plabs(), "tsr_tbhiv"), dcyear - 2),
-               paste(ltxt(plabs(), "tsr_mdr"), dcyear - 3),
-               paste(ltxt(plabs(), "tsr_xdr"), dcyear - 3)),
+               paste("|Cases started on treatment for rifampicin-resistant TB (RR/MDR-TB) in|", dcyear - 2),
+               paste("|Cases started on treatment for rifampicin-resistant and fluoroquinolone-resistant TB (Pre-XDR-TB/XDR-TB) in|", dcyear - 2)
+               #paste(ltxt(plabs(), "tsr_mdr"), dcyear - 3),
+               #paste(ltxt(plabs(), "tsr_xdr"), dcyear - 3)
+               ),
 
              # treatment success rates
              c(rounder_pct(pdata()$profile_data[, "c_new_tsr"]),
