@@ -3,10 +3,7 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Add call out to footnote if finance is an aggregate group
-output$finance_heading <- renderText({ ifelse(check_entity_type(input$entity_type) == "group",
-                                              paste0(ltxt(plabs(), "funding"),"***"),
-                                              ltxt(plabs(), "funding")
-                                              ) })
+output$finance_heading <- renderText({ ltxt(plabs(), "funding") })
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -20,30 +17,30 @@ output$funding_table <- renderTable({
   # Make sure there are data to display
   req(pdata()$profile_properties)
 
+  funding_sum <- sum_with_nulls(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"],
+                                pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])
+
   # build the data frame manually, but only if dc_finance_display is true
   # 1. Country-level version showing expenditure and budget
   if (isTRUE(pdata()$profile_properties[, "dc_finance_display"]) & check_entity_type(input$entity_type) != "group"){
 
     data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
-                 paste0(" – ", ltxt(plabs(), "fund_domestic")),
-                 paste0(" – ", ltxt(plabs(), "fund_international")),
+                 paste0("      — ", ltxt(plabs(), "fund_domestic")),
+                 paste0("      — ", ltxt(plabs(), "fund_international")),
                  paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
-                 paste0(" – ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
-                 paste0(" – ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
-                 paste0(" – ", ltxt(plabs(), "source_unfunded"))
+                 paste0("      — ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
+                 paste0("      — ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
+                 paste0("      — ", ltxt(plabs(), "source_unfunded"))
                  ),
 
-               c(rounder(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
-                           NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+               c(rounder(funding_sum),
 
                  # calculate pct_domestic and international for expenditure (received funding)
                  display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]),
-                                 NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
-                                   NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+                                 funding_sum),
 
                  display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"]),
-                                 NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
-                                   NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+                                 funding_sum),
 
                  rounder(pdata()$profile_data[, "tot_req"]),
 
@@ -66,21 +63,18 @@ output$funding_table <- renderTable({
 
 
     data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
-                 paste0(" – ", ltxt(plabs(), "fund_domestic")),
-                 paste0(" – ", ltxt(plabs(), "fund_international"))
+                 paste0("      — ", ltxt(plabs(), "fund_domestic")),
+                 paste0("      — ", ltxt(plabs(), "fund_international"))
     ),
 
-    c(rounder(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
-                NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+    c(rounder(funding_sum),
 
       # calculate pct_domestic and international for expenditure (received funding)
       display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]),
-                      NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
-                        NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"])),
+                      funding_sum),
 
       display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"]),
-                      NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]) +
-                        NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"]))
+                      funding_sum)
 
     )
     )
@@ -101,14 +95,21 @@ na="")
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 2. Add footnote for aggregated finance
+# 2. Add explanation of what finance numbers include and exclude
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$foot_aggfin <- renderText({  ifelse(check_entity_type(input$entity_type) == "group",
-                                           HTML(paste("***<i>",
-                                                      ltxt(plabs(), "foot_aggfin_lmc"),
-                                                      ltxt(plabs(), "foot_aggfin_ghs"),
-                                                      "</i>")),
-                                           "") })
+output$finance_inclusions_exclusions <- renderText({
+
+  ifelse(check_entity_type(input$entity_type) == "group",
+         HTML(paste("<i>",
+                    ltxt(plabs(), "foot_aggfin_lmc"),
+                    ltxt(plabs(), "foot_aggfin_ghs"),
+                    "</i>")),
+         HTML(paste("<i>",
+                    "|Excludes funding for inpatient and outpatient care.|",
+                    "</i>"))
+  )
+
+})
 
 

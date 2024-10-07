@@ -47,6 +47,24 @@ rounder_mil <- function(x) {
 }
 
 
+# Replace an NA value with zero
+NZ <- function(x){
+  ifelse(is.na(x), 0, x)
+}
+
+
+
+# Calculate a sum when one or more of the numbers could be NA
+# Return NA only if both are NA
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+sum_with_nulls <- function(x, y){
+
+  ifelse(is.na(x) & is.na(y),
+         NA,
+         NZ(x) + NZ(y))
+
+}
+
 # Calculate % using numerator and denominator, format the output and cap at 100%
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -115,11 +133,6 @@ format_estimate <- function(best, lo, hi, style="n"){
 
 }
 
-
-# Replace an NA value with zero
-NZ <- function(x){
-  ifelse(is.na(x), 0, x)
-}
 
 # Validate inputs received via the URL: if an invalid choice is made, Shiny sets the input value to null
 # So convert to a defaultvalue

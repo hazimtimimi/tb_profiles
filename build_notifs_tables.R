@@ -95,13 +95,13 @@ notifs_data <- reactive({
 
 # Combine the data with the row headers manually and render for output
 output$notifs_table <- renderTable({ data.frame(c( paste0("|New and relapse TB cases|", ", ", dcyear - 1),  #ltxt(plabs(), "tot_newrel"),
-                                                paste(" – ",ltxt(plabs(), "pct_rdx")),
-                                                paste(" – ",ltxt(plabs(), "pct_hivtest")),
-                                                paste(" – ",ltxt(plabs(), "pct_pulmonary")),
-                                                paste(" – |% of pulmonary cases that are bacteriologically confirmed|"),
-                                                paste(" – ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
-                                                paste(" – ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
-                                                paste(" – |% people aged 0-14 years|"),
+                                                paste0("      — ",ltxt(plabs(), "pct_rdx")),
+                                                paste0("      — ",ltxt(plabs(), "pct_hivtest")),
+                                                paste0("      — ",ltxt(plabs(), "pct_pulmonary")),
+                                                paste0("      — |% of pulmonary cases that are bacteriologically confirmed|"),
+                                                paste0("      — ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
+                                                paste0("      — ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
+                                                paste0("      — |% people aged 0-14 years|"),
                                                 paste0(ltxt(plabs(), "tot_notified"), ", ", dcyear - 1) ),
                                                 notifs_data()
                                                 )  },

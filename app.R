@@ -183,7 +183,7 @@ ui <- function(request) {
 
 
                          textOutput(outputId = "estimates_heading", container = h3),
-                         textOutput(outputId = "estimates_source"),
+                         htmlOutput(outputId = "estimates_source"),
                          tableOutput(outputId = "estimates_table"),
 
                          textOutput(outputId = "estimates_changes_heading", container = h3),
@@ -218,6 +218,7 @@ ui <- function(request) {
                          conditionalPanel(condition = "output.show_finance == 1",
 
                                           textOutput(outputId = "finance_heading", container = h3),
+                                          htmlOutput(outputId = "finance_inclusions_exclusions"),
                                           tableOutput(outputId = "funding_table")
                          )
 
@@ -228,9 +229,6 @@ ui <- function(request) {
 
                 ),
 
-
-                # Aggregated finance footer that doesn't appear for countries
-                htmlOutput(outputId = "foot_aggfin"),
 
                 # Footer that goes on every page
                 htmlOutput(outputId = "generation"),
