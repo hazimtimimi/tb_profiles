@@ -32,7 +32,7 @@ h4, h5, h6 {
 	margin-bottom: 3pt;
 	font-size: 8pt;
 }
-img,#inc_chart, #mort_chart, #agesex_chart, #rf_chart, #budget_chart {
+img  {
 	height: 3.8cm !important;
 	margin-bottom: 5mm;
 	page-break-inside: avoid;

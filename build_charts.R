@@ -3,6 +3,20 @@
 # Build output for the charts
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Define the 2025 End TB Strategy milestones ----
+#
+# - a 50% drop in incidence per 100,000 population compared to 2015
+# - a 75% drop in total TB deaths (HIV-negative + HIV-positive) compared to 2015
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+milestone_yr <- 2025
+inc_milestone_vs_2015 <- 0.5     # a 50% drop in incidence rate compared to 2015
+mort_milestone_vs_2015 <- 0.25   # a 75% drop in total TB deaths compared to 2015
+
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Incidence ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -12,16 +26,20 @@ output$inc_chart <-  renderHighchart({
   # Make sure there are data to plot
   req(pdata()$epi_timeseries)
 
-
   df <- pdata()$epi_timeseries  |>
     # restrict to years starting 2010
     filter(year >=2010)
 
+  # Calculate the milestone for 2025
+  milestone_inc <- df |>
+    filter(year == 2015) |>
+    mutate(ms = e_inc_100k * inc_milestone_vs_2015) |>
+    select(ms)
+
+
   highchart()  |>
 
-    hc_title(text = "|Estimated TB incidence and notifications|") |>
-
-    hc_subtitle(text = "Should this show the 2025 milestone?") |>
+    hc_title(text = "|Estimated TB incidence rate|") |>
 
     hc_xAxis(title = list(text = "")) |>
 
@@ -30,10 +48,23 @@ output$inc_chart <-  renderHighchart({
              tickAmount = 3,
              # avoid unnecessary vertical space
              endOnTick = FALSE,
-             allowDecimals = FALSE) |>
+             allowDecimals = FALSE,
+             # Add dashed line to show 2025 milestone
+             plotLines = list(
+               list(color = '#999999',
+                    dashStyle = 'dash',
+                    value = milestone_inc$ms,
+                    width = 2,
+                    label = list(text = paste(milestone_yr, "|milestone|"),
+                                 align = "left"))
+             )) |>
 
     hc_tooltip(crosshairs = TRUE,
-               shared = TRUE) |>
+               shared = TRUE,
+               valueDecimals = 0) |>
+
+    # Drop the legend
+    hc_legend(enabled = FALSE) |>
 
     hc_add_series(type = "line",
                   name = "|Estimated TB incidence per 100 000 population|",
@@ -84,46 +115,63 @@ output$mort_chart <-  renderHighchart({
     # restrict to years starting 2010
     filter(year >=2010)
 
+  # Calculate the milestone for 2025
+  milestone_deaths <- df |>
+    filter(year == 2015) |>
+    mutate(ms = e_mort_num * mort_milestone_vs_2015) |>
+    select(ms)
+
   highchart()  |>
 
-    hc_title(text = "|Estimated HIV-negative TB mortality|") |>
-
-    hc_subtitle(text = "Should this show total number of TB deaths with the 2025 milestone instead?") |>
+    hc_title(text = "|Estimated number of deaths caused by TB|") |>
 
     hc_xAxis(title = list(text = "")) |>
 
-    hc_yAxis(title = list(text = "|Number per 100 000 population|"), #ltxt(plabs(), "rate_100k_yr")),
+    hc_yAxis(title = list(text = "|Number|"), #ltxt(plabs(), "rate_100k_yr")),
              min = 0,
              tickAmount = 3,
              # avoid unnecessary vertical space
              endOnTick = FALSE,
-             allowDecimals = FALSE) |>
+             allowDecimals = FALSE,
+             # Add dashed line to show 2025 milestone
+             plotLines = list(
+               list(color = '#999999',
+                    dashStyle = 'dash',
+                    value = milestone_deaths$ms,
+                    width = 2,
+                    label = list(text = paste(milestone_yr, "|milestone|"),
+                                 align = "left"))
+             )
+    ) |>
 
     hc_tooltip(crosshairs = TRUE,
-               shared = TRUE) |>
+               shared = TRUE,
+               valueDecimals = 0) |>
+
+    # Drop the legend
+    hc_legend(enabled = FALSE) |>
 
     hc_add_series(type = "line",
-                  name = "|Estimated HIV-negative TB mortality per 100 000 population|",
+                  name = "|Estimated total number of TB deaths|",
                   data = df,
                   hcaes(x = year,
-                        y = e_mort_exc_tbhiv_100k),
+                        y = e_mort_num),
 
                   lineWidth = 6,
-                  color = gtbreport::palette_gtb("mort"),
+                  color = "black",
                   marker = list(enabled = FALSE)) |>
 
     hc_add_series(type = "arearange",
                   name = "|Uncertainty interval|",
                   data = df,
                   hcaes(x = year,
-                        low = e_mort_exc_tbhiv_100k_lo,
-                        high = e_mort_exc_tbhiv_100k_hi),
+                        low = e_mort_num_lo,
+                        high = e_mort_num_hi),
 
                   lineWidth = 0,
                   linkedTo = ":previous",
-                  color = gtbreport::palette_gtb("mort"),
+                  color = "black",
                   fillOpacity = 0.3,
-                  zIndex = 0,
                   marker = list(enabled = FALSE))
 
 })
@@ -404,7 +452,7 @@ output$rr_prop_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "|Estimated proportion of pulmonary bacteriologially confirmed TB cases resistant to rifampicin|") |>
+    hc_title(text = "|Estimated percentage of people with TB who had rifampicin-resistant TB (MDR/RR-TB)|") |>
 
     hc_xAxis(title = list(text = "")) |>
 
@@ -418,7 +466,7 @@ output$rr_prop_chart <-  renderHighchart({
                shared = TRUE) |>
 
     hc_add_series(type = "line",
-                  name = "|previously treated cases|",
+                  name = "|previously treated pulmonary bacteriologically confirmed cases|",
                   data = rr,
                   hcaes(x = year,
                         y = e_rr_pcnt_ret),
@@ -442,7 +490,7 @@ output$rr_prop_chart <-  renderHighchart({
                   marker = list(enabled = FALSE)) |>
 
   hc_add_series(type = "line",
-                  name = "|new cases|",
+                  name = "|new pulmonary bacteriologically confirmed cases|",
                   data = rr,
                   hcaes(x = year,
                         y = e_rr_pcnt_new),
@@ -481,7 +529,7 @@ output$rr_inc_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "|Estimated incidence number of rifampicin-resistant TB (RR-TB)") |>
+    hc_title(text = "|Estimated number of people who developed rifampicin-resistant TB (MDR/RR-TB) (incident cases)") |>
 
     hc_xAxis(title = list(text = "")) |>
 
@@ -493,6 +541,9 @@ output$rr_inc_chart <-  renderHighchart({
 
     hc_tooltip(crosshairs = TRUE,
                shared = TRUE) |>
+
+    # Drop the legend
+    hc_legend(enabled = FALSE) |>
 
     hc_add_series(type = "line",
                   name = "|Estimated incidence number of RR-TB cases|",

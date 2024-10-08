@@ -58,6 +58,7 @@ ui <- function(request) {
             tags$link(rel = "stylesheet", type = "text/css", href = "boot_print.css", media="print"),
 
             # Make sure columns with numeric values don't wrap
+            # Add extra space below charts
             tags$style(HTML("#estimates_table td:nth-child(2),
                              #estimates_table td:nth-child(3),
                              #uhc_table td:nth-child(2),
@@ -70,6 +71,9 @@ ui <- function(request) {
                              }
                              #tbhiv_table th:nth-child(2), #outcomes_table th:nth-child(3) {
                                text-align: right !important;
+                             }
+                             .chart {
+                               margin-bottom: 50px;
                              }
                              #generation {
                                margin-top: 10px;
@@ -131,18 +135,22 @@ ui <- function(request) {
 
                 fixedRow(
                   column(width = 6,
+                         class = "chart",
                          highchartOutput(outputId = "inc_chart", height = "300px")
                   ),
                   column(width = 6,
+                         class = "chart",
                          highchartOutput(outputId = "mort_chart", height = "300px")
                   )
                 ),
 
                 fixedRow(
                   column(width = 6,
+                         class = "chart",
                          highchartOutput(outputId = "agesex_chart", height = "300px")
                   ),
                   column(width = 6,
+                         class = "chart",
                          # Only show estimates by risk factors if the estimates exist for the entity
                          conditionalPanel(condition = "output.show_attributable_cases == 1",
 
@@ -153,18 +161,22 @@ ui <- function(request) {
 
                 fixedRow(
                   column(width = 6,
+                         class = "chart",
                          highchartOutput(outputId = "rr_prop_chart", height = "300px")
                   ),
                   column(width = 6,
+                         class = "chart",
                          highchartOutput(outputId = "rr_inc_chart", height = "300px")
                   )
                 ),
 
                 fixedRow(
                   column(width = 6,
+                         class = "chart",
                          highchartOutput(outputId = "tpt_chart", height = "300px")
                   ),
                   column(width = 6,
+                         class = "chart",
                          # The financing chart should only be shown if dc_finance_display is true
                          conditionalPanel(condition = "output.show_finance == 1",
 
