@@ -227,18 +227,18 @@ output$rf_chart <-  renderHighchart({
                   name = "|Estimated number|",
                   data = df,
                   hcaes(y = best),
-
                   lineWidth = 0,
-                  color = gtbreport::palette_gtb("inc")) |>
+                  color = gtbreport::palette_gtb("inc"),
+                  marker = list(radius = 6)) |>
 
     hc_add_series(type = "errorbar",
                   name = "|Uncertainty interval|",
                   data = df,
                   hcaes(low = lo,
                         high = hi),
-
                   linkedTo = ":previous",
                   color = gtbreport::palette_gtb("inc"),
+                  lineWidth = 4,
                   whiskerLength = 15,
                   whiskerWidth = 4)
 
@@ -326,6 +326,8 @@ output$agesex_chart <-  renderHighchart({
                              levels=c("04", "0514", "014", "1524", "2534", "3544", "4554", "5564", "65", "15plus"),
                              labels=c("0-4", "5-14", "0-14", "15-24", "25-34", "35-44", "45-54", "55-64", "\u226565", "\u226515"))
 
+  # Find the maximum high bound
+  max_hi <- max(agesex$hi)
 
   highchart()  |>
 
@@ -338,9 +340,12 @@ output$agesex_chart <-  renderHighchart({
              reversed = FALSE) |>
 
     hc_yAxis(title = list(text = ""),
-             labels = list(formatter = JS("function(){return Math.abs(this.value);}"))) |>
+             labels = list(formatter = JS("function(){return Highcharts.numberFormat(Math.abs(this.value),0);}")),
+             # Set minimum and maximum values to be the same absolute number so that
+             # zero is in the middle of the axis
+             max = max_hi,
+             min = -1 * max_hi) |>
 
-    # Fix this function   TBD
     hc_tooltip(
       formatter = JS("function(){
 
@@ -363,19 +368,9 @@ output$agesex_chart <-  renderHighchart({
 			}"),
       crosshairs = TRUE) |>
 
-    hc_add_series(type = "bar",
-                  name = "|New and relapse cases (females)|",
-                  stacking = "normal",
-                  data = filter(agesex, sex == "f") |> mutate(notifs = -1*notifs),
-
-                  hcaes(x = age_group,
-                        y = notifs),
-
-                  color = gtbreport::palette_gtb("female")
-    ) |>
-
     hc_add_series(type = "line",
                   name = "|Estimated number (females)|",
+                  showInLegend = FALSE,
                   # Stop default stacking of line series
                   stacking = NA,
                   lineWidth = 0,
@@ -385,6 +380,9 @@ output$agesex_chart <-  renderHighchart({
                         y = best),
 
                   color = gtbreport::palette_gtb("inc"),
+                  opacity = 0.7,
+                  marker = list(symbol = "circle",
+                                radius = 6),
                   # Stop line appearing between dots on hover
                   states = list(hover = list(enabled = FALSE))
     )  |>
@@ -398,20 +396,14 @@ output$agesex_chart <-  renderHighchart({
 
                   linkedTo = ":previous",
                   color = gtbreport::palette_gtb("inc"),
+                  opacity = 0.7,
+                  lineWidth = 4,
                   whiskerLength = 15,
                   whiskerWidth = 4) |>
 
-    hc_add_series(type = "bar",
-                  name = "|New and relapse cases (males)|",
-                  stacking = "normal",
-                  data = filter(agesex, sex == "m"),
-                  hcaes(x = age_group,
-                        y = notifs),
-                  color = gtbreport::palette_gtb("male")
-    ) |>
-
     hc_add_series(type = "line",
                   name = "|Estimated number (males)|",
+                  showInLegend = FALSE,
                   # Stop default stacking of line series
                   stacking = NA,
                   lineWidth = 0,
@@ -421,6 +413,9 @@ output$agesex_chart <-  renderHighchart({
                         y = best),
 
                   color = gtbreport::palette_gtb("inc"),
+                  opacity = 0.7,
+                  marker = list(symbol = "circle",
+                                radius = 6),
                   # Stop line appearing between dots on hover
                   states = list(hover = list(enabled = FALSE))
     )  |>
@@ -433,8 +428,30 @@ output$agesex_chart <-  renderHighchart({
 
                   linkedTo = ":previous",
                   color = gtbreport::palette_gtb("inc"),
+                  opacity = 0.7,
+                  lineWidth = 4,
                   whiskerLength = 15,
-                  whiskerWidth = 4)
+                  whiskerWidth = 4) |>
+
+    hc_add_series(type = "bar",
+                  name = "|New and relapse cases (females)|",
+                  stacking = "normal",
+                  data = filter(agesex, sex == "f") |> mutate(notifs = -1*notifs),
+
+                  hcaes(x = age_group,
+                        y = notifs),
+
+                  color = gtbreport::palette_gtb("female")
+    ) |>
+
+    hc_add_series(type = "bar",
+                  name = "|New and relapse cases (males)|",
+                  stacking = "normal",
+                  data = filter(agesex, sex == "m"),
+                  hcaes(x = age_group,
+                        y = notifs),
+                  color = gtbreport::palette_gtb("male")
+    )
 
 })
 
