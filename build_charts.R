@@ -3,20 +3,6 @@
 # Build output for the charts
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Define the 2025 End TB Strategy milestones ----
-#
-# - a 50% drop in incidence per 100,000 population compared to 2015
-# - a 75% drop in total TB deaths (HIV-negative + HIV-positive) compared to 2015
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-milestone_yr <- 2025
-inc_milestone_vs_2015 <- 0.5     # a 50% drop in incidence rate compared to 2015
-mort_milestone_vs_2015 <- 0.25   # a 75% drop in total TB deaths compared to 2015
-
-
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Incidence ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,7 +83,15 @@ output$inc_chart <-  renderHighchart({
                         y = c_newinc_100k),
 
                   color = "#555555",
-                  marker = list(enabled = FALSE))
+                  marker = list(enabled = FALSE)) |>
+
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_incidence"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                   )
+                 ))
 
 
 })
@@ -172,7 +166,15 @@ output$mort_chart <-  renderHighchart({
                   linkedTo = ":previous",
                   color = "black",
                   fillOpacity = 0.3,
-                  marker = list(enabled = FALSE))
+                  marker = list(enabled = FALSE)) |>
+
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_deaths"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                   )
+                 ))
 
 })
 
@@ -238,9 +240,18 @@ output$rf_chart <-  renderHighchart({
                         high = hi),
                   linkedTo = ":previous",
                   color = gtbreport::palette_gtb("inc"),
+                  opacity = 0.5,
                   lineWidth = 4,
                   whiskerLength = 15,
-                  whiskerWidth = 4)
+                  whiskerWidth = 4) |>
+
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_risk_factors"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                   )
+                 ))
 
 
 })
@@ -396,7 +407,7 @@ output$agesex_chart <-  renderHighchart({
 
                   linkedTo = ":previous",
                   color = gtbreport::palette_gtb("inc"),
-                  opacity = 0.7,
+                  opacity = 0.5,
                   lineWidth = 4,
                   whiskerLength = 15,
                   whiskerWidth = 4) |>
@@ -417,8 +428,7 @@ output$agesex_chart <-  renderHighchart({
                   marker = list(symbol = "circle",
                                 radius = 6),
                   # Stop line appearing between dots on hover
-                  states = list(hover = list(enabled = FALSE))
-    )  |>
+                  states = list(hover = list(enabled = FALSE)) )  |>
 
     hc_add_series(type = "errorbar",
                   name = "|Uncertainty interval (males)|",
@@ -428,7 +438,7 @@ output$agesex_chart <-  renderHighchart({
 
                   linkedTo = ":previous",
                   color = gtbreport::palette_gtb("inc"),
-                  opacity = 0.7,
+                  opacity = 0.5,
                   lineWidth = 4,
                   whiskerLength = 15,
                   whiskerWidth = 4) |>
@@ -441,8 +451,7 @@ output$agesex_chart <-  renderHighchart({
                   hcaes(x = age_group,
                         y = notifs),
 
-                  color = gtbreport::palette_gtb("female")
-    ) |>
+                  color = gtbreport::palette_gtb("female")) |>
 
     hc_add_series(type = "bar",
                   name = "|New and relapse cases (males)|",
@@ -450,8 +459,15 @@ output$agesex_chart <-  renderHighchart({
                   data = filter(agesex, sex == "m"),
                   hcaes(x = age_group,
                         y = notifs),
-                  color = gtbreport::palette_gtb("male")
-    )
+                  color = gtbreport::palette_gtb("male")) |>
+
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_agegroup_sex"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                   )
+                 ))
 
 })
 
@@ -528,7 +544,15 @@ output$rr_prop_chart <-  renderHighchart({
                   color = "#F49A20",
                   fillOpacity = 0.3,
                   zIndex = 0,
-                  marker = list(enabled = FALSE))
+                  marker = list(enabled = FALSE)) |>
+
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_RR_prevalence"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                   )
+                 ))
 
 })
 
@@ -584,7 +608,16 @@ output$rr_inc_chart <-  renderHighchart({
                   color = gtbreport::palette_gtb("inc"),
                   fillOpacity = 0.3,
                   zIndex = 0,
-                  marker = list(enabled = FALSE))
+                  marker = list(enabled = FALSE)) |>
+
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_RR_incidence"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                   )
+                 ))
+
 })
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -603,17 +636,19 @@ output$tpt_chart <- renderHighchart({
         sum(!is.na(tpt$contact_04)) +
         sum(!is.na(tpt$contact_5plus)) > 0)
 
+  # Combine the disaggregated contact numbers
+  tpt <- tpt |>
+    mutate(hh_contacts = sum_with_nulls(contact_04, contact_5plus)) |>
+    select(year, hiv, hh_contacts)
+
 
   highchart()  |>
 
     hc_title(text = "|People provided with TB preventive treatment|") |>
 
-    hc_subtitle(text = "Should this be like Fig 3.2 showing % coverage and the 2027 90% target instead?") |>
-
     hc_chart(type = "column") |>
 
-    hc_xAxis(title = list(text = "Year"),
-             categories = tpt$year) |>
+    hc_xAxis(categories = tpt$year) |>
 
     hc_yAxis(title = list(text = "|Number|"),
              min = 0,
@@ -621,17 +656,24 @@ output$tpt_chart <- renderHighchart({
 
     hc_plotOptions(series = list(stacking = "normal")) |>
 
+    hc_tooltip(crosshairs = TRUE,
+               shared = TRUE) |>
+
     hc_add_series(name = "|People living with HIV|",
                   data = tpt$hiv,
                   color = "#FFC425") |>
 
-    hc_add_series(name = "|Household contacts aged <5 years|",
-                  data = tpt$contact_04,
-                  color = "#9FCD25") |>
+    hc_add_series(name = "|Household contacts|",
+                  data = tpt$hh_contacts,
+                  color = "dark green") |>
 
-    hc_add_series(name = "|Household contacts aged ≥5 years|",
-                  data = tpt$contact_5plus,
-                  color = "dark green")
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_TPT"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                   )
+                 ))
 
 
 })
@@ -658,15 +700,11 @@ output$funding_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = ifelse(check_entity_type(input$entity_type) == "group",
-                           paste0(ltxt(plabs(), "funding"),"***"),
-                           ltxt(plabs(), "funding")
-    )) |>
+    hc_title(text = "|Funding available for TB prevention, diagnostic and treatment services|") |>
 
     hc_chart(type = "column") |>
 
-    hc_xAxis(title = list(text = "Year"),
-             categories = funding_data$year) |>
+    hc_xAxis(categories = funding_data$year) |>
 
     hc_yAxis(title = list(text = ltxt(plabs(), "usd_millions")),
              min = 0,
@@ -674,10 +712,9 @@ output$funding_chart <-  renderHighchart({
 
     hc_plotOptions(series = list(stacking = "normal")) |>
 
-    hc_tooltip(formatter = JS("function() {
-					return '<b>'+ this.series.name +'</b><br/>'+
-					this.x +': US$'+ this.y +' million';
-			}")) |>
+    hc_tooltip(crosshairs = TRUE,
+               shared = TRUE,
+               valueDecimals = 1) |>
 
     hc_add_series(name = "|domestic funding|",
                   data = funding_data$a_domestic_funds,
@@ -685,6 +722,14 @@ output$funding_chart <-  renderHighchart({
 
     hc_add_series(name = "|international funding|",
                   data = funding_data$b_international_funds,
-                  color = "#E9C04F")
+                  color = "#E9C04F") |>
+
+    hc_exporting(enabled = TRUE,
+                 filename = paste0("GTB_report_", dcyear, "_funding"),
+                 chartOptions = list(
+                   subtitle=list(
+                     text=entity_name()
+                     )
+                   ))
 
 })

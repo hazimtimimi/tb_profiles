@@ -197,6 +197,11 @@ drtb_data <- reactive({
     display_cap_pct(pdata()$profile_data[, "r_rlt_ret"],
                     pdata()$profile_data[, "pulm_labconf_ret"]),
 
+    ifelse(dcyear == 2019,
+           rounder(pdata()$profile_data[, "rr_sldst"]),
+           # Change the variable displayed from 2020 data collection year onwards
+           rounder(pdata()$profile_data[, "rr_dst_rlt_fq"])),
+
 
     rounder(pdata()$profile_data[, "conf_rr_nfqr"]),
     rounder(pdata()$profile_data[, "conf_rr_nfqr_tx"]),
@@ -204,12 +209,7 @@ drtb_data <- reactive({
                    NA,
                    NZ(pdata()$profile_data[, "unconf_rr_nfqr_tx"]) + NZ(pdata()$profile_data[, "conf_rr_nfqr_tx"]))),
     rounder(pdata()$profile_data[, "conf_rr_fqr"]),
-    rounder(pdata()$profile_data[, "conf_rr_fqr_tx"]),
-
-    ifelse(dcyear == 2019,
-           rounder(pdata()$profile_data[, "rr_sldst"]),
-           # Change the variable displayed from 2020 data collection year onwards
-           rounder(pdata()$profile_data[, "rr_dst_rlt_fq"]))
+    rounder(pdata()$profile_data[, "conf_rr_fqr_tx"])
 
   )
 
@@ -225,13 +225,12 @@ output$drtb_table <- renderTable({
   data.frame(
     c(paste0("|% of new bacteriologically confirmed pulmonary TB cases tested for rifampicin resistance|", ", ", dcyear-1),
     paste0("|% of previously treated bacteriologically confirmed pulmonary TB cases tested for rifampicin resistance|", ", ", dcyear-1),
+    paste0("|Laboratory-confirmed TB cases with rifampicin resistance tested for resistance to fluoroquinolones (would this be better as a % and moved to the third row?)|", ", ", dcyear-1),
     paste0("|Laboratory-confirmed TB cases with rifampicin resistance and no known fluoroquinolone resistance|", ", ", dcyear-1),
     paste0("|Laboratory-confirmed TB cases with rifampicin resistance and no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
     paste0("|Total number of TB cases with rifampicin resistance and no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
     paste0("|Laboratory-confirmed TB cases with rifampicin resistance and fluoroquinolone resistance (pre-XDR-TB or XDR-TB)|", ", ", dcyear-1),
-    paste0("|Laboratory-confirmed TB cases with rifampicin resistance and fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
-    paste0("|Laboratory-confirmed TB cases with rifampicin resistance tested for resistance to fluoroquinolones (would this be better as a % and moved to the third row?)|", ", ", dcyear-1)
-
+    paste0("|Laboratory-confirmed TB cases with rifampicin resistance and fluoroquinolone resistance started on treatment|", ", ", dcyear-1)
                                                  ),
                                                drtb_data()
                                               )  },

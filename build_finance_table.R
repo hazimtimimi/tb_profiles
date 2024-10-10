@@ -24,16 +24,19 @@ output$funding_table <- renderTable({
   # 1. Country-level version showing expenditure and budget
   if (isTRUE(pdata()$profile_properties[, "dc_finance_display"]) & check_entity_type(input$entity_type) != "group"){
 
-    data.frame(c(paste0(ltxt(plabs(), "funding"), ", ", dcyear-1, " ", ltxt(plabs(), "usd_millions")),
+    data.frame(c(paste0("|Funding available for TB prevention, diagnostic and treatment services|", ", ", dcyear-1),
+                 #paste0(ltxt(plabs(), "funding"), ", ", dcyear-1),
                  paste0("      — ", ltxt(plabs(), "fund_domestic")),
                  paste0("      — ", ltxt(plabs(), "fund_international")),
-                 paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear, " ", ltxt(plabs(), "usd_millions")),
-                 paste0("      — ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
-                 paste0("      — ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
-                 paste0("      — ", ltxt(plabs(), "source_unfunded"))
+                 paste0(ltxt(plabs(), "ntp_budget"), ", ", dcyear),
+                 paste0("      — ", ltxt(plabs(), "fund_domestic")),
+                 paste0("      — ", ltxt(plabs(), "fund_international")),
+                 #paste0("      — ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_domestic")),
+                 #paste0("      — ", ltxt(plabs(), "funding_source"), ", ", ltxt(plabs(), "source_international")),
+                 paste0("      — | %", ltxt(plabs(), "source_unfunded"), "|")
                  ),
 
-               c(rounder(funding_sum),
+               c(paste("US$ ", rounder_mil(funding_sum), "|million|"),
 
                  # calculate pct_domestic and international for expenditure (received funding)
                  display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "a_domestic_funds"]),
@@ -42,7 +45,7 @@ output$funding_table <- renderTable({
                  display_cap_pct(NZ(pdata()$funding_timeseries[pdata()$funding_timeseries$year == dcyear-1, "b_international_funds"]),
                                  funding_sum),
 
-                 rounder(pdata()$profile_data[, "tot_req"]),
+                 paste("US$ ", rounder_mil(pdata()$profile_data[, "tot_req"]), "|million|"),
 
                  # calculate pct_domestic, international and unfunded for budget (committed funding)
                  display_cap_pct(pdata()$profile_data[, "tot_domestic"],

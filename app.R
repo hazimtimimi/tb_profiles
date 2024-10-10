@@ -199,6 +199,7 @@ ui <- function(request) {
                          tableOutput(outputId = "estimates_table"),
 
                          textOutput(outputId = "estimates_changes_heading", container = h3),
+                         htmlOutput(outputId = "estimates_changes_note"),
                          tableOutput(outputId = "estimates_changes_table"),
 
 
@@ -343,6 +344,50 @@ server <- function(input, output, session) {
        return(json)
     })
 
+    # Get the entity name as a reactive function
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    entity_name <- reactive({
+
+      # Make sure there is a chosen language
+      req(input$lan)
+
+      if (check_entity_type(input$entity_type) == "group") {
+
+        name <- switch(check_lan(input$lan),
+                       "FR" = pdata()$profile_properties[, "group_description_FR"],
+                       "ES" = pdata()$profile_properties[, "group_description_ES"],
+                       "RU" = pdata()$profile_properties[, "group_description_RU"],
+                       pdata()$profile_properties[, "group_description"] #default!
+        )
+
+      } else {
+
+        # Always default back to country
+        name <- switch(check_lan(input$lan),
+                       "FR" = pdata()$profile_properties[, "country_FR"],
+                       "ES" = pdata()$profile_properties[, "country_ES"],
+                       "RU" = pdata()$profile_properties[, "country_RU"],
+                       pdata()$profile_properties[, "country"] #default!
+        )
+      }
+
+      return(name)
+
+    })
+
+    # Build the page header using the entity name
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    output$main_heading <- renderText({
+
+      # Make sure there is a chosen language
+      req(input$lan)
+
+      return(paste0(ltxt(plabs(), "head"), ": ", entity_name()))
+
+
+    })
+
 
     # Show or hide the cases attributable to 5 risk factors
     # Some entities don;t have these estimates and the attributable_cases
@@ -387,12 +432,21 @@ server <- function(input, output, session) {
     # Need this to make sure browser can switch Finance elements back on again if hidden
     outputOptions(output, "show_finance", suspendWhenHidden = FALSE)
 
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # Define the 2025 End TB Strategy milestones ----
+    #
+    # - a 50% drop in incidence per 100,000 population compared to 2015
+    # - a 75% drop in total TB deaths (HIV-negative + HIV-positive) compared to 2015
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    milestone_yr <- "2025"
+    inc_milestone_vs_2015 <- 0.5     # a 50% drop in incidence rate compared to 2015
+    mort_milestone_vs_2015 <- 0.25   # a 75% drop in total TB deaths compared to 2015
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # Build all the output objects to display in the application
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    source("build_header.R", local = TRUE)
 
     source("build_charts.R", local = TRUE)
 
