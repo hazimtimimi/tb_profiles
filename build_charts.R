@@ -712,9 +712,21 @@ output$funding_chart <-  renderHighchart({
 
     hc_plotOptions(series = list(stacking = "normal")) |>
 
-    hc_tooltip(crosshairs = TRUE,
-               shared = TRUE,
-               valueDecimals = 1) |>
+    hc_tooltip(
+      formatter = JS("function(){
+
+				return this.points.reverse().reduce(function (s, point) {
+                return s + '<br/>' +
+                '<span style=\"color:' + point.series.color + '\">&#9679</span>' +
+                point.series.name + ': US$ ' +
+                    Highcharts.numberFormat(point.y,1) + ' |million|';
+            }, this.x) +
+            '<br/><b>|Total|: US$ ' +
+            Highcharts.numberFormat(this.points[0].total,1) +
+            ' |million|</b>';
+			}"),
+      shared = TRUE,
+      crosshairs = TRUE) |>
 
     hc_add_series(name = "|domestic funding|",
                   data = funding_data$a_domestic_funds,
