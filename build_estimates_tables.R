@@ -45,6 +45,7 @@ estimates_table_content <- reactive({
                 #paste0(ltxt(plabs(), "incidence_tbhiv"), ", ", dcyear-1),
                 paste0("|TB incidence in people with HIV|", ", ", dcyear-1),
                 paste0("|Rifampicin-resistant TB (MDR/RR-TB) incidence|", ", ", dcyear-1),
+                "|Add estimated number of RR-TB among notified bacteriologically confirmed pulmonary TB cases|",
                 #paste0(ltxt(plabs(), "mortality_hivneg"), ", ", dcyear-1),
                 #paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1)
                 paste0("|TB deaths in people without HIV|", ", ", dcyear-1),
@@ -67,6 +68,8 @@ estimates_table_content <- reactive({
                                 pdata()$profile_estimates[, "e_inc_rr_num_lo"],
                                 pdata()$profile_estimates[, "e_inc_rr_num_hi"],
                                 style="k"),
+
+                "TBD",
 
                 format_estimate(pdata()$profile_estimates[, "e_mort_exc_tbhiv_num"],
                                 pdata()$profile_estimates[, "e_mort_exc_tbhiv_num_lo"],
@@ -92,6 +95,8 @@ estimates_table_content <- reactive({
                 format_estimate(pdata()$profile_estimates[, "e_inc_rr_100k"],
                                 pdata()$profile_estimates[, "e_inc_rr_100k_lo"],
                                 pdata()$profile_estimates[, "e_inc_rr_100k_hi"]),
+
+                "",
 
                 format_estimate(pdata()$profile_estimates[, "e_mort_exc_tbhiv_100k"],
                                 pdata()$profile_estimates[, "e_mort_exc_tbhiv_100k_lo"],
@@ -189,8 +194,7 @@ drestimates_table_content <- reactive({
 
   # build the dataframe manually
   row_head <- c(paste0(ltxt(plabs(), "new"), ", ", dcyear-1),
-                paste0(ltxt(plabs(), "ret"), ", ", dcyear-1),
-                "|Add estimated number of RR-TB among notified bacteriologically confirmed pulmonary TB cases|")
+                paste0(ltxt(plabs(), "ret"), ", ", dcyear-1))
 
   est_pct <- c( format_estimate(pdata()$profile_estimates[, "e_rr_pct_new"],
                                 pdata()$profile_estimates[, "e_rr_pct_new_lo"],
@@ -201,8 +205,7 @@ drestimates_table_content <- reactive({
                 format_estimate(pdata()$profile_estimates[, "e_rr_pct_ret"],
                                 pdata()$profile_estimates[, "e_rr_pct_ret_lo"],
                                 pdata()$profile_estimates[, "e_rr_pct_ret_hi"],
-                                style="%"),
-                "TBD"
+                                style="%")
   )
   df <- data.frame(row_head, est_pct)
 

@@ -75,6 +75,7 @@ ui <- function(request) {
                              .chart {
                                margin-bottom: 50px;
                              }
+                             #drestimates_table, #drestimates_heading {text-decoration: line-through;}
                              #generation {
                                margin-top: 10px;
                                border-top: 0.25px solid #BCBCBC;
