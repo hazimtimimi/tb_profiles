@@ -94,7 +94,7 @@ notifs_data <- reactive({
 
 
 # Combine the data with the row headers manually and render for output
-output$notifs_table <- renderTable({ data.frame(c( paste0("|New and relapse TB cases|", ", ", dcyear - 1),  #ltxt(plabs(), "tot_newrel"),
+output$notifs_table <- renderTable({ data.frame(c( paste0("|People diagnosed with a new or relapse case of TB|", ", ", dcyear - 1),  #ltxt(plabs(), "tot_newrel"),
                                                 paste0("      — ",ltxt(plabs(), "pct_rdx")),
                                                 paste0("      — ",ltxt(plabs(), "pct_hivtest")),
                                                 paste0("      — ",ltxt(plabs(), "pct_pulmonary")),
@@ -159,8 +159,8 @@ tbhiv_data <- reactive({
   }
 
 
-  df <- data.frame(c(paste0("|New and relapse TB patients with known HIV status who are HIV-positive|", ", ", dcyear-1),  #ltxt(plabs(), "hivtest_pos"),
-                     paste0("|New and relapse HIV-positive TB patients on antiretroviral therapy|", ", ", dcyear-1)), #ltxt(plabs(), "art")) ),
+  df <- data.frame(c(paste0("|People with a new or relapse case of TB who are living with HIV|", ", ", dcyear-1),  #ltxt(plabs(), "hivtest_pos"),
+                     paste0("|People with a new or relapse case of TB who are living with HIV and who are on antiretroviral therapy|", ", ", dcyear-1)), #ltxt(plabs(), "art")) ),
                    num_data, pct_data)
 
   # add the column names
@@ -219,14 +219,14 @@ drtb_data <- reactive({
 output$drtb_table <- renderTable({
 
   data.frame(
-    c(paste0("|% of new bacteriologically-confirmed pulmonary TB cases tested for rifampicin resistance|", ", ", dcyear-1),
-    paste0("|% of previously treated bacteriologically-confirmed pulmonary TB cases tested for rifampicin resistance|", ", ", dcyear-1),
-    paste0("|% of bacteriologically-confirmed pulmonary TB cases with rifampicin resistance tested for resistance to fluoroquinolones|", ", ", dcyear-1),
-    paste0("|Bacteriologically-confirmed TB cases with rifampicin resistance and no known fluoroquinolone resistance|", ", ", dcyear-1),
-    paste0("|Bacteriologically-confirmed TB cases with rifampicin resistance and no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
-    paste0("|Total number of TB cases with rifampicin resistance and no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
-    paste0("|Bacteriologically-confirmed TB cases with rifampicin resistance and fluoroquinolone resistance (pre-XDR-TB or XDR-TB)|", ", ", dcyear-1),
-    paste0("|Bacteriologically-confirmed TB cases with rifampicin resistance and fluoroquinolone resistance started on treatment|", ", ", dcyear-1)
+    c(paste0("|% of people with a new case of bacteriologically-confirmed pulmonary TB tested for susceptibility to rifampicin|", ", ", dcyear-1),
+    paste0("|% of people previously treated for TB with a case of bacteriologically-confirmed pulmonary TB tested for susceptibility to rifampicin|", ", ", dcyear-1),
+    paste0("|% of people with bacteriologically-confirmed pulmonary TB that is resistant to rifampicin tested for susceptibility to fluoroquinolones|", ", ", dcyear-1),
+    paste0("|People with bacteriologically-confirmed TB that is resistant to rifampicin and with no known fluoroquinolone resistance|", ", ", dcyear-1),
+    paste0("|People with bacteriologically-confirmed TB that is resistant to rifampicin and with no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
+    paste0("|Total number of people with TB that is resistant to rifampicin and with no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
+    paste0("|People with bacteriologically-confirmed TB that is resistant to both rifampicin and fluoroquinolones (pre-XDR-TB or XDR-TB)|", ", ", dcyear-1),
+    paste0("|People with bacteriologically-confirmed TB that is resistant to both rifampicin and fluoroquinolones started on treatment|", ", ", dcyear-1)
                                                  ),
                                                drtb_data()
                                               )  },

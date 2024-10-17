@@ -22,7 +22,12 @@ output$population <- renderText({
          ltxt(plabs(), "million"))
 })
 
-output$population_source <- renderText({ HTML(paste("<i>", html_link("|Estimated by the UN Population Division (https://population.un.org/wpp/)|"),"</i>")) })
+output$population_source <- renderText({ HTML(paste0("<i>", html_link("|Estimated by the UN Population Division (https://population.un.org/wpp/).|"),
+                                                     # If showing Ukraine 2023 then add comment about the estimate
+                                                     ifelse(input$entity_type == "country" & input$iso2 == "UA" & dcyear==2024,
+                                                            "<br />|There are uncertainties associated with the UNPD population estimates for Ukraine.|",
+                                                            ""),
+                                                     "</i>")) })
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -31,7 +36,17 @@ output$population_source <- renderText({ HTML(paste("<i>", html_link("|Estimated
 
 output$estimates_heading <- renderText({ ltxt(plabs(), "estimates") })
 
-output$estimates_source <- renderText({  HTML(paste("<i>", ltxt(plabs(), "foot_est"),"</i>")) })
+output$estimates_source <- renderText({  HTML(paste0("<i>",
+                                                     ltxt(plabs(), "foot_est"),
+                                                     # Insert extra notes for Cambodia and Ukraine 2024
+                                                     ifelse(input$entity_type == "country" & input$iso2 == "KH" & dcyear==2024,
+                                                            "<br />|Estimates of TB burden for Cambodia will be reviewed once final results from the 2023 national TB prevalence survey are available.|",
+                                                            ""),
+                                                     ifelse(input$entity_type == "country" & input$iso2 == "UA" & dcyear==2024,
+                                                            "<br />|There are uncertainties associated with the UNPD population estimates for Ukraine.
+                                                            Estimated burden rates per 100 000 population should not be used to evaluate the effectiveness of the national TB programme.|",
+                                                            ""),
+                                                     "</i>")) })
 
 
 estimates_table_content <- reactive({
@@ -243,14 +258,22 @@ uhc_table_content <- reactive({
                  # are from a survey or from modelled estimates
                  case_when(
                    !is.na(pdata()$profile_data[, "catast_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
-                                                                                 " (|national_survey|), ",
-                                                                                 pdata()$profile_data[, "catast_survey_year"]
-                                                                                 ),
+                                                                         " (",
+                                                                         "|national survey|",
+                                                                         # If showing Nepal 2023 then state results are provisional
+                                                                         ifelse(input$entity_type == "country" & input$iso2 == "NP" & dcyear==2024,
+                                                                                "—|provisional results|",
+                                                                                ""),
+                                                                         "), ",
+                                                                         pdata()$profile_data[, "catast_survey_year"]
+                   ),
 
                    !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
-                                                                                " (|modelled estimate*|), ",
-                                                                                pdata()$profile_estimates[, "catast_model_year"]
-                                                                                ),
+                                                                                    " (",
+                                                                                    "|modelled estimate|",
+                                                                                    "*), ",
+                                                                                    pdata()$profile_estimates[, "catast_model_year"]
+                   ),
 
                    .default = "|TB-affected households facing catastrophic total costs|" #ltxt(plabs(), "catastrophic_costs")
                  ))
@@ -285,11 +308,6 @@ uhc_table_content <- reactive({
 
   df <- data.frame(row_head, row_data)
 
-  # Remove the second row on catastrophic costs if the selected entity is a group
-  if (check_entity_type(input$entity_type) == "group") {
-    df <- df[-2,]
-  }
-
   return(df)
 })
 
@@ -308,9 +326,13 @@ output$modelled_catastrophic_costs_source <- renderText({
   # make sure there are data to display
   req(pdata()$profile_data)
 
-
+  # Provide a reference to the modelling paper if estimates are used
   ifelse(is.na(pdata()$profile_data[, "catast_pct"]) & !is.na(pdata()$profile_estimates[, "catast_model_pct"]),
          HTML(paste("*<i>",
+                    # Mention that the modelling for groups is only for low- and middle-income countries
+                    ifelse(check_entity_type(input$entity_type) == "group",
+                           ltxt(plabs(), "foot_aggfin_lmc"),
+                           ""),
                     html_link(pdata()$profile_estimates[, "source_catast_costs"]),
                     "</i>")
          ),

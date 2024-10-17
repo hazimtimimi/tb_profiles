@@ -29,7 +29,7 @@ output$inc_chart <-  renderHighchart({
 
     hc_xAxis(title = list(text = "")) |>
 
-    hc_yAxis(title = list(text = "|Number per 100 000 population|"), #ltxt(plabs(), "rate_100k_yr")),
+    hc_yAxis(title = list(text = "|Rate per 100 000 population|"), #ltxt(plabs(), "rate_100k_yr")),
              min = 0,
              tickAmount = 3,
              # avoid unnecessary vertical space
@@ -587,7 +587,7 @@ output$rr_inc_chart <-  renderHighchart({
     hc_legend(enabled = FALSE) |>
 
     hc_add_series(type = "line",
-                  name = "|Estimated incidence number of RR-TB cases|",
+                  name = "|Estimated incident number of RR-TB cases|",
                   data = rr,
                   hcaes(x = year,
                         y = e_inc_rr_num),

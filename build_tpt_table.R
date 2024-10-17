@@ -15,7 +15,8 @@ output$prevtx_table <- renderTable({
 
 
   # build the data frame manually
-  data.frame( c(paste0(str_replace_all(ltxt(plabs(), "prevtx_hiv"), "[()]", ""), ", ", dcyear-1),
+  data.frame( c(#paste0(str_replace_all(ltxt(plabs(), "prevtx_hiv"), "[()]", ""), ", ", dcyear-1),
+                paste0("|% of people living with HIV newly enrolled in care on preventive treatment|", ", ", dcyear-1),
                 paste0("|% of estimated number of household contacts of bacteriologically-confirmed TB cases on preventive treatment|", ", ", dcyear-1)
                 ),
 
