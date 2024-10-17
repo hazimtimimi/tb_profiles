@@ -197,7 +197,9 @@ drtb_data <- reactive({
     display_cap_pct(pdata()$profile_data[, "r_rlt_ret"],
                     pdata()$profile_data[, "pulm_labconf_ret"]),
 
-    "TBD",
+    # Calculate pct rr-tb tested for FQ susceptibility
+    display_cap_pct(pdata()$profile_data[, "rr_dst_rlt_fq"],
+                    pdata()$profile_data[, "rr"]),
 
     rounder(pdata()$profile_data[, "conf_rr_nfqr"]),
     rounder(pdata()$profile_data[, "conf_rr_nfqr_tx"]),
