@@ -60,7 +60,7 @@ estimates_table_content <- reactive({
                 #paste0(ltxt(plabs(), "incidence_tbhiv"), ", ", dcyear-1),
                 paste0("|TB incidence in people with HIV|", ", ", dcyear-1),
                 paste0("|Rifampicin-resistant TB (MDR/RR-TB) incidence|", ", ", dcyear-1),
-                "|Add estimated number of RR-TB among notified bacteriologically confirmed pulmonary TB cases|",
+                "|*** Estimated number of rifampicin-resistant TB cases among notified bacteriologically confirmed pulmonary TB cases ***|",
                 #paste0(ltxt(plabs(), "mortality_hivneg"), ", ", dcyear-1),
                 #paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1)
                 paste0("|TB deaths in people without HIV|", ", ", dcyear-1),
@@ -84,7 +84,10 @@ estimates_table_content <- reactive({
                                 pdata()$profile_estimates[, "e_inc_rr_num_hi"],
                                 style="k"),
 
-                "TBD",
+                format_estimate(pdata()$profile_estimates[, "e_rr_in_notified_labconf_pulm"],
+                                pdata()$profile_estimates[, "e_rr_in_notified_labconf_pulm_lo"],
+                                pdata()$profile_estimates[, "e_rr_in_notified_labconf_pulm_hi"],
+                                style="k"),
 
                 format_estimate(pdata()$profile_estimates[, "e_mort_exc_tbhiv_num"],
                                 pdata()$profile_estimates[, "e_mort_exc_tbhiv_num_lo"],
