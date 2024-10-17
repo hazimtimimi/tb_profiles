@@ -247,9 +247,9 @@ uhc_table_content <- reactive({
                                                                                  pdata()$profile_data[, "catast_survey_year"]
                                                                                  ),
 
-                   !is.na(pdata()$profile_data[, "catast_model_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
+                   !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
                                                                                 " (|modelled estimate*|), ",
-                                                                                pdata()$profile_data[, "catast_model_year"]
+                                                                                pdata()$profile_estimates[, "catast_model_year"]
                                                                                 ),
 
                    .default = "|TB-affected households facing catastrophic total costs|" #ltxt(plabs(), "catastrophic_costs")
@@ -275,10 +275,10 @@ uhc_table_content <- reactive({
                                                                                  pdata()$profile_data[, "catast_pct_hi"],
                                                                                  style="%"),
 
-                  !is.na(pdata()$profile_data[, "catast_model_pct"]) ~ format_estimate(pdata()$profile_data[, "catast_model_pct"],
-                                                                                       pdata()$profile_data[, "catast_model_pct_lo"],
-                                                                                       pdata()$profile_data[, "catast_model_pct_hi"],
-                                                                                       style="%"),
+                  !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ format_estimate(pdata()$profile_estimates[, "catast_model_pct"],
+                                                                                            pdata()$profile_estimates[, "catast_model_pct_lo"],
+                                                                                            pdata()$profile_estimates[, "catast_model_pct_hi"],
+                                                                                            style="%"),
 
                   .default = ""
                 ))
@@ -309,9 +309,9 @@ output$modelled_catastrophic_costs_source <- renderText({
   req(pdata()$profile_data)
 
 
-  ifelse(is.na(pdata()$profile_data[, "catast_pct"]) & !is.na(pdata()$profile_data[, "catast_model_pct"]),
+  ifelse(is.na(pdata()$profile_data[, "catast_pct"]) & !is.na(pdata()$profile_estimates[, "catast_model_pct"]),
          HTML(paste("*<i>",
-                    html_link(pdata()$profile_data[, "source_catast_costs"]),
+                    html_link(pdata()$profile_estimates[, "source_catast_costs"]),
                     "</i>")
          ),
          "")
