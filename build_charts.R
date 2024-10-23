@@ -485,7 +485,7 @@ output$rr_prop_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "|Estimated percentage of people with TB who had rifampicin-resistant TB (MDR/RR-TB)|") |>
+    hc_title(text = "|Estimated percentage of people with TB who had multidrug-resistant or rifampicin-resistant TB (MDR/RR-TB)|") |>
 
     hc_xAxis(title = list(text = "")) |>
 
@@ -570,7 +570,7 @@ output$rr_inc_chart <-  renderHighchart({
 
   highchart()  |>
 
-    hc_title(text = "|Estimated number of people who developed rifampicin-resistant TB (MDR/RR-TB) (incident cases)") |>
+    hc_title(text = "|Estimated number of people who developed multidrug-resistant or rifampicin-resistant TB (MDR/RR-TB) (incident cases)") |>
 
     hc_xAxis(title = list(text = "")) |>
 

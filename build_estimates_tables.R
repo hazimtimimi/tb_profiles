@@ -144,12 +144,12 @@ output$estimates_table <- renderTable({ estimates_table_content() },
 # Changes in incidence and mortality since 2015----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$estimates_changes_heading <- renderText({ "|Changes in incidence rate and total TB deaths|" })
+output$estimates_changes_heading <- renderText({ "|Changes in TB incidence rate and total TB deaths|" })
 
 output$estimates_changes_note <- renderText({
 
   changes_note <- "<i>|The %s0 milestones of the <a href='https://www.who.int/publications/i/item/WHO-HTM-TB-2015.19' target='_blank'>End TB Strategy</a> are
-         a %s1 drop in the incidence rate and a %s2 drop in the total number of TB deaths compared to 2015|</i>"
+         a %s1 reduction in the incidence rate and a %s2 reduction in the total number of TB deaths compared with 2015|</i>"
 
   changes_note <- stringr::str_replace(changes_note, "%s0", milestone_yr)
 
@@ -250,7 +250,6 @@ uhc_table_content <- reactive({
 
   # make sure there are data to display
   req(pdata()$profile_estimates)
-  req(pdata()$profile_data)
 
   # build the table manually
   row_head <-  c(paste0("|TB treatment coverage (notified new and relapse cases/estimated incidence)|, ", dcyear - 1),
@@ -260,23 +259,33 @@ uhc_table_content <- reactive({
                  # catastrophic costs: check whether the data exist and whether they
                  # are from a survey or from modelled estimates
                  case_when(
-                   !is.na(pdata()$profile_data[, "catast_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
+                   check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
                                                                          " (",
                                                                          "|national survey|",
                                                                          # If showing Nepal 2023 then state results are provisional
-                                                                         ifelse(input$entity_type == "country" & input$iso2 == "NP" & dcyear==2024,
+                                                                         ifelse(input$iso2 == "NP" & dcyear==2024,
                                                                                 "—|provisional results|",
                                                                                 ""),
                                                                          "), ",
-                                                                         pdata()$profile_data[, "catast_survey_year"]
+                                                                         pdata()$profile_estimates[, "catast_survey_year"]
                    ),
 
-                   !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
-                                                                                    " (",
-                                                                                    "|modelled estimate|",
-                                                                                    "*), ",
-                                                                                    pdata()$profile_estimates[, "catast_model_year"]
+                   check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
+                                                                                                                                        " (",
+                                                                                                                                        "|modelled estimate|",
+                                                                                                                                        "*), ",
+                                                                                                                                        pdata()$profile_estimates[, "catast_model_year"]
                    ),
+
+                   check_entity_type(input$entity_type) == "group" & !is.na(pdata()$profile_estimates[, "catast_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
+                                                                         " (",
+                                                                         "|pooled average of national surveys|",
+                                                                         " ",
+                                                                         pdata()$profile_estimates[, "catast_survey_year"],
+                                                                         ")"
+
+                   ),
+
 
                    .default = "|TB-affected households facing catastrophic total costs|" #ltxt(plabs(), "catastrophic_costs")
                  ))
@@ -296,12 +305,12 @@ uhc_table_content <- reactive({
                 # catastrophic costs: check whether the data exist and whether they
                 # are from a survey or from modelled estimates
                 case_when(
-                  !is.na(pdata()$profile_data[, "catast_pct"]) ~ format_estimate(pdata()$profile_data[, "catast_pct"],
-                                                                                 pdata()$profile_data[, "catast_pct_lo"],
-                                                                                 pdata()$profile_data[, "catast_pct_hi"],
+                  !is.na(pdata()$profile_estimates[, "catast_pct"]) ~ format_estimate(pdata()$profile_estimates[, "catast_pct"],
+                                                                                 pdata()$profile_estimates[, "catast_pct_lo"],
+                                                                                 pdata()$profile_estimates[, "catast_pct_hi"],
                                                                                  style="%"),
 
-                  !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ format_estimate(pdata()$profile_estimates[, "catast_model_pct"],
+                  check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ format_estimate(pdata()$profile_estimates[, "catast_model_pct"],
                                                                                             pdata()$profile_estimates[, "catast_model_pct_lo"],
                                                                                             pdata()$profile_estimates[, "catast_model_pct_hi"],
                                                                                             style="%"),
@@ -327,15 +336,11 @@ output$uhc_table <- renderTable({ uhc_table_content() },
 output$modelled_catastrophic_costs_source <- renderText({
 
   # make sure there are data to display
-  req(pdata()$profile_data)
+  req(pdata()$profile_estimates)
 
   # Provide a reference to the modelling paper if estimates are used
-  ifelse(is.na(pdata()$profile_data[, "catast_pct"]) & !is.na(pdata()$profile_estimates[, "catast_model_pct"]),
+  ifelse(is.na(pdata()$profile_estimates[, "catast_pct"]) & !is.na(pdata()$profile_estimates[, "catast_model_pct"]),
          HTML(paste("*<i>",
-                    # Mention that the modelling for groups is only for low- and middle-income countries
-                    ifelse(check_entity_type(input$entity_type) == "group",
-                           ltxt(plabs(), "foot_aggfin_lmc"),
-                           ""),
                     html_link(pdata()$profile_estimates[, "source_catast_costs"]),
                     "</i>")
          ),
