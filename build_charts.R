@@ -665,7 +665,7 @@ output$tpt_chart <- renderHighchart({
 
     hc_add_series(name = "|Household contacts|",
                   data = tpt$hh_contacts,
-                  color = "dark green") |>
+                  color = "#66b032") |>
 
     hc_exporting(enabled = TRUE,
                  filename = paste0("GTB_report_", dcyear, "_TPT"),

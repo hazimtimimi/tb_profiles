@@ -6,7 +6,7 @@
 #               Updated September 2024 switching to hicharter graphs (Version 3.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 3.0.draft"
+app_version <- "Version 3.0.draft_2024-10-24"
 
 library(shiny)
 library(dplyr)
@@ -75,7 +75,6 @@ ui <- function(request) {
                              .chart {
                                margin-bottom: 50px;
                              }
-                             #drestimates_table, #drestimates_heading {text-decoration: line-through;}
                              #generation {
                                margin-top: 10px;
                                border-top: 0.25px solid #BCBCBC;
@@ -202,10 +201,6 @@ ui <- function(request) {
                          textOutput(outputId = "estimates_changes_heading", container = h3),
                          htmlOutput(outputId = "estimates_changes_note"),
                          tableOutput(outputId = "estimates_changes_table"),
-
-
-                         textOutput(outputId = "drestimates_heading", container = h3),
-                         tableOutput(outputId = "drestimates_table"),
 
                          textOutput(outputId = "uhc_heading", container = h3),
                          tableOutput(outputId = "uhc_table"),

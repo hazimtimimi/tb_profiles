@@ -58,11 +58,11 @@ estimates_table_content <- reactive({
   # build the dataframe manually
   row_head <- c(paste0(ltxt(plabs(), "incidence_tb"), ", ", dcyear-1),
                 #paste0(ltxt(plabs(), "incidence_tbhiv"), ", ", dcyear-1),
-                paste0("|TB incidence in people with HIV|", ", ", dcyear-1),
-                paste0("|Rifampicin-resistant TB (MDR/RR-TB) incidence|", ", ", dcyear-1),
+                paste0("|TB incidence in people living with HIV|", ", ", dcyear-1),
+                paste0("|Multidrug-resistant or rifampicin-resistant TB (MDR/RR-TB) incidence|", ", ", dcyear-1),
                 #paste0(ltxt(plabs(), "mortality_hivneg"), ", ", dcyear-1),
                 #paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1)
-                paste0("|TB deaths in people without HIV|", ", ", dcyear-1),
+                paste0("|TB deaths in HIV-negative people|", ", ", dcyear-1),
                 paste0("|TB deaths in people with HIV|", ", ", dcyear-1)
   )
 
@@ -141,7 +141,7 @@ output$estimates_changes_heading <- renderText({ "|Changes in TB incidence rate 
 output$estimates_changes_note <- renderText({
 
   changes_note <- "<i>|The %s0 milestones of the <a href='https://www.who.int/publications/i/item/WHO-HTM-TB-2015.19' target='_blank'>End TB Strategy</a> are
-         a %s1 reduction in the incidence rate and a %s2 reduction in the total number of TB deaths compared with 2015|</i>"
+         a %s1 reduction in the TB incidence rate and a %s2 reduction in the total number of TB deaths compared with 2015|</i>"
 
   changes_note <- stringr::str_replace(changes_note, "%s0", milestone_yr)
 
@@ -189,47 +189,7 @@ output$estimates_changes_table <- renderTable({ estimates_changes_table_content(
                                       na="")
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Proportion of cases with rifampicin resistance ----
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$drestimates_heading <- renderText({ #HTML(paste0(ltxt(plabs(), "rrmdr_est_pct"), "*, ", dcyear-1))  })
-  "|Estimated proportion of pulmonary bacteriologially confirmed TB cases resistant to rifampicin|" })
-
-
-drestimates_table_content <- reactive({
-
-  # make sure there are data to display
-  req(pdata()$profile_estimates)
-
-  # build the dataframe manually
-  row_head <- c(paste0(ltxt(plabs(), "new"), ", ", dcyear-1),
-                paste0(ltxt(plabs(), "ret"), ", ", dcyear-1))
-
-  est_pct <- c( format_estimate(pdata()$profile_estimates[, "e_rr_pct_new"],
-                                pdata()$profile_estimates[, "e_rr_pct_new_lo"],
-                                pdata()$profile_estimates[, "e_rr_pct_new_hi"],
-                                style="%"),
-
-
-                format_estimate(pdata()$profile_estimates[, "e_rr_pct_ret"],
-                                pdata()$profile_estimates[, "e_rr_pct_ret_lo"],
-                                pdata()$profile_estimates[, "e_rr_pct_ret_hi"],
-                                style="%")
-  )
-  df <- data.frame(row_head, est_pct)
-
-  return(df)
-
-})
-
-output$drestimates_table <- renderTable({ drestimates_table_content() },
-                                        striped = TRUE,
-                                        hover = TRUE,
-                                        width = "100%",
-                                        # suppress column headers
-                                        colnames = FALSE,
-                                        na="")
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # UHC and social protection ----
