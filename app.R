@@ -457,11 +457,19 @@ server <- function(input, output, session) {
     source("build_finance_table.R", local = TRUE)
 
     # Add the footer that goes on every page
-    output$generation <- renderText({  HTML(paste(ltxt(plabs(), "generated"),
-                                                 format(Sys.Date(), "%Y-%m-%d"),
-                                                 ltxt(plabs(), "by_who")
-                                                 )
-                                           ) })
+    output$generation <- renderText({
+
+      req(pdata()$profile_data)
+
+
+      HTML(paste(ltxt(plabs(), "generated"),
+                 format(Sys.Date(), "%Y-%m-%d"),
+                 ltxt(plabs(), "by_who"),
+                 ", |most recent data update: ",
+                 pdata()$profile_data[, "snapshot_date"]
+      )
+      )
+    })
 
     }
 
