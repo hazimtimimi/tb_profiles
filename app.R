@@ -6,7 +6,7 @@
 #               Updated September 2024 switching to hicharter graphs (Version 3.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 3.0.draft_2024-10-24"
+app_version <- "Version 3.0.draft_2024-10-25"
 
 library(shiny)
 library(dplyr)
@@ -132,6 +132,8 @@ ui <- function(request) {
         fixedRow(id="main_content",
 
                 textOutput(outputId = "main_heading", container = h1),
+
+                textOutput(outputId = "snapshot_date", container = p),
 
                 fixedRow(
                   column(width = 6,
@@ -384,6 +386,14 @@ server <- function(input, output, session) {
 
     })
 
+    output$snapshot_date <- renderText({
+
+      req(pdata()$profile_data)
+
+      return(paste0(ltxt(plabs(), "snapshot_date"), ": ", pdata()$profile_data[, "snapshot_date"]))
+
+    })
+
 
     # Show or hide the cases attributable to 5 risk factors
     # Some entities don;t have these estimates and the attributable_cases
@@ -462,10 +472,14 @@ server <- function(input, output, session) {
       req(pdata()$profile_data)
 
 
-      HTML(paste(ltxt(plabs(), "generated"),
+      HTML(paste0(ltxt(plabs(), "generated"),
+                  " ",
                  format(Sys.Date(), "%Y-%m-%d"),
+                 " ",
                  ltxt(plabs(), "by_who"),
-                 ", |most recent data update: ",
+                 ". ",
+                 ltxt(plabs(), "snapshot_date"),
+                 ": ",
                  pdata()$profile_data[, "snapshot_date"]
       )
       )
