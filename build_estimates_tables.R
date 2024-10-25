@@ -3,6 +3,23 @@
 # Build output for the estimates tables
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Reminder of entity name ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$entity_name <- renderText({
+
+  # Make sure there is a chosen language
+  req(input$lan)
+
+  return(entity_name())
+
+})
+
+
+
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Population ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -22,10 +39,11 @@ output$population <- renderText({
          ltxt(plabs(), "million"))
 })
 
-output$population_source <- renderText({ HTML(paste0("<i>", html_link("|Estimated by the UN Population Division (https://population.un.org/wpp/).|"),
+output$population_source <- renderText({ HTML(paste0("<i>", ltxt(plabs(), "est_unpd"),
                                                      # If showing Ukraine 2023 then add comment about the estimate
                                                      ifelse(input$entity_type == "country" & input$iso2 == "UA" & dcyear==2024,
-                                                            "<br />|There are uncertainties associated with the UNPD population estimates for Ukraine.|",
+                                                            paste0(" ",
+                                                                   ltxt(plabs(), "note_ukraine")),
                                                             ""),
                                                      "</i>")) })
 
@@ -40,11 +58,13 @@ output$estimates_source <- renderText({  HTML(paste0("<i>",
                                                      ltxt(plabs(), "foot_est"),
                                                      # Insert extra notes for Cambodia and Ukraine 2024
                                                      ifelse(input$entity_type == "country" & input$iso2 == "KH" & dcyear==2024,
-                                                            "<br />|Estimates of TB burden for Cambodia will be reviewed once final results from the 2023 national TB prevalence survey are available.|",
+                                                            paste0("<br />",
+                                                                   ltxt(plabs(), "note_cambodia")),
                                                             ""),
                                                      ifelse(input$entity_type == "country" & input$iso2 == "UA" & dcyear==2024,
-                                                            "<br />|There are uncertainties associated with the UNPD population estimates for Ukraine.
-                                                            Estimated burden rates per 100 000 population should not be used to evaluate the effectiveness of the national TB programme.|",
+                                                            paste("<br />",
+                                                                  ltxt(plabs(), "note_ukraine"),
+                                                                  ltxt(plabs(), "note_ukraine_2")),
                                                             ""),
                                                      "</i>")) })
 
@@ -57,13 +77,10 @@ estimates_table_content <- reactive({
 
   # build the dataframe manually
   row_head <- c(paste0(ltxt(plabs(), "incidence_tb"), ", ", dcyear-1),
-                #paste0(ltxt(plabs(), "incidence_tbhiv"), ", ", dcyear-1),
-                paste0("|TB incidence in people living with HIV|", ", ", dcyear-1),
-                paste0("|Multidrug-resistant or rifampicin-resistant TB (MDR/RR-TB) incidence|", ", ", dcyear-1),
-                #paste0(ltxt(plabs(), "mortality_hivneg"), ", ", dcyear-1),
-                #paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1)
-                paste0("|TB deaths in HIV-negative people|", ", ", dcyear-1),
-                paste0("|TB deaths in people with HIV|", ", ", dcyear-1)
+                paste0(ltxt(plabs(), "incidence_tbhiv"), ", ", dcyear-1),
+                paste0(ltxt(plabs(), "incidence_rr"), ", ", dcyear-1),
+                paste0(ltxt(plabs(), "mortality_hivneg"), ", ", dcyear-1),
+                paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1)
   )
 
 
@@ -71,7 +88,6 @@ estimates_table_content <- reactive({
                                 pdata()$profile_estimates[, "e_inc_num_lo"],
                                 pdata()$profile_estimates[, "e_inc_num_hi"],
                                 style="k"),
-
 
                 format_estimate(pdata()$profile_estimates[, "e_inc_tbhiv_num"],
                                 pdata()$profile_estimates[, "e_inc_tbhiv_num_lo"],
@@ -121,7 +137,7 @@ estimates_table_content <- reactive({
   df <- data.frame(row_head, est_num, est_rate)
 
   # add the column names
-  names(df) <- c("", ltxt(plabs(), "number"), "|Rate (per 100 000 population)|") #ltxt(plabs(), "rate_100k"))
+  names(df) <- c("", ltxt(plabs(), "number"), ltxt(plabs(), "rate_100k"))
   return(df)
 })
 
@@ -136,12 +152,15 @@ output$estimates_table <- renderTable({ estimates_table_content() },
 # Changes in incidence and mortality since 2015----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$estimates_changes_heading <- renderText({ "|Changes in TB incidence rate and total TB deaths|" })
+output$estimates_changes_heading <- renderText({ ltxt(plabs(), "estimates_changes") })
 
 output$estimates_changes_note <- renderText({
 
-  changes_note <- "<i>|The %s0 milestones of the <a href='https://www.who.int/publications/i/item/WHO-HTM-TB-2015.19' target='_blank'>End TB Strategy</a> are
-         a %s1 reduction in the TB incidence rate and a %s2 reduction in the total number of TB deaths compared with 2015|</i>"
+  changes_note <- paste0("<i>",
+                         ltxt(plabs(), "changes_note_1"),
+                         " ",
+                         ltxt(plabs(), "changes_note_2"),
+                         "</i>")
 
   changes_note <- stringr::str_replace(changes_note, "%s0", milestone_yr)
 
@@ -160,17 +179,21 @@ estimates_changes_table_content <- reactive({
 
 
   # build the dataframe manually
-  row_head <- c(paste0("|% change in the TB incidence rate 2015–", dcyear-1, "|"),
-                paste0("|% change in the total number of TB deaths 2015–", dcyear-1, "|")
+  row_head <- c(paste0(ltxt(plabs(), "delta_inc"), dcyear-1),
+                paste0(ltxt(plabs(), "delta_deaths"), dcyear-1)
   )
 
  est_changes <- c(
 
    pct_change_description(pdata()$epi_timeseries[pdata()$epi_timeseries$year == 2015, "e_inc_100k"],
-                          pdata()$epi_timeseries[pdata()$epi_timeseries$year == dcyear-1, "e_inc_100k"]),
+                          pdata()$epi_timeseries[pdata()$epi_timeseries$year == dcyear-1, "e_inc_100k"],
+                          ltxt(plabs(), "reduction"),
+                          ltxt(plabs(), "increase")),
 
    pct_change_description(pdata()$epi_timeseries[pdata()$epi_timeseries$year == 2015, "e_mort_num"],
-                          pdata()$epi_timeseries[pdata()$epi_timeseries$year == dcyear-1, "e_mort_num"])
+                          pdata()$epi_timeseries[pdata()$epi_timeseries$year == dcyear-1, "e_mort_num"],
+                          ltxt(plabs(), "reduction"),
+                          ltxt(plabs(), "increase"))
 
  )
 
@@ -204,42 +227,47 @@ uhc_table_content <- reactive({
   req(pdata()$profile_estimates)
 
   # build the table manually
-  row_head <-  c(paste0("|TB treatment coverage (notified new and relapse cases/estimated incidence)|, ", dcyear - 1),
+  row_head <-  c(paste0(ltxt(plabs(), "tx_coverage_v2"), ", ", dcyear - 1),
 
                  paste0(ltxt(plabs(), "cfr"), ", ", dcyear - 1),
 
                  # catastrophic costs: check whether the data exist and whether they
                  # are from a survey or from modelled estimates
                  case_when(
-                   check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
-                                                                         " (",
-                                                                         "|national survey|",
-                                                                         # If showing Nepal 2023 then state results are provisional
-                                                                         ifelse(input$iso2 == "NP" & dcyear==2024,
-                                                                                "—|provisional results|",
-                                                                                ""),
-                                                                         "), ",
-                                                                         pdata()$profile_estimates[, "catast_survey_year"]
-                   ),
+                   check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_pct"]) ~
 
-                   check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
-                                                                                                                                        " (",
-                                                                                                                                        "|modelled estimate|",
-                                                                                                                                        "*), ",
-                                                                                                                                        pdata()$profile_estimates[, "catast_model_year"]
-                   ),
+                     paste0(ltxt(plabs(), "catastrophic_costs"),
+                            " (",
+                            ltxt(plabs(), "national survey"),
+                            # If showing Nepal 2023 then state results are provisional
+                            ifelse(input$iso2 == "NP" & dcyear==2024,
+                                   ltxt(plabs(), "note_nepal"),
+                                   ""),
+                            "), ",
+                            pdata()$profile_estimates[, "catast_survey_year"]
+                     ),
 
-                   check_entity_type(input$entity_type) == "group" & !is.na(pdata()$profile_estimates[, "catast_pct"]) ~ paste0("|TB-affected households facing catastrophic total costs|", #ltxt(plabs(), "catastrophic_costs"),
-                                                                         " (",
-                                                                         "|pooled average of national surveys|",
-                                                                         " ",
-                                                                         pdata()$profile_estimates[, "catast_survey_year"],
-                                                                         ")"
+                   check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~
 
-                   ),
+                     paste0(ltxt(plabs(), "catastrophic_costs"),
+                            " (",
+                            ltxt(plabs(), "modelled"),
+                            "*), ",
+                            pdata()$profile_estimates[, "catast_model_year"]
+                     ),
 
+                   check_entity_type(input$entity_type) == "group" & !is.na(pdata()$profile_estimates[, "catast_pct"]) ~
 
-                   .default = "|TB-affected households facing catastrophic total costs|" #ltxt(plabs(), "catastrophic_costs")
+                     paste0(ltxt(plabs(), "catastrophic_costs"),
+                            " (",
+                            ltxt(plabs(), "pooled"),
+                            " ",
+                            pdata()$profile_estimates[, "catast_survey_year"],
+                            ")"
+
+                     ),
+
+                   .default = ltxt(plabs(), "catastrophic_costs")
                  ))
 
   row_data <- c(# treatment coverage
@@ -257,15 +285,17 @@ uhc_table_content <- reactive({
                 # catastrophic costs: check whether the data exist and whether they
                 # are from a survey or from modelled estimates
                 case_when(
-                  !is.na(pdata()$profile_estimates[, "catast_pct"]) ~ format_estimate(pdata()$profile_estimates[, "catast_pct"],
-                                                                                 pdata()$profile_estimates[, "catast_pct_lo"],
-                                                                                 pdata()$profile_estimates[, "catast_pct_hi"],
-                                                                                 style="%"),
+                  !is.na(pdata()$profile_estimates[, "catast_pct"]) ~
+                    format_estimate(pdata()$profile_estimates[, "catast_pct"],
+                                    pdata()$profile_estimates[, "catast_pct_lo"],
+                                    pdata()$profile_estimates[, "catast_pct_hi"],
+                                    style="%"),
 
-                  check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~ format_estimate(pdata()$profile_estimates[, "catast_model_pct"],
-                                                                                            pdata()$profile_estimates[, "catast_model_pct_lo"],
-                                                                                            pdata()$profile_estimates[, "catast_model_pct_hi"],
-                                                                                            style="%"),
+                  check_entity_type(input$entity_type) == "country" & !is.na(pdata()$profile_estimates[, "catast_model_pct"]) ~
+                    format_estimate(pdata()$profile_estimates[, "catast_model_pct"],
+                                    pdata()$profile_estimates[, "catast_model_pct_lo"],
+                                    pdata()$profile_estimates[, "catast_model_pct_hi"],
+                                    style="%"),
 
                   .default = ""
                 ))

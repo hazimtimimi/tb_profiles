@@ -88,20 +88,23 @@ get_cap_pct <- function(numerator, denominator) {
 }
 
 # Calculate % change and describe it as increase or decrease
-pct_change_description <- function(x1, x2){
+pct_change_description <- function(x1, x2, s_reduction, s_increase){
 
-  ifelse(NZ(x1)==0 | is.na(x2),
-         "No data",
-         ifelse(x1 == x2,
-                "0% change",
-                paste0(signif(abs(x2 - x1) * 100/x1,2),
-                       "%",
-                       ifelse(x2 <= x1,
-                              " |reduction|",
-                              " |increase|")
-                )
-         )
-  )
+  if (NZ(x1)==0 | is.na(x2)) {
+    # return an empty string
+    return("")
+
+  } else if (x1 == x2){
+    return("0%")
+
+  } else if (x2 < x1){
+    return(stringr::str_replace(s_reduction, "%s0", paste0(signif(abs(x2 - x1) * 100/x1,2), "%")))
+
+  } else if (x1 < x2){
+    return(stringr::str_replace(s_increase, "%s0", paste0(signif((x2 - x1) * 100/x1,2), "%")))
+
+  }
+
 }
 
 # Non-reactive functions to build estimate strings

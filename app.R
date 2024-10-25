@@ -132,8 +132,7 @@ ui <- function(request) {
         fixedRow(id="main_content",
 
                 textOutput(outputId = "main_heading", container = h1),
-
-                textOutput(outputId = "snapshot_date", container = p),
+                textOutput(outputId = "snapshot_note1", container = p),
 
                 fixedRow(
                   column(width = 6,
@@ -191,6 +190,11 @@ ui <- function(request) {
                   column(width = 1
                   ),
                   column(width = 10,
+
+                         HTML("<hr style='border-top: 0.25px solid #BCBCBC;'/>"),
+                         # Add reminder of the entity name and snapshot date above the tables
+                         textOutput(outputId = "entity_name", container = h1),
+                         textOutput(outputId = "snapshot_note2", container = p),
 
                          textOutput(outputId = "population", container = h3),
                          htmlOutput(outputId = "population_source"),
@@ -386,11 +390,27 @@ server <- function(input, output, session) {
 
     })
 
-    output$snapshot_date <- renderText({
+    # Get the snapshot date as a reactive function so can use it twice
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    snapshot_date <- reactive({
 
       req(pdata()$profile_data)
 
       return(paste0(ltxt(plabs(), "snapshot_date"), ": ", pdata()$profile_data[, "snapshot_date"]))
+
+    })
+
+    output$snapshot_note1 <- renderText({
+
+      return(snapshot_date())
+
+    })
+
+    # Create an identical output object so that can repeat the snapshot date
+    output$snapshot_note2 <- renderText({
+
+      return(snapshot_date())
 
     })
 
@@ -472,15 +492,9 @@ server <- function(input, output, session) {
       req(pdata()$profile_data)
 
 
-      HTML(paste0(ltxt(plabs(), "generated"),
-                  " ",
+      HTML(paste(ltxt(plabs(), "generated"),
                  format(Sys.Date(), "%Y-%m-%d"),
-                 " ",
-                 ltxt(plabs(), "by_who"),
-                 ". ",
-                 ltxt(plabs(), "snapshot_date"),
-                 ": ",
-                 pdata()$profile_data[, "snapshot_date"]
+                 ltxt(plabs(), "by_who")
       )
       )
     })
