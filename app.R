@@ -6,7 +6,7 @@
 #               Updated September 2024 switching to hicharter graphs (Version 3.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 3.0.draft_2024-10-26"
+app_version <- "Version 3.0"
 
 library(shiny)
 library(dplyr)
