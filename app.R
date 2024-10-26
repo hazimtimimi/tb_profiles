@@ -6,7 +6,7 @@
 #               Updated September 2024 switching to hicharter graphs (Version 3.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 3.0.draft_2024-10-25"
+app_version <- "Version 3.0.draft_2024-10-26"
 
 library(shiny)
 library(dplyr)
@@ -478,11 +478,7 @@ server <- function(input, output, session) {
 
     source("build_estimates_tables.R", local = TRUE)
 
-    source("build_notifs_tables.R", local = TRUE)
-
-    source("build_outcomes_table.R", local = TRUE)
-
-    source("build_tpt_table.R", local = TRUE)
+    source("build_surveillance_tables.R", local = TRUE)
 
     source("build_finance_table.R", local = TRUE)
 

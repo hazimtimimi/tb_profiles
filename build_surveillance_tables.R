@@ -1,6 +1,6 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Build output for the third tab (notifications tables)
+# Build output for the country-reported surveillance data tables
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 output$notifs_heading <- renderText({ ltxt(plabs(), "notifs") })
@@ -15,7 +15,7 @@ notifs_data <- reactive({
   # make sure there are data to display
   req(pdata()$profile_data)
 
-  # Calculate total numner of pulmonary new and relapse cases
+  # Calculate total number of pulmonary new and relapse cases
   # Convert any missing values to zero
   pulmonary <- NZ(pdata()$profile_data[, "new_labconf"]) + NZ(pdata()$profile_data[, "new_clindx"]) +
                NZ(pdata()$profile_data[, "ret_rel_labconf"]) + NZ(pdata()$profile_data[, "ret_rel_clindx"])
@@ -94,14 +94,14 @@ notifs_data <- reactive({
 
 
 # Combine the data with the row headers manually and render for output
-output$notifs_table <- renderTable({ data.frame(c( paste0("|People diagnosed with a new or relapse case of TB|", ", ", dcyear - 1),  #ltxt(plabs(), "tot_newrel"),
+output$notifs_table <- renderTable({ data.frame(c( paste0(ltxt(plabs(), "c_newinc"), ", ", dcyear - 1),
                                                 paste0("      — ",ltxt(plabs(), "pct_rdx")),
                                                 paste0("      — ",ltxt(plabs(), "pct_hivtest")),
                                                 paste0("      — ",ltxt(plabs(), "pct_pulmonary")),
-                                                paste0("      — |% of pulmonary cases that are bacteriologically confirmed|"),
+                                                paste0("      — ",ltxt(plabs(), "pct_pulm_bacconf")),
                                                 paste0("      — ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
                                                 paste0("      — ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
-                                                paste0("      — |% people aged 0-14 years|"),
+                                                paste0("      — ",ltxt(plabs(), "pct_children")),
                                                 paste0(ltxt(plabs(), "tot_notified"), ", ", dcyear - 1) ),
                                                 notifs_data()
                                                 )  },
@@ -123,7 +123,7 @@ output$notifs_table <- renderTable({ data.frame(c( paste0("|People diagnosed wit
 # TB/HIV ----
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-output$tbhiv_heading <- renderText({ "|TB/HIV care|" }) #paste0(ltxt(plabs(), "newrel_tbhiv_care"), ", ", dcyear-1)  })
+output$tbhiv_heading <- renderText({ ltxt(plabs(), "newrel_tbhiv_care") })
 
 
 tbhiv_data <- reactive({
@@ -159,8 +159,8 @@ tbhiv_data <- reactive({
   }
 
 
-  df <- data.frame(c(paste0("|People with a new or relapse case of TB who are living with HIV|", ", ", dcyear-1),  #ltxt(plabs(), "hivtest_pos"),
-                     paste0("|People with a new or relapse case of TB who are living with HIV and who are on antiretroviral therapy|", ", ", dcyear-1)), #ltxt(plabs(), "art")) ),
+  df <- data.frame(c(paste0(ltxt(plabs(), "hivtest_pos"), ", ", dcyear-1),
+                     paste0(ltxt(plabs(), "art"), ", ", dcyear-1)),
                    num_data, pct_data)
 
   # add the column names
@@ -221,14 +221,14 @@ drtb_data <- reactive({
 output$drtb_table <- renderTable({
 
   data.frame(
-    c(paste0("|% of people with a new case of bacteriologically-confirmed pulmonary TB tested for susceptibility to rifampicin|", ", ", dcyear-1),
-    paste0("|% of people previously treated for TB with a case of bacteriologically-confirmed pulmonary TB tested for susceptibility to rifampicin|", ", ", dcyear-1),
-    paste0("|% of people with bacteriologically-confirmed pulmonary TB that is resistant to rifampicin tested for susceptibility to fluoroquinolones|", ", ", dcyear-1),
-    paste0("|People with bacteriologically-confirmed TB that is resistant to rifampicin and with no known fluoroquinolone resistance|", ", ", dcyear-1),
-    paste0("|People with bacteriologically-confirmed TB that is resistant to rifampicin and with no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
-    paste0("|Total number of people with TB that is resistant to rifampicin and with no known fluoroquinolone resistance started on treatment|", ", ", dcyear-1),
-    paste0("|People with bacteriologically-confirmed TB that is resistant to both rifampicin and fluoroquinolones (pre-XDR-TB or XDR-TB)|", ", ", dcyear-1),
-    paste0("|People with bacteriologically-confirmed TB that is resistant to both rifampicin and fluoroquinolones started on treatment|", ", ", dcyear-1)
+    c(paste0(ltxt(plabs(), "r_rlt_pct_new"), ", ", dcyear-1),
+    paste0(ltxt(plabs(), "r_rlt_pct_ret"), ", ", dcyear-1),
+    paste0(ltxt(plabs(), "rr_dst_rlt_fq_pct"), ", ", dcyear-1),
+    paste0(ltxt(plabs(), "rr_nfqr"), ", ", dcyear-1),
+    paste0(ltxt(plabs(), "conf_rr_nfqr_tx_v2"), ", ", dcyear-1),
+    paste0(ltxt(plabs(), "tot_rr_nfqr_tx"), ", ", dcyear-1),
+    paste0(ltxt(plabs(), "rr_fqr"), ", ", dcyear-1),
+    paste0(ltxt(plabs(), "conf_rr_fqr_tx"), ", ", dcyear-1)
                                                  ),
                                                drtb_data()
                                               )  },
@@ -241,4 +241,117 @@ output$drtb_table <- renderTable({
                                       colnames = FALSE,
                                       na="")
 
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Treatment success rate and cohort size ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+output$outcomes_heading <- renderText({ ltxt(plabs(), "tsr_cohort") })
+
+
+# Combine the data with the row headers manually and render for output
+
+outcomes_table_content <- reactive({
+
+  # don't do anything until country profile data are available
+  req(pdata()$profile_data)
+
+  # build the data frame manually
+  df <- data.frame(
+
+    c(#labels depend on whether or not the country includes relapses with new
+      ifelse(NZ(pdata()$profile_data[, "rel_with_new_flg"]) == 1,
+             paste(ltxt(plabs(), "tsr_newrel"), dcyear - 2),
+             paste(ltxt(plabs(), "tsr_new"), dcyear - 2)
+      ),
+
+      ifelse(NZ(pdata()$profile_data[, "rel_with_new_flg"]) == 1,
+             paste(ltxt(plabs(), "tsr_ret_nrel"), dcyear - 2),
+             paste(ltxt(plabs(), "tsr_allret"), dcyear - 2)
+      ),
+
+      paste(ltxt(plabs(), "tsr_tbhiv"), dcyear - 2),
+      paste(ltxt(plabs(), "tsr_mdr"), dcyear - 3),
+      paste(ltxt(plabs(), "tsr_xdr"), dcyear - 3)
+    ),
+
+    # treatment success rates
+    c(rounder_pct(pdata()$profile_data[, "c_new_tsr"]),
+      rounder_pct(pdata()$profile_data[, "c_ret_tsr"]),
+      rounder_pct(pdata()$profile_data[, "c_tbhiv_tsr"]),
+      rounder_pct(pdata()$profile_data[, "c_mdr_tsr"]),
+      rounder_pct(pdata()$profile_data[, "c_xdr_tsr"])),
+
+    # cohort size
+    c(rounder(pdata()$profile_data[, "newrel_coh"]),
+      rounder(pdata()$profile_data[, "ret_nrel_coh"]),
+      rounder(pdata()$profile_data[, "tbhiv_coh"]),
+      rounder(pdata()$profile_data[, "mdr_coh"]),
+      rounder(pdata()$profile_data[, "xdr_coh"]))
+  )
+
+  # add the column names
+  names(df) <- c("", ltxt(plabs(), "success"),  ltxt(plabs(), "cohort"))
+  return(df)
+
+})
+
+
+output$outcomes_table <- renderTable({ outcomes_table_content() },
+
+
+                                     striped = TRUE,
+                                     hover = TRUE,
+                                     width = "100%",
+                                     # right-align the cohort column
+                                     align = "llr",
+                                     na="")
+
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# TB preventive treatment ----
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+output$prevtx_heading <- renderText({ ltxt(plabs(), "prevtx") })
+
+# Combine the data with the row headers manually and render for output
+output$prevtx_table <- renderTable({
+
+
+  # build the data frame manually
+  data.frame( c(paste0(ltxt(plabs(), "prevtx_hiv"), ", ", dcyear-1),
+                paste0(ltxt(plabs(), "prevtx_con"), ", ", dcyear-1)
+  ),
+
+  c(
+    # calculate pct_hiv_ipt
+    if (check_entity_type(input$entity_type) == "group") {
+      # For groups need to use the aggregated data view results
+      display_cap_pct(pdata()$profile_data[, "hiv_ipt_pct_numerator"],
+                      pdata()$profile_data[, "hiv_ipt_pct_denominator"])
+
+    } else {
+      # default is country data
+      display_cap_pct(pdata()$profile_data[, "hiv_ipt"],
+                      pdata()$profile_data[, "hiv_reg_new"])
+
+    },
+
+
+    format_estimate(pdata()$profile_estimates[, "e_prevtx_hh_contacts_pct"],
+                    pdata()$profile_estimates[, "e_prevtx_hh_contacts_pct_lo"],
+                    pdata()$profile_estimates[, "e_prevtx_hh_contacts_pct_hi"],
+                    style="%")
+  )
+  ) },
+
+
+  striped = TRUE,
+  hover = TRUE,
+  width = "100%",
+  colnames = FALSE,
+  na="")
 

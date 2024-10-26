@@ -710,7 +710,10 @@ output$funding_chart <-  renderHighchart({
 
     hc_xAxis(categories = funding_data$year) |>
 
-    hc_yAxis(title = list(text = ltxt(plabs(), "usd_millions")),
+    hc_yAxis(title = list(text = ifelse(check_entity_type(input$entity_type) != "group",
+                                        ltxt(plabs(), "usd_millions"),
+                                        #The scale is constant US$ if showing aggregate finance chart
+                                        ltxt(plabs(), "usd_millions_constant"))),
              min = 0,
              reversedStacks = FALSE) |>
 
