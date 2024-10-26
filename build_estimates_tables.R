@@ -4,21 +4,6 @@
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# Reminder of entity name ----
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-output$entity_name <- renderText({
-
-  # Make sure there is a chosen language
-  req(input$lan)
-
-  return(entity_name())
-
-})
-
-
-
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # Population ----

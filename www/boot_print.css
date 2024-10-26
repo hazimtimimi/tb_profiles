@@ -1,6 +1,6 @@
 /* CSS for printing */
-/* Don't print country and language selectors and the metadata footer */
-#selectors, #metadata {
+/* Don't print country and language selectors, the tabs and the metadata footer */
+#selectors, #metadata, #tab {
 	display:none;
 }
 @page {
