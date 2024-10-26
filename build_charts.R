@@ -279,7 +279,8 @@ output$agesex_chart <-  renderHighchart({
     select(agegroup_option, starts_with("newrel_m"), starts_with("newrel_f"))
 
 
-  if (notifs_agesex$agegroup_option %in% c(220, 221)) {
+  # If no disaggregated notifications reported then set the agegroup option to zero
+  if (NZ(notifs_agesex$agegroup_option) %in% c(0, 220, 221)) {
 
     notifs_agesex <- notifs_agesex |>
       select(contains("04"),
@@ -355,7 +356,27 @@ output$agesex_chart <-  renderHighchart({
              reversed = FALSE) |>
 
     hc_yAxis(title = list(text = ""),
-             labels = list(formatter = JS("function(){return Highcharts.numberFormat(Math.abs(this.value),0);}")),
+             # Build a formatter function to label the axis only with whole positive numbers
+             # i.e. don't show a label if there is a remainder after dividing by 1 (x % 1)
+             # Have to manually convert large numbers to "k" "M" format as Highcharts doesn't
+             # provide this. Its Highcharts.numberFormat() function returns long values which
+             # get cluttered for charts with large numbers
+             labels = list(formatter = JS("function(){
+
+                                          x = Math.abs(this.value);
+
+                                          if (x % 1 != 0) {
+                                            return '';
+                                          } else if (x >= 1000000) {
+                                            return Highcharts.numberFormat(x/1000000, 1) + 'M';
+                                          } else if (x >= 10000) {
+                                            return Highcharts.numberFormat(x/1000, 0) + 'k';
+                                          } else {
+                                            return Highcharts.numberFormat(x, 0);
+                                          }
+                                          }"),
+                           # prevent autorotation to avoid losing vertical space
+                           autoRotation = 0),
              # Set minimum and maximum values to be the same absolute number so that
              # zero is in the middle of the axis
              max = max_hi,
