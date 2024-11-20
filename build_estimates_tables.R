@@ -223,7 +223,7 @@ uhc_table_content <- reactive({
 
                      paste0(ltxt(plabs(), "catastrophic_costs"),
                             " (",
-                            ltxt(plabs(), "national survey"),
+                            ltxt(plabs(), "survey"),
                             # If showing Nepal 2023 then state results are provisional
                             ifelse(input$iso2 == "NP" & dcyear==2024,
                                    ltxt(plabs(), "note_nepal"),
