@@ -4,9 +4,12 @@
 # Hazim Timimi, February 2020
 #               Updated November 2020 to include group profiles (version 2.0)
 #               Updated September 2024 switching to hicharter graphs (Version 3.0)
+#               Updated August 2025 to change country code input paramater from iso2 tp
+#                     iso3 code to make it easier for profiles to be called from WHO
+#                     country pages such as https://www.who.int/countries/AFG (Version 4.0)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 3.1"
+app_version <- "Version 4.0"
 
 library(shiny)
 library(dplyr)
@@ -374,7 +377,19 @@ server <- function(input, output, session) {
     return(json$labels)
   })
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  # Convert an iso3 code passed as a parameter to an iso2 code ----
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  iso2 <- reactive({
+    req(input$iso3)
 
+    iso2 <- countries |>
+      filter(iso3==input$iso3) |>
+      select(iso2) |>
+      as.character()
+
+    return(iso2)
+  })
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Get the profile data as a JSON file for the chosen country or group ----
@@ -385,7 +400,7 @@ server <- function(input, output, session) {
     if (check_entity_type(input$entity_type) == "group") {
       url <- paste0(json_url, "?ds=group_data&group_code=", input$group_code)
     } else {
-      url <- paste0(json_url, "?ds=data&iso2=", input$iso2)
+      url <- paste0(json_url, "?ds=data&iso2=", iso2())
     }
 
     json <- fromJSON(readLines(url, warn = FALSE, encoding = 'UTF-8'))

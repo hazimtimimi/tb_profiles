@@ -13,7 +13,7 @@ entity_list <- reactive({
             "group_description" #default!
         )
 
-    grouplist <- aggregate_groups %>%
+    grouplist <- aggregate_groups |>
         # Needed to use all_of() otherwise get a warning about "using an external
         # vector in selections is ambiguous"
         select(group_code, name = all_of(group_name_lan))
@@ -32,14 +32,14 @@ entity_list <- reactive({
             "country" #default!
         )
 
-    entity_list <- countries %>%
+    entity_list <- countries |>
         # Needed to use all_of() otherwise get a warning about "using an external
         # vector in selections is ambiguous"
-        select(iso2, name = all_of(country_name_lan)) %>%
+        select(iso3, name = all_of(country_name_lan)) |>
         arrange(name)
 
     # Return a named list not a dataframe because that is what selectInput() needs
-    return(setNames(entity_list[,"iso2"], entity_list[,"name"]))
+    return(setNames(entity_list[,"iso3"], entity_list[,"name"]))
 
     }
 
@@ -56,10 +56,10 @@ output$entities <- renderUI({
     if (check_entity_type(input$entity_type) == "group") {
         already_selected <- input$group_code
     } else {
-        already_selected <- input$iso2
+        already_selected <- input$iso3
     }
 
-    selectInput(inputId = ifelse(check_entity_type(input$entity_type) == "group", "group_code","iso2"),
+    selectInput(inputId = ifelse(check_entity_type(input$entity_type) == "group", "group_code","iso3"),
                 label = "",
                 choices = entity_list(),
                 # next line needed to avoid losing the selected country when the language is changed
