@@ -88,23 +88,35 @@ notifs_data <- reactive({
                    rounder(pdata()$profile_data[, "c_notified"])
 
                   )
-  return(data_column)
+
+  # Combine the data with the row headers
+  df <- data.frame(c( paste0(ltxt(plabs(), "c_newinc"), ", ", dcyear - 1),
+                      paste0("      — ",ltxt(plabs(), "pct_rdx")),
+                      paste0("      — ",ltxt(plabs(), "pct_hivtest")),
+                      paste0("      — ",ltxt(plabs(), "pct_pulmonary")),
+                      paste0("      — ",ltxt(plabs(), "pct_pulm_bacconf")),
+                      paste0("      — ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
+                      paste0("      — ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
+                      paste0("      — ",ltxt(plabs(), "pct_children")),
+                      paste0(ltxt(plabs(), "tot_notified"), ", ", dcyear - 1) ),
+                   data_column
+  )
+
+  # Remove the pct_hivtest row if the entity uses a compact form
+  if (pdata()$profile_properties[, "dc_form_description"] == "Compact form") {
+
+    # Remove the third row
+    df <- df[-3,]
+
+  }
+
+
+  return(df)
 
 })
 
 
-# Combine the data with the row headers manually and render for output
-output$notifs_table <- renderTable({ data.frame(c( paste0(ltxt(plabs(), "c_newinc"), ", ", dcyear - 1),
-                                                paste0("      — ",ltxt(plabs(), "pct_rdx")),
-                                                paste0("      — ",ltxt(plabs(), "pct_hivtest")),
-                                                paste0("      — ",ltxt(plabs(), "pct_pulmonary")),
-                                                paste0("      — ",ltxt(plabs(), "pct_pulm_bacconf")),
-                                                paste0("      — ", str_replace_all(ltxt(plabs(), "pct_women"), "[()]", "")),
-                                                paste0("      — ", str_replace_all(ltxt(plabs(), "pct_men"), "[()]", "")),
-                                                paste0("      — ",ltxt(plabs(), "pct_children")),
-                                                paste0(ltxt(plabs(), "tot_notified"), ", ", dcyear - 1) ),
-                                                notifs_data()
-                                                )  },
+output$notifs_table <- renderTable({ notifs_data() },
                                    striped = TRUE,
                                    hover = TRUE,
                                    width = "100%",
@@ -158,7 +170,7 @@ tbhiv_data <- reactive({
 
   }
 
-
+  # Combine the data with the row headers
   df <- data.frame(c(paste0(ltxt(plabs(), "hivtest_pos"), ", ", dcyear-1),
                      paste0(ltxt(plabs(), "art"), ", ", dcyear-1)),
                    num_data, pct_data)
@@ -169,7 +181,6 @@ tbhiv_data <- reactive({
 
 })
 
-# Combine the data with the row headers manually and render for output
 output$tbhiv_table <- renderTable({ tbhiv_data()  },
                                       striped = TRUE,
                                       hover = TRUE,

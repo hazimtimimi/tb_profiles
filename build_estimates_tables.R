@@ -59,7 +59,6 @@ estimates_table_content <- reactive({
   # make sure there are data to display
   req(pdata()$profile_estimates)
 
-
   # build the dataframe manually
   row_head <- c(paste0(ltxt(plabs(), "incidence_tb"), ", ", dcyear-1),
                 paste0(ltxt(plabs(), "incidence_tbhiv"), ", ", dcyear-1),
@@ -67,7 +66,6 @@ estimates_table_content <- reactive({
                 paste0(ltxt(plabs(), "mortality_hivneg"), ", ", dcyear-1),
                 paste0(ltxt(plabs(), "mortality_hivpos"), ", ", dcyear-1)
   )
-
 
   est_num <- c( format_estimate(pdata()$profile_estimates[, "e_inc_num"],
                                 pdata()$profile_estimates[, "e_inc_num_lo"],
@@ -95,8 +93,6 @@ estimates_table_content <- reactive({
                                 style="k")
                 )
 
-
-
   est_rate <- c(format_estimate(pdata()$profile_estimates[, "e_inc_100k"],
                                 pdata()$profile_estimates[, "e_inc_100k_lo"],
                                 pdata()$profile_estimates[, "e_inc_100k_hi"]),
@@ -118,8 +114,16 @@ estimates_table_content <- reactive({
                                 pdata()$profile_estimates[, "e_mort_tbhiv_100k_hi"])
                 )
 
-
   df <- data.frame(row_head, est_num, est_rate)
+
+  # Entities using the compact form only have overall incidence estimates
+  if (pdata()$profile_properties[, "dc_form_description"] == "Compact form") {
+
+    # Only use the first row
+    df <- df[1,]
+
+  }
+
 
   # add the column names
   names(df) <- c("", ltxt(plabs(), "number"), ltxt(plabs(), "rate_100k"))
@@ -286,6 +290,15 @@ uhc_table_content <- reactive({
                 ))
 
   df <- data.frame(row_head, row_data)
+
+  # Remove the case fatality ratio row if the entity uses a compact form
+  if (pdata()$profile_properties[, "dc_form_description"] == "Compact form") {
+
+    # Remove the second row
+    df <- df[-2,]
+
+  }
+
 
   return(df)
 })

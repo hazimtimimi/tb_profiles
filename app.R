@@ -7,9 +7,14 @@
 #               Updated August 2025 to change country code input paramater from iso2 tp
 #                     iso3 code to make it easier for profiles to be called from WHO
 #                     country pages such as https://www.who.int/countries/AFG (Version 4.0)
+#               Updated October 2025 to produce compact profiles for entities using the compact
+#                     data collection form and for which disaggregated estimates are not produced.
+#                     Also displayed more detailed charts for entities with agegroup_option==220
+#                     because we now have incidence estimates for the more granular age groups such
+#                     as 5-9 years
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 4.0"
+app_version <- "Version 5.0"
 
 library(shiny)
 library(dplyr)
@@ -24,7 +29,6 @@ library(gtbreport)
 # and is shared across all sessions.
 # Make sure to specify the data being read are UTF-8 encoded
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 
 json_url <- "https://extranet.who.int/tme/generateJSON.asp"
 
@@ -180,51 +184,55 @@ ui <- function(request) {
               )
             ),
 
-            fixedRow(
-              column(
-                width = 6,
-                class = "chart",
-                highchartOutput(outputId = "agesex_chart", height = "300px")
-              ),
-              column(
-                width = 6,
-                class = "chart",
-                # Only show estimates by risk factors if the estimates exist for the entity
-                conditionalPanel(condition = "output.show_attributable_cases == 1",
+            # Only show the other charts if the entity does not use the compact form
+            conditionalPanel(condition = "output.compact_form == 0",
 
-                                 highchartOutput(outputId = "rf_chart", height = "300px")
+                fixedRow(
+                  column(
+                    width = 6,
+                    class = "chart",
+                    highchartOutput(outputId = "agesex_chart", height = "350px")
+                  ),
+                  column(
+                    width = 6,
+                    class = "chart",
+                    # Only show estimates by risk factors if the estimates exist for the entity
+                    conditionalPanel(condition = "output.show_attributable_cases == 1",
+
+                                     highchartOutput(outputId = "rf_chart", height = "350px")
+                    )
+                  )
+                ),
+
+                fixedRow(
+                  column(
+                    width = 6,
+                    class = "chart",
+                    highchartOutput(outputId = "rr_prop_chart", height = "300px")
+                  ),
+                  column(
+                    width = 6,
+                    class = "chart",
+                    highchartOutput(outputId = "rr_inc_chart", height = "300px")
+                  )
+                ),
+
+                fixedRow(
+                  column(
+                    width = 6,
+                    class = "chart",
+                    highchartOutput(outputId = "tpt_chart", height = "300px")
+                  ),
+                  column(
+                    width = 6,
+                    class = "chart",
+                    # The financing chart should only be shown if dc_finance_display is true
+                    conditionalPanel(condition = "output.show_finance == 1",
+
+                                     highchartOutput(outputId = "funding_chart", height = "300px")
+                    )
+                  )
                 )
-              )
-            ),
-
-            fixedRow(
-              column(
-                width = 6,
-                class = "chart",
-                highchartOutput(outputId = "rr_prop_chart", height = "300px")
-              ),
-              column(
-                width = 6,
-                class = "chart",
-                highchartOutput(outputId = "rr_inc_chart", height = "300px")
-              )
-            ),
-
-            fixedRow(
-              column(
-                width = 6,
-                class = "chart",
-                highchartOutput(outputId = "tpt_chart", height = "300px")
-              ),
-              column(
-                width = 6,
-                class = "chart",
-                # The financing chart should only be shown if dc_finance_display is true
-                conditionalPanel(condition = "output.show_finance == 1",
-
-                                 highchartOutput(outputId = "funding_chart", height = "300px")
-                )
-              )
             )
           ),
 
@@ -260,25 +268,29 @@ ui <- function(request) {
                 textOutput(outputId = "notifs_heading", container = h3),
                 tableOutput(outputId = "notifs_table"),
 
-                textOutput(outputId = "tbhiv_heading", container = h3),
-                tableOutput(outputId = "tbhiv_table"),
+                # Only show the other charts if the entity does not use the compact form
+                conditionalPanel(condition = "output.compact_form == 0",
 
-                textOutput(outputId = "drtb_heading", container = h3),
-                tableOutput(outputId = "drtb_table"),
+                      textOutput(outputId = "tbhiv_heading", container = h3),
+                      tableOutput(outputId = "tbhiv_table"),
 
-                textOutput(outputId = "outcomes_heading", container = h3),
-                tableOutput(outputId = "outcomes_table"),
+                      textOutput(outputId = "drtb_heading", container = h3),
+                      tableOutput(outputId = "drtb_table"),
 
-                textOutput(outputId = "prevtx_heading", container = h3),
-                tableOutput(outputId = "prevtx_table"),
+                      textOutput(outputId = "outcomes_heading", container = h3),
+                      tableOutput(outputId = "outcomes_table"),
 
-                # The financing table should only be shown if dc_finance_display is true
-                conditionalPanel(condition = "output.show_finance == 1",
+                      textOutput(outputId = "prevtx_heading", container = h3),
+                      tableOutput(outputId = "prevtx_table"),
 
-                                 textOutput(outputId = "finance_heading", container = h3),
-                                 htmlOutput(outputId = "finance_inclusions_exclusions"),
-                                 tableOutput(outputId = "funding_table")
-                )
+                      # The financing table should only be shown if dc_finance_display is true
+                      conditionalPanel(condition = "output.show_finance == 1",
+
+                                       textOutput(outputId = "finance_heading", container = h3),
+                                       htmlOutput(outputId = "finance_inclusions_exclusions"),
+                                       tableOutput(outputId = "funding_table")
+                      )
+                  )
               )
             )
           )
@@ -474,6 +486,25 @@ server <- function(input, output, session) {
   output$charts_tab_name <- renderText({ ltxt(plabs(), "charts") })
   output$tables_tab_name <- renderText({ ltxt(plabs(), "tables") })
 
+
+  # See if the entity only used the compact form introduced in 2025. In such cases
+  # only need to show a few data items
+
+  output$compact_form <- reactive ({
+
+    req(pdata()$profile_properties)
+
+    if (pdata()$profile_properties[, "dc_form_description"] == "Compact form"){
+      result <- 1
+    } else {
+      result <- 0
+    }
+
+    return(result)
+  })
+
+  # Need this to make sure browser can switch attributable cases  elements back on again if hidden
+  outputOptions(output, "compact_form", suspendWhenHidden = FALSE)
 
 
   # Show or hide the cases attributable to 5 risk factors ----

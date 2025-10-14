@@ -271,7 +271,8 @@ output$rf_chart <-  renderHighchart({
 output$agesex_chart <-  renderHighchart({
 
   # Make sure there are data to plot
-  req(pdata()$profile_incnum_agesex)
+  req(is.data.frame(pdata()$profile_incnum_agesex))
+
 
   # Get the age/sex disaggregated estimates and notifications
   agesex <- pdata()$profile_incnum_agesex
@@ -279,8 +280,23 @@ output$agesex_chart <-  renderHighchart({
     select(agegroup_option, starts_with("newrel_m"), starts_with("newrel_f"))
 
 
+  # Establish the set of agegroups to use
   # If no disaggregated notifications reported then set the agegroup option to zero
-  if (NZ(notifs_agesex$agegroup_option) %in% c(0, 220, 221)) {
+  if (NZ(notifs_agesex$agegroup_option) %in% c(0, 220)) {
+
+    notifs_agesex <- notifs_agesex |>
+      select(contains("04"),
+             contains("59"),
+             contains("1014"),
+             contains("1519"),
+             contains("2024"),
+             contains("2534"),
+             contains("3544"),
+             contains("4554"),
+             contains("5564"),
+             contains("65"))
+
+  } else if (notifs_agesex$agegroup_option == 221) {
 
     notifs_agesex <- notifs_agesex |>
       select(contains("04"),
@@ -295,7 +311,8 @@ output$agesex_chart <-  renderHighchart({
   } else if (notifs_agesex$agegroup_option == 222) {
 
     notifs_agesex <- notifs_agesex |>
-      select(contains("014"),
+      select(contains("m014"),
+             contains("f014"),
              contains("1524"),
              contains("2534"),
              contains("3544"),
@@ -331,16 +348,16 @@ output$agesex_chart <-  renderHighchart({
   agesex <- agesex |>
     inner_join(notifs_agesex_long, by = c("age_group", "sex"))
 
-  # Rename the 5-14 age group
-
+  # Rename the 5-9 and 5-14 age group
+  agesex$age_group <- str_replace(agesex$age_group, "59", "0509")
   agesex$age_group <- str_replace(agesex$age_group, "514", "0514")
 
   agesex <- agesex |>
     arrange(sex, age_group)
 
   agesex$age_group <- factor(agesex$age_group,
-                             levels=c("04", "0514", "014", "1524", "2534", "3544", "4554", "5564", "65", "15plus"),
-                             labels=c("0-4", "5-14", "0-14", "15-24", "25-34", "35-44", "45-54", "55-64", "\u226565", "\u226515"))
+                             levels=c("04", "0509", "1014", "0514", "014", "1519", "2024", "1524", "2534", "3544", "4554", "5564", "65", "15plus"),
+                             labels=c("0-4", "5-9", "10-14", "5-14", "0-14", "15-19", "20-24", "15-24", "25-34", "35-44", "45-54", "55-64", "\u226565", "\u226515"))
 
   # Find the maximum high bound
   max_hi <- max(agesex$hi)
