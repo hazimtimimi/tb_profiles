@@ -13,7 +13,7 @@
 output$population <- renderText({
 
   # Make sure data are loaded
-  req(pdata()$profile_estimates)
+  req(is.data.frame(pdata()$profile_estimates))
 
   paste0(ltxt(plabs(), "pop"),
          ", ",
@@ -25,8 +25,8 @@ output$population <- renderText({
 })
 
 output$population_source <- renderText({ HTML(paste0("<i>", ltxt(plabs(), "est_unpd"),
-                                                     # If showing Ukraine 2023 then add comment about the estimate
-                                                     ifelse(input$entity_type == "country" & input$iso2 == "UA" & dcyear==2024,
+                                                     # If showing Ukraine 2024 then add comment about the estimate
+                                                     ifelse(input$entity_type == "country" & input$iso3 == "UKR" & dcyear==2025,
                                                             paste0(" ",
                                                                    ltxt(plabs(), "note_ukraine")),
                                                             ""),
@@ -41,23 +41,36 @@ output$estimates_heading <- renderText({ ltxt(plabs(), "estimates") })
 
 output$estimates_source <- renderText({  HTML(paste0("<i>",
                                                      ltxt(plabs(), "foot_est"),
-                                                     # Insert extra notes for Cambodia and Ukraine 2024
-                                                     ifelse(input$entity_type == "country" & input$iso2 == "KH" & dcyear==2024,
-                                                            paste0("<br />",
-                                                                   ltxt(plabs(), "note_cambodia")),
-                                                            ""),
-                                                     ifelse(input$entity_type == "country" & input$iso2 == "UA" & dcyear==2024,
-                                                            paste("<br />",
-                                                                  ltxt(plabs(), "note_ukraine"),
-                                                                  ltxt(plabs(), "note_ukraine_2")),
-                                                            ""),
+                                                     # Insert extra notes for DPRK, India, South Africa, Timor-Leste and Ukraine 2024
+                                                     dplyr::case_when (
+
+                                                       input$entity_type == "country" & input$iso3 == "PRK" & dcyear==2025 ~ paste0("<br />",
+                                                                                                                                   ltxt(plabs(), "note_dprk")),
+
+                                                       input$entity_type == "country" & input$iso3== "IND" & dcyear==2025 ~ paste0("<br />",
+                                                                                                                                   ltxt(plabs(), "note_india")),
+
+                                                       input$entity_type == "country" & input$iso3 == "ZAF" & dcyear==2025 ~ paste0("<br />",
+                                                                                                                                    ltxt(plabs(), "note_south_africa")),
+
+                                                       input$entity_type == "country" & input$iso3 == "TLS" & dcyear==2025 ~ paste0("<br />",
+                                                                                                                                   ltxt(plabs(), "note_timor-leste")),
+
+                                                       input$entity_type == "country" & input$iso3 == "UKR" & dcyear==2025 ~ paste("<br />",
+                                                                                                                                   ltxt(plabs(), "note_ukraine"),
+                                                                                                                                   ltxt(plabs(), "note_ukraine_2")),
+
+                                                       .default = ""
+
+                                                     ),
+
                                                      "</i>")) })
 
 
 estimates_table_content <- reactive({
 
   # make sure there are data to display
-  req(pdata()$profile_estimates)
+  req(is.data.frame(pdata()$profile_estimates))
 
   # build the dataframe manually
   row_head <- c(paste0(ltxt(plabs(), "incidence_tb"), ", ", dcyear-1),
@@ -164,8 +177,7 @@ output$estimates_changes_note <- renderText({
 estimates_changes_table_content <- reactive({
 
   # make sure there are data to display
-  req(pdata()$epi_timeseries)
-
+  req(is.data.frame(pdata()$epi_timeseries))
 
   # build the dataframe manually
   row_head <- c(paste0(ltxt(plabs(), "delta_inc"), dcyear-1),

@@ -10,7 +10,8 @@
 output$inc_chart <-  renderHighchart({
 
   # Make sure there are data to plot
-  req(pdata()$epi_timeseries)
+  req(is.data.frame(pdata()$epi_timeseries))
+
 
   df <- pdata()$epi_timeseries  |>
     # restrict to years starting 2010
@@ -105,7 +106,7 @@ output$inc_chart <-  renderHighchart({
 output$mort_chart <-  renderHighchart({
 
   # Make sure there are data to plot
-  req(pdata()$epi_timeseries)
+  req(is.data.frame(pdata()$epi_timeseries))
 
   df <- pdata()$epi_timeseries  |>
     # restrict to years starting 2010
@@ -521,7 +522,7 @@ output$agesex_chart <-  renderHighchart({
 output$rr_prop_chart <-  renderHighchart({
 
   # Make sure there are data to plot
-  req(pdata()$rr_timeseries)
+  req(is.data.frame(pdata()$rr_timeseries))
 
   rr <- pdata()$rr_timeseries
 
@@ -606,7 +607,7 @@ output$rr_prop_chart <-  renderHighchart({
 output$rr_inc_chart <-  renderHighchart({
 
   # Make sure there are data to plot
-  req(pdata()$rr_timeseries)
+  req(is.data.frame(pdata()$rr_timeseries))
 
   rr <- pdata()$rr_timeseries
 
@@ -669,7 +670,7 @@ output$rr_inc_chart <-  renderHighchart({
 output$tpt_chart <- renderHighchart({
 
   # Make sure there are data to plot
-  req(pdata()$tpt_timeseries)
+  req(is.data.frame(pdata()$tpt_timeseries))
 
   tpt <- pdata()$tpt_timeseries
 
@@ -728,7 +729,7 @@ output$tpt_chart <- renderHighchart({
 output$funding_chart <-  renderHighchart({
 
   # Make sure there are data to plot
-  req(pdata()$funding_timeseries)
+  req(is.data.frame(pdata()$funding_timeseries))
 
   funding_data <- pdata()$funding_timeseries
 
