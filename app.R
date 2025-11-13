@@ -14,7 +14,7 @@
 #                     as 5-9 years
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-app_version <- "Version 5.1"
+app_version <- "Version 5.2"
 
 library(shiny)
 library(dplyr)

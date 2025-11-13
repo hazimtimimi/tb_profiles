@@ -50,7 +50,7 @@ output$inc_chart <-  renderHighchart({
 
     hc_tooltip(crosshairs = TRUE,
                shared = TRUE,
-               valueDecimals = 0) |>
+               valueDecimals = 1) |>
 
     # Drop the legend
     hc_legend(enabled = FALSE) |>
@@ -539,7 +539,8 @@ output$rr_prop_chart <-  renderHighchart({
              allowDecimals = FALSE) |>
 
     hc_tooltip(crosshairs = TRUE,
-               shared = TRUE) |>
+               shared = TRUE,
+               valueDecimals = 1) |>
 
     hc_add_series(type = "line",
                   name = ltxt(plabs(), "pulm_bc_ret"),
